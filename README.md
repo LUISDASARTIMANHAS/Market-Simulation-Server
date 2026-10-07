@@ -15,6 +15,8 @@ Durante o desenvolvimento, `npm run dev` reinicia o servidor quando o código mu
 
 Por padrão, a API escuta na porta `3001` e o estado fica em `data/market-state.json`, dentro deste projeto. Configure `MARKET_PORT` para trocar a porta ou `MARKET_STATE_FILE` para usar outro arquivo de estado.
 
+Eventos simulados movimentam o preço em intervalos aleatórios de 60 a 120 segundos. Configure `MARKET_EVENT_MIN_INTERVAL_MS` e `MARKET_EVENT_MAX_INTERVAL_MS` para alterar os limites em milissegundos. Se o máximo for menor que o mínimo, o mínimo será usado como os dois limites.
+
 Se estiver atrás de um reverse proxy confiável, configure `TRUST_PROXY` com o endereço ou faixa desse proxy, por exemplo `loopback` para um proxy local. Não use `true` indiscriminadamente: o endereço IP é usado nos limites de requisição.
 
 Ao ser executado dentro da estrutura original do bot, se ainda não houver estado local, o servidor copia automaticamente o histórico legado de `../data/market-state.json`. Essa migração não apaga o arquivo antigo. Inicie o serviço uma vez antes de mover a pasta para levar junto a cópia migrada.
@@ -30,6 +32,14 @@ Ao ser executado dentro da estrutura original do bot, se ainda não houver estad
     "currentPrice": 100.25,
     "sequence": 42,
     "updatedAt": "2026-10-07T21:00:00.000Z",
+    "latestEvent": {
+      "category": "Inflação",
+      "title": "Inflação desacelera",
+      "description": "Alívio inflacionário melhora o apetite por risco.",
+      "impactPercent": 0.52,
+      "occurredAt": "2026-10-07T20:59:00.000Z"
+    },
+    "nextEventAt": "2026-10-07T21:00:30.000Z",
     "volume": { "total": 100, "buys": 100, "sells": 0 },
     "recentTrades": [],
     "history": [
@@ -69,7 +79,7 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:3001/api/orders" -Headers 
 
 Cada participante deve guardar sua chave e usar sua própria carteira. Não compartilhe uma chave entre usuários.
 
-Uma compra pressiona o preço global para cima; uma venda, para baixo. O efeito é limitado a 0,25% por ordem e o tamanho máximo é US$ 5.000 por ordem. O ticker aleatório continua, com variação menor, para representar o fluxo de mercado sem impor somente uma direção. O preço, as contas, o volume e o histórico de ordens são persistidos neste servidor.
+Uma compra pressiona o preço global para cima; uma venda, para baixo. O efeito é limitado a 0,25% por ordem e o tamanho máximo é US$ 5.000 por ordem. Além das ordens de usuários e bots enviadas por essa API, eventos simulados de inflação, guerra, política, juros, tecnologia e emprego aplicam choques periódicos positivos ou negativos ao preço. O status público informa o último evento e a previsão do próximo. Esses cenários são aleatórios e não representam notícias ou dados do mundo real. O preço, os eventos, as contas, o volume e o histórico de ordens são persistidos neste servidor.
 
 O cadastro está limitado a 5 chamadas por IP por hora; ordens, a 60 por IP por minuto e 20 por conta por minuto; rotação, a 3 por IP por hora. O servidor deve rodar como uma única autoridade de mercado; várias instâncias com arquivos locais separados não compartilham preço nem saldos.
 

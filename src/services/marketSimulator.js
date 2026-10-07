@@ -1,6 +1,8 @@
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 import {
   INITIAL_VIRTUAL_BALANCE,
+  MARKET_EVENT_MAX_INTERVAL_MS,
+  MARKET_EVENT_MIN_INTERVAL_MS,
   MAX_ACCOUNT_HISTORY,
   MAX_ORDER_IMPACT_PERCENT,
   MAX_ORDER_NOTIONAL_USD,
@@ -19,6 +21,21 @@ const roundAsset = (value) => Math.round((value + Number.EPSILON) * 1e8) / 1e8;
 /** @param {string} apiKey */
 const hashApiKey = (apiKey) => createHash('sha256').update(apiKey).digest('hex');
 
+const MARKET_EVENTS = [
+  { category: 'Inflação', title: 'Inflação acima do esperado', description: 'Pressão inflacionária reduz o apetite por risco.', minImpact: -1.2, maxImpact: -0.3 },
+  { category: 'Inflação', title: 'Inflação desacelera', description: 'Alívio inflacionário melhora o apetite por risco.', minImpact: 0.2, maxImpact: 0.9 },
+  { category: 'Guerra', title: 'Escalada de conflito', description: 'Aumento da tensão geopolítica pressiona os ativos.', minImpact: -1.5, maxImpact: -0.5 },
+  { category: 'Guerra', title: 'Acordo de cessar-fogo', description: 'Redução da tensão geopolítica favorece os ativos.', minImpact: 0.3, maxImpact: 1.2 },
+  { category: 'Política', title: 'Instabilidade política', description: 'Incerteza política aumenta a aversão ao risco.', minImpact: -1.1, maxImpact: -0.3 },
+  { category: 'Política', title: 'Acordo político', description: 'Avanço em negociações reduz a incerteza.', minImpact: 0.2, maxImpact: 0.8 },
+  { category: 'Juros', title: 'Alta inesperada de juros', description: 'Juros maiores pressionam os ativos de risco.', minImpact: -1, maxImpact: -0.3 },
+  { category: 'Juros', title: 'Corte de juros', description: 'Juros menores favorecem ativos de risco.', minImpact: 0.2, maxImpact: 0.9 },
+  { category: 'Tecnologia', title: 'Avanço tecnológico', description: 'Uma inovação relevante melhora as perspectivas do mercado.', minImpact: 0.3, maxImpact: 1.1 },
+  { category: 'Emprego', title: 'Mercado de trabalho enfraquece', description: 'Sinais de desaceleração aumentam a cautela dos investidores.', minImpact: -0.9, maxImpact: -0.2 },
+];
+
+const randomBetween = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
+
 /**
  * Gera e mantém os preços simulados publicados pela API de mercado.
  */
@@ -32,6 +49,8 @@ class MarketSimulator {
     this.buyVolume = 0;
     this.sellVolume = 0;
     this.operationQueue = Promise.resolve();
+    this.latestEvent = null;
+    this.nextEventAt = null;
   }
 
   /**
@@ -67,6 +86,13 @@ class MarketSimulator {
     this.totalVolume = Number.isFinite(state.totalVolume) ? state.totalVolume : 0;
     this.buyVolume = Number.isFinite(state.buyVolume) ? state.buyVolume : 0;
     this.sellVolume = Number.isFinite(state.sellVolume) ? state.sellVolume : 0;
+    this.latestEvent = state.latestMarketEvent && typeof state.latestMarketEvent.title === 'string'
+      ? state.latestMarketEvent
+      : null;
+    this.nextEventAt = typeof state.nextMarketEventAt === 'string'
+      && Number.isFinite(Date.parse(state.nextMarketEventAt))
+      ? state.nextMarketEventAt
+      : null;
   }
 
   /**
@@ -74,19 +100,38 @@ class MarketSimulator {
    */
   tick() {
     return this.enqueue(async () => {
+      if (!this.nextEventAt) this.scheduleNextEvent();
+      if (Date.now() < Date.parse(this.nextEventAt)) return;
+
       const previous = this.history[this.history.length - 1];
-      const changePercent = (Math.random() - 0.5) * 0.4;
+      const template = MARKET_EVENTS[Math.floor(Math.random() * MARKET_EVENTS.length)];
+      const changePercent = randomBetween(template.minImpact, template.maxImpact);
       const price = Number(Math.max(0.01, previous.price * (1 + changePercent / 100)).toFixed(2));
+      const occurredAt = new Date().toISOString();
       this.history.push({
         sequence: previous.sequence + 1,
         price,
-        updatedAt: new Date().toISOString(),
+        updatedAt: occurredAt,
       });
       if (this.history.length > 50) this.history.shift();
+      this.latestEvent = {
+        category: template.category,
+        title: template.title,
+        description: template.description,
+        impactPercent: Number(changePercent.toFixed(4)),
+        occurredAt,
+      };
+      this.scheduleNextEvent();
 
-      console.log(`[MERCADO] ${previous.price.toFixed(2)} -> ${price.toFixed(2)} (${changePercent.toFixed(2)}%)`);
+      console.log(`[EVENTO] ${template.title} | ${previous.price.toFixed(2)} -> ${price.toFixed(2)} (${changePercent.toFixed(2)}%)`);
       await this.persist();
     });
+  }
+
+  /** Agenda o próximo evento dentro da janela configurada. */
+  scheduleNextEvent() {
+    const delay = randomBetween(MARKET_EVENT_MIN_INTERVAL_MS, MARKET_EVENT_MAX_INTERVAL_MS);
+    this.nextEventAt = new Date(Date.now() + delay).toISOString();
   }
 
   /**
@@ -95,6 +140,7 @@ class MarketSimulator {
    */
   start() {
     if (this.interval) return false;
+    if (!this.nextEventAt) this.scheduleNextEvent();
     this.interval = setInterval(() => {
       this.tick().catch((error) => console.error(`[MERCADO] Falha ao persistir ticker: ${error.message}`));
     }, TICKER_INTERVAL_MS);
@@ -122,6 +168,8 @@ class MarketSimulator {
       totalVolume: this.totalVolume,
       buyVolume: this.buyVolume,
       sellVolume: this.sellVolume,
+      latestMarketEvent: this.latestEvent,
+      nextMarketEventAt: this.nextEventAt,
     });
   }
 
@@ -330,6 +378,8 @@ class MarketSimulator {
       history: this.history.map((tick) => ({ ...tick })),
       recentTrades: this.recentTrades.map((trade) => ({ ...trade })),
       volume: { total: this.totalVolume, buys: this.buyVolume, sells: this.sellVolume },
+      latestEvent: this.latestEvent ? { ...this.latestEvent } : null,
+      nextEventAt: this.nextEventAt,
     };
   }
 }
