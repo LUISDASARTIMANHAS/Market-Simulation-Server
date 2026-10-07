@@ -1,0 +1,20 @@
+{
+  "name": "market-simulation-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Servidor independente de simulação e publicação de preços de mercado.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "npm run autoUpdate && nodemon src/server.js",
+    "autoUpdate": "npm install && npm update",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.1"
+  }
+}
