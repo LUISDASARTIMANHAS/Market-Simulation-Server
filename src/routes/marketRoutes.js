@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { rateLimit } from 'express-rate-limit';
 import { marketSimulator } from '../services/marketSimulator.js';
+import { logger } from '../utils/logger.js';
 
 const router = Router();
 const accountCreationLimit = rateLimit({
@@ -49,7 +50,7 @@ router.post('/accounts', accountCreationLimit, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(`[API MERCADO] Falha ao criar conta: ${error.message}`);
+    logger.error('account.create_failed', { message: error.message });
     return res.status(500).json({ success: false, message: 'Não foi possível criar a conta.' });
   }
 });
@@ -78,7 +79,10 @@ router.post('/account/rotate-key', requireApiAccount, keyRotationLimit, async (r
       },
     });
   } catch (error) {
-    console.error(`[API MERCADO] Falha ao rotacionar chave: ${error.message}`);
+    logger.error('account.api_key_rotation_failed', {
+      accountId: req.marketAccountId,
+      message: error.message,
+    });
     return res.status(500).json({ success: false, message: 'Não foi possível rotacionar a chave.' });
   }
 });
@@ -89,7 +93,18 @@ router.post('/orders', requireApiAccount, orderLimit, accountOrderLimit, async (
     return res.status(201).json({ success: true, data: result });
   } catch (error) {
     const statusCode = error.statusCode || 500;
-    if (statusCode >= 500) console.error(`[API MERCADO] Falha ao executar ordem: ${error.message}`);
+    if (statusCode >= 500) {
+      logger.error('order.execution_failed', {
+        accountId: req.marketAccountId,
+        message: error.message,
+      });
+    } else {
+      logger.warn('order.rejected', {
+        accountId: req.marketAccountId,
+        statusCode,
+        message: error.message,
+      });
+    }
     return res.status(statusCode).json({
       success: false,
       message: statusCode >= 500 ? 'Não foi possível executar a ordem.' : error.message,
@@ -105,6 +120,7 @@ function requireApiAccount(req, res, next) {
   const match = /^Bearer ([A-Za-z0-9_-]+)$/.exec(authorization);
   const accountId = match ? marketSimulator.authenticateApiKey(match[1]) : null;
   if (!accountId) {
+    logger.warn('auth.failed', { method: req.method, path: req.path });
     return res.status(401).json({ success: false, message: 'Chave de API ausente ou inválida.' });
   }
   req.marketAccountId = accountId;

@@ -1,6 +1,7 @@
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { logger } from '../utils/logger.js';
 
 const DEFAULT_STATE_FILE = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -34,6 +35,7 @@ export class JsonStateStore {
         throw new Error('O estado do mercado precisa ser um objeto JSON.');
       }
       this.state = state;
+      logger.info('state.loaded', { filePath: this.filePath });
       return { ...state };
     } catch (error) {
       if (error.code !== 'ENOENT') throw error;
@@ -52,7 +54,7 @@ export class JsonStateStore {
       }
       this.state = state;
       await this.save({});
-      console.log('[SERVIDOR DE MERCADO] Histórico antigo migrado para market-server/data.');
+      logger.info('state.legacy_migrated', { filePath: this.filePath });
       return { ...state };
     } catch (legacyError) {
       if (legacyError.code === 'ENOENT') {
@@ -74,9 +76,15 @@ export class JsonStateStore {
     const temporaryFile = `${this.filePath}.${process.pid}.tmp`;
 
     const write = this.writeQueue.catch(() => {}).then(async () => {
-      await mkdir(path.dirname(this.filePath), { recursive: true });
-      await writeFile(temporaryFile, snapshot, 'utf8');
-      await rename(temporaryFile, this.filePath);
+      try {
+        await mkdir(path.dirname(this.filePath), { recursive: true });
+        await writeFile(temporaryFile, snapshot, 'utf8');
+        await rename(temporaryFile, this.filePath);
+        logger.info('state.saved', { filePath: this.filePath });
+      } catch (error) {
+        logger.error('state.save_failed', { filePath: this.filePath, message: error.message });
+        throw error;
+      }
     });
 
     this.writeQueue = write;

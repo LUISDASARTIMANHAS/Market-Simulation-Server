@@ -11,6 +11,7 @@ import {
   TICKER_INTERVAL_MS,
 } from '../config/constants.js';
 import { marketStateStore } from './stateStore.js';
+import { logger } from '../utils/logger.js';
 
 /** @param {number} value */
 const roundMoney = (value) => Math.round((value + Number.EPSILON) * 100) / 100;
@@ -123,7 +124,15 @@ class MarketSimulator {
       };
       this.scheduleNextEvent();
 
-      console.log(`[EVENTO] ${template.title} | ${previous.price.toFixed(2)} -> ${price.toFixed(2)} (${changePercent.toFixed(2)}%)`);
+      logger.info('market.event_applied', {
+        category: template.category,
+        title: template.title,
+        previousPrice: previous.price,
+        currentPrice: price,
+        impactPercent: Number(changePercent.toFixed(4)),
+        sequence: previous.sequence + 1,
+        nextEventAt: this.nextEventAt,
+      });
       await this.persist();
     });
   }
@@ -142,8 +151,12 @@ class MarketSimulator {
     if (this.interval) return false;
     if (!this.nextEventAt) this.scheduleNextEvent();
     this.interval = setInterval(() => {
-      this.tick().catch((error) => console.error(`[MERCADO] Falha ao persistir ticker: ${error.message}`));
+      this.tick().catch((error) => logger.error('market.tick_failed', { message: error.message }));
     }, TICKER_INTERVAL_MS);
+    logger.info('market.ticker_started', {
+      tickIntervalMs: TICKER_INTERVAL_MS,
+      nextEventAt: this.nextEventAt,
+    });
     return true;
   }
 
@@ -195,6 +208,7 @@ class MarketSimulator {
         this.accounts.delete(account.accountId);
         throw error;
       }
+      logger.info('account.created', { accountId: account.accountId });
       return { account: this.getAccount(account.accountId), apiKey };
     });
   }
@@ -218,6 +232,7 @@ class MarketSimulator {
         account.keyHash = previousHash;
         throw error;
       }
+      logger.info('account.api_key_rotated', { accountId });
       return { account: this.getAccount(accountId), apiKey };
     });
   }
@@ -360,7 +375,16 @@ class MarketSimulator {
         throw error;
       }
 
-      console.log(`[ORDEM] ${input.side} US$ ${total.toFixed(2)} | impacto ${signedImpact.toFixed(4)}% | preço ${updatedPrice.toFixed(2)}`);
+      logger.info('order.executed', {
+        accountId,
+        orderId: order.id,
+        side: input.side,
+        amount,
+        total,
+        previousPrice: current.price,
+        currentPrice: updatedPrice,
+        impactPercent: Number(signedImpact.toFixed(4)),
+      });
       return { order, account: this.getAccount(accountId), market: this.getStatus() };
     });
   }

@@ -21,6 +21,10 @@ Se estiver atrás de um reverse proxy confiável, configure `TRUST_PROXY` com o 
 
 Ao ser executado dentro da estrutura original do bot, se ainda não houver estado local, o servidor copia automaticamente o histórico legado de `../data/market-state.json`. Essa migração não apaga o arquivo antigo. Inicie o serviço uma vez antes de mover a pasta para levar junto a cópia migrada.
 
+## Logs
+
+O servidor escreve logs estruturados em JSON no console do processo, um evento por linha. Registra requisições HTTP com método, caminho, status e duração, além de eventos de mercado, ordens, ciclo de contas e operações de persistência. Erros são enviados ao `stderr`; os demais níveis vão para `stdout`. Query strings, corpos das requisições e cabeçalhos de autenticação não são registrados, portanto chaves de API não aparecem nos logs.
+
 ## API
 
 `GET /api/market/status` é público. Retorna preço, sequência, histórico recente, volume e as ordens públicas recentes, sem expor dados de contas.
