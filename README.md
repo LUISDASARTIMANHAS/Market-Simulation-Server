@@ -8,7 +8,7 @@ Requer Node.js 20 ou superior.
 
 ```powershell
 npm install
-npm start
+npm run start
 ```
 
 Durante o desenvolvimento, `npm run dev` reinicia o servidor quando o código muda. No Windows, `start.cmd` inicia o processo.
