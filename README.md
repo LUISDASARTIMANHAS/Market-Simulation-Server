@@ -13,6 +13,24 @@ npm start
 
 Durante o desenvolvimento, `npm run dev` reinicia o servidor quando o código muda. No Windows, `start.cmd` inicia o processo.
 
+### Docker e persistência
+
+Para iniciar com Docker Compose:
+
+```powershell
+docker compose up -d --build
+```
+
+O Compose monta `./data` do host em `/app/data` no container e grava o estado em `data/market-state.json`. Esse arquivo inclui contas, hashes das chaves, saldos, histórico de ordens, preço e volume; ele continua disponível ao reiniciar ou recriar o container e pode ser incluído em backups/sincronização do host. O campo `accounts` fica vazio até que uma conta seja criada por `POST /api/accounts`.
+
+Confira as contas persistidas no host com:
+
+```powershell
+node -e "const s = require('./data/market-state.json'); console.log(s.accounts.length)"
+```
+
+A chave de API em texto puro não é salva no arquivo, então cada usuário precisa guardar a chave recebida ao criar a conta. Rode apenas uma instância do serviço usando esse arquivo; sincronizar ou compartilhar o mesmo arquivo entre instâncias ativas pode causar sobrescrita de estado.
+
 Por padrão, a API escuta na porta `3001` e o estado fica em `data/market-state.json`, dentro deste projeto. Configure `MARKET_PORT` para trocar a porta ou `MARKET_STATE_FILE` para usar outro arquivo de estado.
 
 Eventos simulados movimentam o preço em intervalos aleatórios de 60 a 120 segundos. Configure `MARKET_EVENT_MIN_INTERVAL_MS` e `MARKET_EVENT_MAX_INTERVAL_MS` para alterar os limites em milissegundos. Se o máximo for menor que o mínimo, o mínimo será usado como os dois limites.

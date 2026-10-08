@@ -1,0 +1,267 @@
+{
+  "marketHistory": [
+    {
+      "sequence": 2000,
+      "price": 92.11,
+      "updatedAt": "2026-10-07T22:57:41.004Z"
+    },
+    {
+      "sequence": 2001,
+      "price": 92.12,
+      "updatedAt": "2026-10-07T22:57:43.093Z"
+    },
+    {
+      "sequence": 2002,
+      "price": 91.99,
+      "updatedAt": "2026-10-07T22:57:45.116Z"
+    },
+    {
+      "sequence": 2003,
+      "price": 91.81,
+      "updatedAt": "2026-10-07T22:57:47.128Z"
+    },
+    {
+      "sequence": 2004,
+      "price": 91.96,
+      "updatedAt": "2026-10-07T22:57:49.143Z"
+    },
+    {
+      "sequence": 2005,
+      "price": 92.08,
+      "updatedAt": "2026-10-07T22:57:51.168Z"
+    },
+    {
+      "sequence": 2006,
+      "price": 92.24,
+      "updatedAt": "2026-10-07T22:57:53.177Z"
+    },
+    {
+      "sequence": 2007,
+      "price": 92.17,
+      "updatedAt": "2026-10-07T22:57:55.190Z"
+    },
+    {
+      "sequence": 2008,
+      "price": 92.17,
+      "updatedAt": "2026-10-07T22:57:57.201Z"
+    },
+    {
+      "sequence": 2009,
+      "price": 92.03,
+      "updatedAt": "2026-10-07T22:57:59.213Z"
+    },
+    {
+      "sequence": 2010,
+      "price": 91.85,
+      "updatedAt": "2026-10-07T22:58:01.215Z"
+    },
+    {
+      "sequence": 2011,
+      "price": 91.86,
+      "updatedAt": "2026-10-07T22:58:03.222Z"
+    },
+    {
+      "sequence": 2012,
+      "price": 91.88,
+      "updatedAt": "2026-10-07T22:58:05.227Z"
+    },
+    {
+      "sequence": 2013,
+      "price": 91.92,
+      "updatedAt": "2026-10-07T22:58:07.230Z"
+    },
+    {
+      "sequence": 2014,
+      "price": 92.08,
+      "updatedAt": "2026-10-07T22:58:09.240Z"
+    },
+    {
+      "sequence": 2015,
+      "price": 92.18,
+      "updatedAt": "2026-10-07T22:58:11.246Z"
+    },
+    {
+      "sequence": 2016,
+      "price": 92.21,
+      "updatedAt": "2026-10-07T22:58:13.253Z"
+    },
+    {
+      "sequence": 2017,
+      "price": 92.15,
+      "updatedAt": "2026-10-07T22:58:15.261Z"
+    },
+    {
+      "sequence": 2018,
+      "price": 91.99,
+      "updatedAt": "2026-10-07T22:58:17.268Z"
+    },
+    {
+      "sequence": 2019,
+      "price": 91.86,
+      "updatedAt": "2026-10-07T22:58:19.283Z"
+    },
+    {
+      "sequence": 2020,
+      "price": 91.89,
+      "updatedAt": "2026-10-07T22:58:21.296Z"
+    },
+    {
+      "sequence": 2021,
+      "price": 91.82,
+      "updatedAt": "2026-10-07T22:58:23.306Z"
+    },
+    {
+      "sequence": 2022,
+      "price": 91.73,
+      "updatedAt": "2026-10-07T22:58:25.356Z"
+    },
+    {
+      "sequence": 2023,
+      "price": 92.21,
+      "updatedAt": "2026-10-07T22:59:37.381Z"
+    },
+    {
+      "sequence": 2024,
+      "price": 92.74,
+      "updatedAt": "2026-10-07T23:00:49.734Z"
+    },
+    {
+      "sequence": 2025,
+      "price": 92.22,
+      "updatedAt": "2026-10-07T23:02:36.252Z"
+    },
+    {
+      "sequence": 2026,
+      "price": 91.27,
+      "updatedAt": "2026-10-07T23:04:19.250Z"
+    },
+    {
+      "sequence": 2027,
+      "price": 91.79,
+      "updatedAt": "2026-10-07T23:06:14.002Z"
+    },
+    {
+      "sequence": 2028,
+      "price": 91.98,
+      "updatedAt": "2026-10-07T23:07:46.501Z"
+    },
+    {
+      "sequence": 2029,
+      "price": 91.74,
+      "updatedAt": "2026-10-07T23:09:14.844Z"
+    },
+    {
+      "sequence": 2030,
+      "price": 91.25,
+      "updatedAt": "2026-10-07T23:10:45.217Z"
+    },
+    {
+      "sequence": 2031,
+      "price": 90.46,
+      "updatedAt": "2026-10-08T00:19:05.149Z"
+    },
+    {
+      "sequence": 2032,
+      "price": 91.42,
+      "updatedAt": "2026-10-08T00:20:47.649Z"
+    },
+    {
+      "sequence": 2033,
+      "price": 92.19,
+      "updatedAt": "2026-10-08T00:22:44.304Z"
+    },
+    {
+      "sequence": 2034,
+      "price": 91.76,
+      "updatedAt": "2026-10-08T00:24:37.841Z"
+    },
+    {
+      "sequence": 2035,
+      "price": 91.23,
+      "updatedAt": "2026-10-08T00:26:31.009Z"
+    },
+    {
+      "sequence": 2036,
+      "price": 90.32,
+      "updatedAt": "2026-10-08T00:27:39.854Z"
+    },
+    {
+      "sequence": 2037,
+      "price": 89.34,
+      "updatedAt": "2026-10-08T00:29:36.792Z"
+    },
+    {
+      "sequence": 2038,
+      "price": 89.94,
+      "updatedAt": "2026-10-08T00:31:29.364Z"
+    },
+    {
+      "sequence": 2039,
+      "price": 89.21,
+      "updatedAt": "2026-10-08T00:33:05.975Z"
+    },
+    {
+      "sequence": 2040,
+      "price": 89.54,
+      "updatedAt": "2026-10-08T00:35:02.741Z"
+    },
+    {
+      "sequence": 2041,
+      "price": 89.1,
+      "updatedAt": "2026-10-08T00:36:17.071Z"
+    },
+    {
+      "sequence": 2042,
+      "price": 88.02,
+      "updatedAt": "2026-10-08T00:37:18.560Z"
+    },
+    {
+      "sequence": 2043,
+      "price": 88.75,
+      "updatedAt": "2026-10-08T00:39:17.887Z"
+    },
+    {
+      "sequence": 2044,
+      "price": 88.14,
+      "updatedAt": "2026-10-08T00:40:22.264Z"
+    },
+    {
+      "sequence": 2045,
+      "price": 86.92,
+      "updatedAt": "2026-10-08T00:41:50.708Z"
+    },
+    {
+      "sequence": 2046,
+      "price": 87.47,
+      "updatedAt": "2026-10-08T00:43:39.523Z"
+    },
+    {
+      "sequence": 2047,
+      "price": 86.95,
+      "updatedAt": "2026-10-08T00:44:54.035Z"
+    },
+    {
+      "sequence": 2048,
+      "price": 86.42,
+      "updatedAt": "2026-10-08T00:46:25.491Z"
+    },
+    {
+      "sequence": 2049,
+      "price": 85.91,
+      "updatedAt": "2026-10-08T00:47:44.163Z"
+    }
+  ],
+  "accounts": [],
+  "recentTrades": [],
+  "totalVolume": 0,
+  "buyVolume": 0,
+  "sellVolume": 0,
+  "latestMarketEvent": {
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.5932,
+    "occurredAt": "2026-10-08T00:47:44.163Z"
+  },
+  "nextMarketEventAt": "2026-10-08T00:49:41.097Z"
+}
