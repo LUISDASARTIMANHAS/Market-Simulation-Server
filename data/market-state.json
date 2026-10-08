@@ -14,19 +14,44 @@
       "sequence": 2,
       "price": 99.1,
       "updatedAt": "2026-10-08T02:21:58.358Z"
+    },
+    {
+      "sequence": 3,
+      "price": 98.4,
+      "updatedAt": "2026-10-08T02:23:40.751Z"
+    },
+    {
+      "sequence": 4,
+      "price": 97.26,
+      "updatedAt": "2026-10-08T02:25:05.079Z"
+    },
+    {
+      "sequence": 5,
+      "price": 96.19,
+      "updatedAt": "2026-10-08T02:26:37.396Z"
     }
   ],
-  "accounts": [],
+  "accounts": [
+    {
+      "accountId": "ab74ab24-d6e3-467f-8b3e-94a57f7e3e7d",
+      "username": "LUISDASARTIMANHAS",
+      "keyHash": "5fe95511f198d0a5a8ba06e69b932b9723d7a8bb278ea31cb0796bb4dd2dfeb9",
+      "balance": 1000,
+      "assetBalance": 0,
+      "history": [],
+      "createdAt": "2026-10-08T02:26:18.999Z"
+    }
+  ],
   "recentTrades": [],
   "totalVolume": 0,
   "buyVolume": 0,
   "sellVolume": 0,
   "latestMarketEvent": {
-    "category": "Política",
-    "title": "Acordo político",
-    "description": "Avanço em negociações reduz a incerteza.",
-    "impactPercent": 0.4197,
-    "occurredAt": "2026-10-08T02:21:58.358Z"
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -1.0988,
+    "occurredAt": "2026-10-08T02:26:37.396Z"
   },
-  "nextMarketEventAt": "2026-10-08T02:23:39.190Z"
+  "nextMarketEventAt": "2026-10-08T02:28:05.507Z"
 }
