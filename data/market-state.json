@@ -1,71 +1,6 @@
 {
   "marketHistory": [
     {
-      "sequence": 2000,
-      "price": 92.11,
-      "updatedAt": "2026-10-07T22:57:41.004Z"
-    },
-    {
-      "sequence": 2001,
-      "price": 92.12,
-      "updatedAt": "2026-10-07T22:57:43.093Z"
-    },
-    {
-      "sequence": 2002,
-      "price": 91.99,
-      "updatedAt": "2026-10-07T22:57:45.116Z"
-    },
-    {
-      "sequence": 2003,
-      "price": 91.81,
-      "updatedAt": "2026-10-07T22:57:47.128Z"
-    },
-    {
-      "sequence": 2004,
-      "price": 91.96,
-      "updatedAt": "2026-10-07T22:57:49.143Z"
-    },
-    {
-      "sequence": 2005,
-      "price": 92.08,
-      "updatedAt": "2026-10-07T22:57:51.168Z"
-    },
-    {
-      "sequence": 2006,
-      "price": 92.24,
-      "updatedAt": "2026-10-07T22:57:53.177Z"
-    },
-    {
-      "sequence": 2007,
-      "price": 92.17,
-      "updatedAt": "2026-10-07T22:57:55.190Z"
-    },
-    {
-      "sequence": 2008,
-      "price": 92.17,
-      "updatedAt": "2026-10-07T22:57:57.201Z"
-    },
-    {
-      "sequence": 2009,
-      "price": 92.03,
-      "updatedAt": "2026-10-07T22:57:59.213Z"
-    },
-    {
-      "sequence": 2010,
-      "price": 91.85,
-      "updatedAt": "2026-10-07T22:58:01.215Z"
-    },
-    {
-      "sequence": 2011,
-      "price": 91.86,
-      "updatedAt": "2026-10-07T22:58:03.222Z"
-    },
-    {
-      "sequence": 2012,
-      "price": 91.88,
-      "updatedAt": "2026-10-07T22:58:05.227Z"
-    },
-    {
       "sequence": 2013,
       "price": 91.92,
       "updatedAt": "2026-10-07T22:58:07.230Z"
@@ -249,19 +184,185 @@
       "sequence": 2049,
       "price": 85.91,
       "updatedAt": "2026-10-08T00:47:44.163Z"
+    },
+    {
+      "sequence": 2050,
+      "price": 85.32,
+      "updatedAt": "2026-10-08T00:54:46.520Z"
+    },
+    {
+      "sequence": 2051,
+      "price": 84.55,
+      "updatedAt": "2026-10-08T00:56:38.941Z"
+    },
+    {
+      "sequence": 2052,
+      "price": 84.88,
+      "updatedAt": "2026-10-08T00:58:05.204Z"
+    },
+    {
+      "sequence": 2053,
+      "price": 84.99,
+      "updatedAt": "2026-10-08T00:59:28.994Z"
+    },
+    {
+      "sequence": 2054,
+      "price": 84.68,
+      "updatedAt": "2026-10-08T00:59:43.584Z"
+    },
+    {
+      "sequence": 2055,
+      "price": 84.57,
+      "updatedAt": "2026-10-08T01:00:28.957Z"
+    },
+    {
+      "sequence": 2056,
+      "price": 83.84,
+      "updatedAt": "2026-10-08T01:01:05.877Z"
+    },
+    {
+      "sequence": 2057,
+      "price": 83.94,
+      "updatedAt": "2026-10-08T01:01:28.956Z"
+    },
+    {
+      "sequence": 2058,
+      "price": 83.6,
+      "updatedAt": "2026-10-08T01:02:14.139Z"
+    },
+    {
+      "sequence": 2059,
+      "price": 84.07,
+      "updatedAt": "2026-10-08T01:03:42.441Z"
+    },
+    {
+      "sequence": 2060,
+      "price": 83.96,
+      "updatedAt": "2026-10-08T01:04:29.000Z"
+    },
+    {
+      "sequence": 2061,
+      "price": 83.13,
+      "updatedAt": "2026-10-08T01:05:26.845Z"
+    },
+    {
+      "sequence": 2062,
+      "price": 83.23,
+      "updatedAt": "2026-10-08T01:05:29.002Z"
     }
   ],
-  "accounts": [],
-  "recentTrades": [],
-  "totalVolume": 0,
-  "buyVolume": 0,
-  "sellVolume": 0,
+  "accounts": [
+    {
+      "accountId": "285ed5df-03b7-4f68-9d87-2d6189f377c1",
+      "keyHash": "5e6f29fd89df3682d0c5e827ac4b5519033a9306b17f2df535b34c88969f82a5",
+      "balance": 0,
+      "assetBalance": 12.03392277,
+      "history": [
+        {
+          "id": "b28780b6-3118-4c7b-8beb-0b5deec7ce2e",
+          "timestamp": "2026-10-08T01:05:29.002Z",
+          "type": "BUY",
+          "price": 83.13,
+          "amount": 12.03392277,
+          "total": 1000.38,
+          "impactPercent": 0.125
+        },
+        {
+          "id": "f16dd35f-0548-4b12-8352-66d58fd1278e",
+          "timestamp": "2026-10-08T01:04:29.000Z",
+          "type": "SELL",
+          "price": 84.07,
+          "amount": 11.89933206,
+          "total": 1000.38,
+          "impactPercent": -0.125
+        },
+        {
+          "id": "cab1742f-1175-4728-89c0-d31ea7f1ae80",
+          "timestamp": "2026-10-08T01:01:28.956Z",
+          "type": "BUY",
+          "price": 83.84,
+          "amount": 11.89933206,
+          "total": 997.64,
+          "impactPercent": 0.1247
+        },
+        {
+          "id": "8cdfedad-44e1-4c1e-aff2-129979e67afe",
+          "timestamp": "2026-10-08T01:00:28.957Z",
+          "type": "SELL",
+          "price": 84.68,
+          "amount": 11.78133836,
+          "total": 997.64,
+          "impactPercent": -0.1247
+        },
+        {
+          "id": "13785bb1-d19c-48af-8c5a-eb00c75ba659",
+          "timestamp": "2026-10-08T00:59:28.994Z",
+          "type": "BUY",
+          "price": 84.88,
+          "amount": 11.78133836,
+          "total": 1000,
+          "impactPercent": 0.125
+        }
+      ],
+      "createdAt": "2026-10-08T00:57:49.727Z"
+    }
+  ],
+  "recentTrades": [
+    {
+      "id": "b28780b6-3118-4c7b-8beb-0b5deec7ce2e",
+      "side": "BUY",
+      "price": 83.13,
+      "amount": 12.03392277,
+      "total": 1000.38,
+      "impactPercent": 0.125,
+      "timestamp": "2026-10-08T01:05:29.002Z"
+    },
+    {
+      "id": "f16dd35f-0548-4b12-8352-66d58fd1278e",
+      "side": "SELL",
+      "price": 84.07,
+      "amount": 11.89933206,
+      "total": 1000.38,
+      "impactPercent": -0.125,
+      "timestamp": "2026-10-08T01:04:29.000Z"
+    },
+    {
+      "id": "cab1742f-1175-4728-89c0-d31ea7f1ae80",
+      "side": "BUY",
+      "price": 83.84,
+      "amount": 11.89933206,
+      "total": 997.64,
+      "impactPercent": 0.1247,
+      "timestamp": "2026-10-08T01:01:28.956Z"
+    },
+    {
+      "id": "8cdfedad-44e1-4c1e-aff2-129979e67afe",
+      "side": "SELL",
+      "price": 84.68,
+      "amount": 11.78133836,
+      "total": 997.64,
+      "impactPercent": -0.1247,
+      "timestamp": "2026-10-08T01:00:28.957Z"
+    },
+    {
+      "id": "13785bb1-d19c-48af-8c5a-eb00c75ba659",
+      "side": "BUY",
+      "price": 84.88,
+      "amount": 11.78133836,
+      "total": 1000,
+      "impactPercent": 0.125,
+      "timestamp": "2026-10-08T00:59:28.994Z"
+    }
+  ],
+  "totalVolume": 4996.04,
+  "buyVolume": 2998.02,
+  "sellVolume": 1998.02,
   "latestMarketEvent": {
-    "category": "Emprego",
-    "title": "Mercado de trabalho enfraquece",
-    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
-    "impactPercent": -0.5932,
-    "occurredAt": "2026-10-08T00:47:44.163Z"
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.988,
+    "occurredAt": "2026-10-08T01:05:26.845Z"
   },
-  "nextMarketEventAt": "2026-10-08T00:49:41.097Z"
+  "nextMarketEventAt": "2026-10-08T01:07:21.405Z"
 }
