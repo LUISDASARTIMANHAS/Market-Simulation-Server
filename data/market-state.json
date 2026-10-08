@@ -1,121 +1,6 @@
 {
   "marketHistory": [
     {
-      "sequence": 2020,
-      "price": 91.89,
-      "updatedAt": "2026-10-07T22:58:21.296Z"
-    },
-    {
-      "sequence": 2021,
-      "price": 91.82,
-      "updatedAt": "2026-10-07T22:58:23.306Z"
-    },
-    {
-      "sequence": 2022,
-      "price": 91.73,
-      "updatedAt": "2026-10-07T22:58:25.356Z"
-    },
-    {
-      "sequence": 2023,
-      "price": 92.21,
-      "updatedAt": "2026-10-07T22:59:37.381Z"
-    },
-    {
-      "sequence": 2024,
-      "price": 92.74,
-      "updatedAt": "2026-10-07T23:00:49.734Z"
-    },
-    {
-      "sequence": 2025,
-      "price": 92.22,
-      "updatedAt": "2026-10-07T23:02:36.252Z"
-    },
-    {
-      "sequence": 2026,
-      "price": 91.27,
-      "updatedAt": "2026-10-07T23:04:19.250Z"
-    },
-    {
-      "sequence": 2027,
-      "price": 91.79,
-      "updatedAt": "2026-10-07T23:06:14.002Z"
-    },
-    {
-      "sequence": 2028,
-      "price": 91.98,
-      "updatedAt": "2026-10-07T23:07:46.501Z"
-    },
-    {
-      "sequence": 2029,
-      "price": 91.74,
-      "updatedAt": "2026-10-07T23:09:14.844Z"
-    },
-    {
-      "sequence": 2030,
-      "price": 91.25,
-      "updatedAt": "2026-10-07T23:10:45.217Z"
-    },
-    {
-      "sequence": 2031,
-      "price": 90.46,
-      "updatedAt": "2026-10-08T00:19:05.149Z"
-    },
-    {
-      "sequence": 2032,
-      "price": 91.42,
-      "updatedAt": "2026-10-08T00:20:47.649Z"
-    },
-    {
-      "sequence": 2033,
-      "price": 92.19,
-      "updatedAt": "2026-10-08T00:22:44.304Z"
-    },
-    {
-      "sequence": 2034,
-      "price": 91.76,
-      "updatedAt": "2026-10-08T00:24:37.841Z"
-    },
-    {
-      "sequence": 2035,
-      "price": 91.23,
-      "updatedAt": "2026-10-08T00:26:31.009Z"
-    },
-    {
-      "sequence": 2036,
-      "price": 90.32,
-      "updatedAt": "2026-10-08T00:27:39.854Z"
-    },
-    {
-      "sequence": 2037,
-      "price": 89.34,
-      "updatedAt": "2026-10-08T00:29:36.792Z"
-    },
-    {
-      "sequence": 2038,
-      "price": 89.94,
-      "updatedAt": "2026-10-08T00:31:29.364Z"
-    },
-    {
-      "sequence": 2039,
-      "price": 89.21,
-      "updatedAt": "2026-10-08T00:33:05.975Z"
-    },
-    {
-      "sequence": 2040,
-      "price": 89.54,
-      "updatedAt": "2026-10-08T00:35:02.741Z"
-    },
-    {
-      "sequence": 2041,
-      "price": 89.1,
-      "updatedAt": "2026-10-08T00:36:17.071Z"
-    },
-    {
-      "sequence": 2042,
-      "price": 88.02,
-      "updatedAt": "2026-10-08T00:37:18.560Z"
-    },
-    {
       "sequence": 2043,
       "price": 88.75,
       "updatedAt": "2026-10-08T00:39:17.887Z"
@@ -249,6 +134,121 @@
       "sequence": 2069,
       "price": 81.32,
       "updatedAt": "2026-10-08T01:13:59.277Z"
+    },
+    {
+      "sequence": 2070,
+      "price": 81.75,
+      "updatedAt": "2026-10-08T01:15:05.487Z"
+    },
+    {
+      "sequence": 2071,
+      "price": 81.24,
+      "updatedAt": "2026-10-08T01:16:45.833Z"
+    },
+    {
+      "sequence": 2072,
+      "price": 81.92,
+      "updatedAt": "2026-10-08T01:18:16.093Z"
+    },
+    {
+      "sequence": 2073,
+      "price": 81.82,
+      "updatedAt": "2026-10-08T01:18:29.197Z"
+    },
+    {
+      "sequence": 2074,
+      "price": 81.19,
+      "updatedAt": "2026-10-08T01:19:34.349Z"
+    },
+    {
+      "sequence": 2075,
+      "price": 81.2,
+      "updatedAt": "2026-10-08T01:20:16.021Z"
+    },
+    {
+      "sequence": 2076,
+      "price": 81.3,
+      "updatedAt": "2026-10-08T01:20:29.228Z"
+    },
+    {
+      "sequence": 2077,
+      "price": 81.85,
+      "updatedAt": "2026-10-08T01:21:00.619Z"
+    },
+    {
+      "sequence": 2078,
+      "price": 81.75,
+      "updatedAt": "2026-10-08T01:21:29.337Z"
+    },
+    {
+      "sequence": 2079,
+      "price": 81.29,
+      "updatedAt": "2026-10-08T01:22:16.852Z"
+    },
+    {
+      "sequence": 2080,
+      "price": 81.39,
+      "updatedAt": "2026-10-08T01:22:29.276Z"
+    },
+    {
+      "sequence": 2081,
+      "price": 82.12,
+      "updatedAt": "2026-10-08T01:23:45.094Z"
+    },
+    {
+      "sequence": 2082,
+      "price": 82.13,
+      "updatedAt": "2026-10-08T01:23:56.834Z"
+    },
+    {
+      "sequence": 2083,
+      "price": 82.03,
+      "updatedAt": "2026-10-08T01:24:29.289Z"
+    },
+    {
+      "sequence": 2084,
+      "price": 82.04,
+      "updatedAt": "2026-10-08T01:25:21.008Z"
+    },
+    {
+      "sequence": 2085,
+      "price": 82.14,
+      "updatedAt": "2026-10-08T01:25:29.298Z"
+    },
+    {
+      "sequence": 2086,
+      "price": 83.05,
+      "updatedAt": "2026-10-08T01:25:41.509Z"
+    },
+    {
+      "sequence": 2087,
+      "price": 82.94,
+      "updatedAt": "2026-10-08T01:26:29.300Z"
+    },
+    {
+      "sequence": 2088,
+      "price": 82.93,
+      "updatedAt": "2026-10-08T01:26:29.729Z"
+    },
+    {
+      "sequence": 2089,
+      "price": 82.92,
+      "updatedAt": "2026-10-08T01:27:01.704Z"
+    },
+    {
+      "sequence": 2090,
+      "price": 82.91,
+      "updatedAt": "2026-10-08T01:27:08.280Z"
+    },
+    {
+      "sequence": 2091,
+      "price": 83.34,
+      "updatedAt": "2026-10-08T01:27:27.852Z"
+    },
+    {
+      "sequence": 2092,
+      "price": 83.45,
+      "updatedAt": "2026-10-08T01:27:30.092Z"
     }
   ],
   "accounts": [
@@ -256,8 +256,80 @@
       "accountId": "285ed5df-03b7-4f68-9d87-2d6189f377c1",
       "keyHash": "5e6f29fd89df3682d0c5e827ac4b5519033a9306b17f2df535b34c88969f82a5",
       "balance": 0,
-      "assetBalance": 12.15241412,
+      "assetBalance": 12.31521478,
       "history": [
+        {
+          "id": "a118b3fc-3ffa-427b-88eb-c7c05bb7213a",
+          "timestamp": "2026-10-08T01:27:30.092Z",
+          "type": "BUY",
+          "price": 83.34,
+          "amount": 12.31521478,
+          "total": 1026.35,
+          "impactPercent": 0.1283
+        },
+        {
+          "id": "1fa7dea5-c4b7-419f-969b-08a3af1d2994",
+          "timestamp": "2026-10-08T01:26:29.300Z",
+          "type": "SELL",
+          "price": 83.05,
+          "amount": 12.35823988,
+          "total": 1026.35,
+          "impactPercent": -0.1283
+        },
+        {
+          "id": "d99790e3-98fd-4324-a71b-9d306560ea37",
+          "timestamp": "2026-10-08T01:25:29.298Z",
+          "type": "BUY",
+          "price": 82.04,
+          "amount": 12.35823988,
+          "total": 1013.87,
+          "impactPercent": 0.1267
+        },
+        {
+          "id": "50578486-bf04-4930-9f17-8f424f2120b9",
+          "timestamp": "2026-10-08T01:24:29.289Z",
+          "type": "SELL",
+          "price": 82.13,
+          "amount": 12.34469184,
+          "total": 1013.87,
+          "impactPercent": -0.1267
+        },
+        {
+          "id": "c0d1e8f2-c762-4081-9935-ce78e79db76d",
+          "timestamp": "2026-10-08T01:22:29.276Z",
+          "type": "BUY",
+          "price": 81.29,
+          "amount": 12.34469184,
+          "total": 1003.5,
+          "impactPercent": 0.1254
+        },
+        {
+          "id": "59ad55af-7da0-4f47-829b-2af3eb42fbc9",
+          "timestamp": "2026-10-08T01:21:29.337Z",
+          "type": "SELL",
+          "price": 81.85,
+          "amount": 12.26022167,
+          "total": 1003.5,
+          "impactPercent": -0.1254
+        },
+        {
+          "id": "450b9027-642d-411b-a37d-2db74223b1b9",
+          "timestamp": "2026-10-08T01:20:29.228Z",
+          "type": "BUY",
+          "price": 81.2,
+          "amount": 12.26022167,
+          "total": 995.53,
+          "impactPercent": 0.1244
+        },
+        {
+          "id": "807a0c52-51fd-4e82-a8b8-162cdb9df859",
+          "timestamp": "2026-10-08T01:18:29.197Z",
+          "type": "SELL",
+          "price": 81.92,
+          "amount": 12.15241412,
+          "total": 995.53,
+          "impactPercent": -0.1244
+        },
         {
           "id": "bcb5b0d3-318f-404f-a004-27ad89f78903",
           "timestamp": "2026-10-08T01:11:29.147Z",
@@ -323,9 +395,198 @@
         }
       ],
       "createdAt": "2026-10-08T00:57:49.727Z"
+    },
+    {
+      "accountId": "87658707-df9f-4a66-b731-90701abca101",
+      "keyHash": "02fa0acb5b786575c8a04fe2da91c65fa09b0144bb92bc308c46f059543a35bf",
+      "balance": 1004.22,
+      "assetBalance": 1.3e-7,
+      "history": [
+        {
+          "id": "2339a5b0-0eaf-43cc-830c-880a5e8d2fde",
+          "timestamp": "2026-10-08T01:27:08.280Z",
+          "type": "SELL",
+          "price": 82.92,
+          "amount": 1.654605,
+          "total": 137.2,
+          "impactPercent": -0.0171
+        },
+        {
+          "id": "84013431-6d03-47c3-96f2-288de2a531d8",
+          "timestamp": "2026-10-08T01:27:01.704Z",
+          "type": "SELL",
+          "price": 82.93,
+          "amount": 1.01387,
+          "total": 84.08,
+          "impactPercent": -0.0105
+        },
+        {
+          "id": "7a7fd10a-0cac-4f73-a536-736f9edc3c8c",
+          "timestamp": "2026-10-08T01:26:29.729Z",
+          "type": "SELL",
+          "price": 82.94,
+          "amount": 1,
+          "total": 82.94,
+          "impactPercent": -0.0104
+        },
+        {
+          "id": "1b412e27-d03c-4b9d-a0c7-9b90c4c1294f",
+          "timestamp": "2026-10-08T01:25:21.008Z",
+          "type": "BUY",
+          "price": 82.03,
+          "amount": 1.2190662,
+          "total": 100,
+          "impactPercent": 0.0125
+        },
+        {
+          "id": "b595973b-dd70-43b9-b3d1-f6b3e4af1708",
+          "timestamp": "2026-10-08T01:23:56.834Z",
+          "type": "BUY",
+          "price": 82.12,
+          "amount": 1.21773015,
+          "total": 100,
+          "impactPercent": 0.0125
+        },
+        {
+          "id": "d35a3207-ef4d-4e1e-8df8-0203d747d9ea",
+          "timestamp": "2026-10-08T01:20:16.021Z",
+          "type": "BUY",
+          "price": 81.19,
+          "amount": 1.23167878,
+          "total": 100,
+          "impactPercent": 0.0125
+        }
+      ],
+      "createdAt": "2026-10-08T01:19:32.036Z"
     }
   ],
   "recentTrades": [
+    {
+      "id": "a118b3fc-3ffa-427b-88eb-c7c05bb7213a",
+      "side": "BUY",
+      "price": 83.34,
+      "amount": 12.31521478,
+      "total": 1026.35,
+      "impactPercent": 0.1283,
+      "timestamp": "2026-10-08T01:27:30.092Z"
+    },
+    {
+      "id": "2339a5b0-0eaf-43cc-830c-880a5e8d2fde",
+      "side": "SELL",
+      "price": 82.92,
+      "amount": 1.654605,
+      "total": 137.2,
+      "impactPercent": -0.0171,
+      "timestamp": "2026-10-08T01:27:08.280Z"
+    },
+    {
+      "id": "84013431-6d03-47c3-96f2-288de2a531d8",
+      "side": "SELL",
+      "price": 82.93,
+      "amount": 1.01387,
+      "total": 84.08,
+      "impactPercent": -0.0105,
+      "timestamp": "2026-10-08T01:27:01.704Z"
+    },
+    {
+      "id": "7a7fd10a-0cac-4f73-a536-736f9edc3c8c",
+      "side": "SELL",
+      "price": 82.94,
+      "amount": 1,
+      "total": 82.94,
+      "impactPercent": -0.0104,
+      "timestamp": "2026-10-08T01:26:29.729Z"
+    },
+    {
+      "id": "1fa7dea5-c4b7-419f-969b-08a3af1d2994",
+      "side": "SELL",
+      "price": 83.05,
+      "amount": 12.35823988,
+      "total": 1026.35,
+      "impactPercent": -0.1283,
+      "timestamp": "2026-10-08T01:26:29.300Z"
+    },
+    {
+      "id": "d99790e3-98fd-4324-a71b-9d306560ea37",
+      "side": "BUY",
+      "price": 82.04,
+      "amount": 12.35823988,
+      "total": 1013.87,
+      "impactPercent": 0.1267,
+      "timestamp": "2026-10-08T01:25:29.298Z"
+    },
+    {
+      "id": "1b412e27-d03c-4b9d-a0c7-9b90c4c1294f",
+      "side": "BUY",
+      "price": 82.03,
+      "amount": 1.2190662,
+      "total": 100,
+      "impactPercent": 0.0125,
+      "timestamp": "2026-10-08T01:25:21.008Z"
+    },
+    {
+      "id": "50578486-bf04-4930-9f17-8f424f2120b9",
+      "side": "SELL",
+      "price": 82.13,
+      "amount": 12.34469184,
+      "total": 1013.87,
+      "impactPercent": -0.1267,
+      "timestamp": "2026-10-08T01:24:29.289Z"
+    },
+    {
+      "id": "b595973b-dd70-43b9-b3d1-f6b3e4af1708",
+      "side": "BUY",
+      "price": 82.12,
+      "amount": 1.21773015,
+      "total": 100,
+      "impactPercent": 0.0125,
+      "timestamp": "2026-10-08T01:23:56.834Z"
+    },
+    {
+      "id": "c0d1e8f2-c762-4081-9935-ce78e79db76d",
+      "side": "BUY",
+      "price": 81.29,
+      "amount": 12.34469184,
+      "total": 1003.5,
+      "impactPercent": 0.1254,
+      "timestamp": "2026-10-08T01:22:29.276Z"
+    },
+    {
+      "id": "59ad55af-7da0-4f47-829b-2af3eb42fbc9",
+      "side": "SELL",
+      "price": 81.85,
+      "amount": 12.26022167,
+      "total": 1003.5,
+      "impactPercent": -0.1254,
+      "timestamp": "2026-10-08T01:21:29.337Z"
+    },
+    {
+      "id": "450b9027-642d-411b-a37d-2db74223b1b9",
+      "side": "BUY",
+      "price": 81.2,
+      "amount": 12.26022167,
+      "total": 995.53,
+      "impactPercent": 0.1244,
+      "timestamp": "2026-10-08T01:20:29.228Z"
+    },
+    {
+      "id": "d35a3207-ef4d-4e1e-8df8-0203d747d9ea",
+      "side": "BUY",
+      "price": 81.19,
+      "amount": 1.23167878,
+      "total": 100,
+      "impactPercent": 0.0125,
+      "timestamp": "2026-10-08T01:20:16.021Z"
+    },
+    {
+      "id": "807a0c52-51fd-4e82-a8b8-162cdb9df859",
+      "side": "SELL",
+      "price": 81.92,
+      "amount": 12.15241412,
+      "total": 995.53,
+      "impactPercent": -0.1244,
+      "timestamp": "2026-10-08T01:18:29.197Z"
+    },
     {
       "id": "bcb5b0d3-318f-404f-a004-27ad89f78903",
       "side": "BUY",
@@ -390,15 +651,15 @@
       "timestamp": "2026-10-08T00:59:28.994Z"
     }
   ],
-  "totalVolume": 7019.66,
-  "buyVolume": 4009.83,
-  "sellVolume": 3009.83,
+  "totalVolume": 15702.38,
+  "buyVolume": 8349.08,
+  "sellVolume": 7353.3,
   "latestMarketEvent": {
-    "category": "Guerra",
-    "title": "Escalada de conflito",
-    "description": "Aumento da tensão geopolítica pressiona os ativos.",
-    "impactPercent": -0.9972,
-    "occurredAt": "2026-10-08T01:13:59.277Z"
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.5239,
+    "occurredAt": "2026-10-08T01:27:27.852Z"
   },
-  "nextMarketEventAt": "2026-10-08T01:15:03.519Z"
+  "nextMarketEventAt": "2026-10-08T01:28:38.073Z"
 }
