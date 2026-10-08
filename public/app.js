@@ -18,6 +18,8 @@ const elements = {
   nextEvent: document.querySelector('#next-event'),
   chart: document.querySelector('#price-chart'),
   trades: document.querySelector('#trades-body'),
+  createAccountForm: document.querySelector('#create-account-form'),
+  username: document.querySelector('#username'),
   createAccount: document.querySelector('#create-account'),
   keyForm: document.querySelector('#key-form'),
   apiKey: document.querySelector('#api-key'),
@@ -211,10 +213,14 @@ async function refreshAccount() {
   }
 }
 
-elements.createAccount.addEventListener('click', async () => {
+elements.createAccountForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
   elements.createAccount.disabled = true;
   try {
-    const data = await request('/accounts', { method: 'POST' });
+    const data = await request('/accounts', {
+      method: 'POST',
+      body: JSON.stringify({ username: elements.username.value.trim() }),
+    });
     apiKey = data.apiKey;
     sessionStorage.setItem(API_KEY_STORAGE, apiKey);
     elements.apiKey.value = apiKey;

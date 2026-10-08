@@ -3,35 +3,30 @@
     {
       "sequence": 0,
       "price": 100,
-      "updatedAt": "2026-10-08T02:18:44.927Z"
+      "updatedAt": "2026-10-08T02:18:07.509Z"
     },
     {
       "sequence": 1,
-      "price": 99.65,
-      "updatedAt": "2026-10-08T02:20:11.376Z"
-    }
-  ],
-  "accounts": [
+      "price": 98.69,
+      "updatedAt": "2026-10-08T02:20:03.938Z"
+    },
     {
-      "accountId": "24413772-7165-4057-b1cb-9806961ca1ac",
-      "username": "dup_user",
-      "keyHash": "f0e39e644c18628972290ab1ddcc8f36c9285c9e3d9cc72fc7e531b0b1b4333b",
-      "balance": 1000,
-      "assetBalance": 0,
-      "history": [],
-      "createdAt": "2026-10-08T02:18:55.790Z"
+      "sequence": 2,
+      "price": 99.1,
+      "updatedAt": "2026-10-08T02:21:58.358Z"
     }
   ],
+  "accounts": [],
   "recentTrades": [],
   "totalVolume": 0,
   "buyVolume": 0,
   "sellVolume": 0,
   "latestMarketEvent": {
     "category": "Política",
-    "title": "Instabilidade política",
-    "description": "Incerteza política aumenta a aversão ao risco.",
-    "impactPercent": -0.349,
-    "occurredAt": "2026-10-08T02:20:11.376Z"
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.4197,
+    "occurredAt": "2026-10-08T02:21:58.358Z"
   },
-  "nextMarketEventAt": "2026-10-08T02:21:20.375Z"
+  "nextMarketEventAt": "2026-10-08T02:23:39.190Z"
 }

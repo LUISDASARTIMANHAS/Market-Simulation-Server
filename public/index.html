@@ -60,7 +60,12 @@
             <span class="account-badge" id="account-state">Sem conta</span>
           </div>
           <p class="muted">Crie uma carteira virtual ou informe a chave de API de uma conta existente.</p>
-          <button class="button button-primary" id="create-account" type="button">Criar carteira de teste</button>
+          <form id="create-account-form" class="create-account-form">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9._-]{3,24}" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Ex.: alice_trader" aria-describedby="username-help" required>
+            <small id="username-help">Use 3 a 24 caracteres: letras, números, ponto, underline ou hífen. Deve ser único.</small>
+            <button class="button button-primary" id="create-account" type="submit">Criar carteira de teste</button>
+          </form>
           <form id="key-form" class="key-form">
             <label for="api-key">Chave de API</label>
             <div class="key-entry">
