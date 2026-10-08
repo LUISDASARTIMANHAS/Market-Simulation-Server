@@ -1,21 +1,6 @@
 {
   "marketHistory": [
     {
-      "sequence": 2043,
-      "price": 88.75,
-      "updatedAt": "2026-10-08T00:39:17.887Z"
-    },
-    {
-      "sequence": 2044,
-      "price": 88.14,
-      "updatedAt": "2026-10-08T00:40:22.264Z"
-    },
-    {
-      "sequence": 2045,
-      "price": 86.92,
-      "updatedAt": "2026-10-08T00:41:50.708Z"
-    },
-    {
       "sequence": 2046,
       "price": 87.47,
       "updatedAt": "2026-10-08T00:43:39.523Z"
@@ -249,15 +234,39 @@
       "sequence": 2092,
       "price": 83.45,
       "updatedAt": "2026-10-08T01:27:30.092Z"
+    },
+    {
+      "sequence": 2093,
+      "price": 83.34,
+      "updatedAt": "2026-10-08T01:28:29.884Z"
+    },
+    {
+      "sequence": 2094,
+      "price": 83.98,
+      "updatedAt": "2026-10-08T01:28:40.073Z"
+    },
+    {
+      "sequence": 2095,
+      "price": 83.57,
+      "updatedAt": "2026-10-08T01:30:31.374Z"
     }
   ],
   "accounts": [
     {
       "accountId": "285ed5df-03b7-4f68-9d87-2d6189f377c1",
       "keyHash": "5e6f29fd89df3682d0c5e827ac4b5519033a9306b17f2df535b34c88969f82a5",
-      "balance": 0,
-      "assetBalance": 12.31521478,
+      "balance": 1027.7,
+      "assetBalance": 0,
       "history": [
+        {
+          "id": "ff7dd92b-e79f-4584-9692-a0631ad63e3d",
+          "timestamp": "2026-10-08T01:28:29.884Z",
+          "type": "SELL",
+          "price": 83.45,
+          "amount": 12.31521478,
+          "total": 1027.7,
+          "impactPercent": -0.1285
+        },
         {
           "id": "a118b3fc-3ffa-427b-88eb-c7c05bb7213a",
           "timestamp": "2026-10-08T01:27:30.092Z",
@@ -462,6 +471,15 @@
   ],
   "recentTrades": [
     {
+      "id": "ff7dd92b-e79f-4584-9692-a0631ad63e3d",
+      "side": "SELL",
+      "price": 83.45,
+      "amount": 12.31521478,
+      "total": 1027.7,
+      "impactPercent": -0.1285,
+      "timestamp": "2026-10-08T01:28:29.884Z"
+    },
+    {
       "id": "a118b3fc-3ffa-427b-88eb-c7c05bb7213a",
       "side": "BUY",
       "price": 83.34,
@@ -651,15 +669,15 @@
       "timestamp": "2026-10-08T00:59:28.994Z"
     }
   ],
-  "totalVolume": 15702.38,
+  "totalVolume": 16730.08,
   "buyVolume": 8349.08,
-  "sellVolume": 7353.3,
+  "sellVolume": 8381,
   "latestMarketEvent": {
-    "category": "Inflação",
-    "title": "Inflação desacelera",
-    "description": "Alívio inflacionário melhora o apetite por risco.",
-    "impactPercent": 0.5239,
-    "occurredAt": "2026-10-08T01:27:27.852Z"
+    "category": "Política",
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "impactPercent": -0.4846,
+    "occurredAt": "2026-10-08T01:30:31.374Z"
   },
-  "nextMarketEventAt": "2026-10-08T01:28:38.073Z"
+  "nextMarketEventAt": "2026-10-08T01:31:41.481Z"
 }
