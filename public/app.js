@@ -59,7 +59,7 @@ async function request(path, options = {}) {
   if (options.body) headers.set('Content-Type', 'application/json');
 
   const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
-  const result = await response.json().catch(() => null);
+  const result = await response.json();
   if (!response.ok || !result?.success) {
     throw new Error(result?.message || `A solicitação falhou (HTTP ${response.status}).`);
   }

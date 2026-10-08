@@ -1,16 +1,6 @@
 {
   "marketHistory": [
     {
-      "sequence": 2018,
-      "price": 91.99,
-      "updatedAt": "2026-10-07T22:58:17.268Z"
-    },
-    {
-      "sequence": 2019,
-      "price": 91.86,
-      "updatedAt": "2026-10-07T22:58:19.283Z"
-    },
-    {
       "sequence": 2020,
       "price": 91.89,
       "updatedAt": "2026-10-07T22:58:21.296Z"
@@ -249,6 +239,16 @@
       "sequence": 2067,
       "price": 83.37,
       "updatedAt": "2026-10-08T01:11:29.147Z"
+    },
+    {
+      "sequence": 2068,
+      "price": 82.14,
+      "updatedAt": "2026-10-08T01:12:24.979Z"
+    },
+    {
+      "sequence": 2069,
+      "price": 81.32,
+      "updatedAt": "2026-10-08T01:13:59.277Z"
     }
   ],
   "accounts": [
@@ -394,11 +394,11 @@
   "buyVolume": 4009.83,
   "sellVolume": 3009.83,
   "latestMarketEvent": {
-    "category": "Juros",
-    "title": "Alta inesperada de juros",
-    "description": "Juros maiores pressionam os ativos de risco.",
-    "impactPercent": -0.8425,
-    "occurredAt": "2026-10-08T01:10:32.021Z"
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.9972,
+    "occurredAt": "2026-10-08T01:13:59.277Z"
   },
-  "nextMarketEventAt": "2026-10-08T01:12:24.800Z"
+  "nextMarketEventAt": "2026-10-08T01:15:03.519Z"
 }
