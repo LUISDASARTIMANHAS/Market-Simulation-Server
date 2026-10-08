@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mercado Simulado | Carteira</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/common.js"></script>
+    <script type="module" src="/wallet.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Mercado Simulado, início">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>Mercado<span class="brand-muted"> Simulado</span></span>
+      </a>
+      <nav class="nav-tabs" aria-label="Navegação principal">
+        <a class="tab-link" href="/dashboard.html">Dashboard</a>
+        <a class="tab-link active" href="/wallet.html">Carteira</a>
+      </nav>
+      <span class="connection"><span class="status-dot" id="connection-dot"></span><span id="connection-status">Conectando…</span></span>
+    </header>
+
+    <main class="container">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">SUA CARTEIRA</p>
+          <h1>Conta e operações</h1>
+          <p class="intro-copy">Crie uma carteira, conecte-se com sua chave e execute ordens privadas.</p>
+        </div>
+        <a class="button button-secondary" href="/dashboard.html">Ver mercado</a>
+      </section>
+
+      <p class="notice" id="feedback" role="status" aria-live="polite" hidden></p>
+
+      <section class="account-grid" aria-label="Carteira e ordens">
+        <article class="panel account-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">SUA CARTEIRA</p><h2>Conta de teste</h2></div>
+            <span class="account-badge" id="account-state">Sem conta</span>
+          </div>
+          <p class="muted">Crie uma carteira virtual ou informe a chave de API de uma conta existente.</p>
+
+          <form id="create-account-form" class="create-account-form">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9._-]{3,24}" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Ex.: alice_trader" aria-describedby="username-help" required>
+            <small id="username-help">Use 3 a 24 caracteres: letras, números, ponto, underscore ou hífen. Deve ser único.</small>
+            <button class="button button-primary" id="create-account" type="submit">Criar carteira de teste</button>
+          </form>
+
+          <form id="key-form" class="key-form">
+            <label for="api-key">Chave de API</label>
+            <div class="key-entry">
+              <input id="api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Cole sua chave de API" aria-describedby="key-help">
+              <button class="button button-secondary" id="toggle-key" type="button" aria-pressed="false">Mostrar</button>
+              <button class="button button-secondary" id="copy-key" type="button">Copiar</button>
+              <button class="button button-secondary" type="submit">Conectar</button>
+            </div>
+            <small id="key-help">A chave fica somente nesta sessão do navegador.</small>
+          </form>
+
+          <div class="wallet-values">
+            <div><span class="muted">Saldo USD</span><strong id="account-cash">—</strong></div>
+            <div><span class="muted">Ativos</span><strong id="account-assets">—</strong></div>
+          </div>
+          <button class="text-button" id="disconnect-account" type="button" hidden>Desconectar carteira deste navegador</button>
+        </article>
+
+        <article class="panel order-panel">
+          <p class="eyebrow">NOVA ORDEM</p>
+          <h2>Testar operação</h2>
+          <form id="order-form">
+            <label for="order-side">Tipo de ordem</label>
+            <select id="order-side" name="side">
+              <option value="BUY">Comprar — valor em USD</option>
+              <option value="SELL">Vender — quantidade de ativos</option>
+            </select>
+            <label for="order-amount" id="amount-label">Valor da compra (USD)</label>
+            <input id="order-amount" name="amount" type="number" min="0.000001" max="5000" step="any" placeholder="Ex.: 100" required>
+            <p class="form-hint" id="amount-hint">Máximo de US$ 5.000 por ordem. O saldo da carteira é validado pelo servidor.</p>
+            <button class="button button-primary order-submit" id="submit-order" type="submit" disabled>Conecte uma carteira para operar</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="panel account-history-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">HISTÓRICO</p><h2>Últimas movimentações da conta</h2></div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th scope="col">Tipo</th><th scope="col">Usuário</th><th scope="col">Preço</th><th scope="col">Quantidade</th><th scope="col">Total</th><th scope="col">Horário</th></tr>
+            </thead>
+            <tbody id="account-history"><tr><td colspan="6" class="empty-cell">Sem histórico disponível.</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer><p>Simulador para paper trading. Não conectado a bolsas ou corretoras reais; preços e eventos são aleatórios.</p></footer>
+    </main>
+  </body>
+</html>

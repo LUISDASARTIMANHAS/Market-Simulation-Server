@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mercado Simulado | Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/common.js"></script>
+    <script type="module" src="/dashboard.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Mercado Simulado, início">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>Mercado<span class="brand-muted"> Simulado</span></span>
+      </a>
+      <nav class="nav-tabs" aria-label="Navegação principal">
+        <a class="tab-link active" href="/dashboard.html">Dashboard</a>
+        <a class="tab-link" href="/wallet.html">Carteira</a>
+      </nav>
+      <span class="connection"><span class="status-dot" id="connection-dot"></span><span id="connection-status">Conectando…</span></span>
+    </header>
+
+    <main class="container">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">AMBIENTE DE TESTE · PAPER TRADING</p>
+          <h1>Dashboard do mercado</h1>
+          <p class="intro-copy">Acompanhe preço, eventos, volume e ordens públicas em tempo real.</p>
+        </div>
+        <a class="button button-primary" href="/wallet.html">Abrir carteira</a>
+      </section>
+
+      <p class="notice" id="feedback" role="status" aria-live="polite" hidden></p>
+
+      <section class="market-grid" aria-label="Resumo do mercado">
+        <article class="panel price-panel">
+          <div class="panel-heading"><div><p class="eyebrow">PREÇO ATUAL</p><h2>Ativo simulado</h2></div><span class="sequence" id="sequence">—</span></div>
+          <p class="price" id="current-price" aria-live="polite">Carregando…</p>
+          <p class="muted">Atualizado <time id="updated-at">—</time></p>
+          <div class="chart-wrap">
+            <canvas id="price-chart" role="img" aria-label="Gráfico de histórico recente do preço">Gráfico de histórico recente do preço do mercado simulado.</canvas>
+          </div>
+          <div class="volume-row">
+            <div><span class="muted">Volume total</span><strong id="volume-total">—</strong></div>
+            <div><span class="muted">Compras</span><strong id="volume-buys">—</strong></div>
+            <div><span class="muted">Vendas</span><strong id="volume-sells">—</strong></div>
+          </div>
+        </article>
+
+        <article class="panel event-panel">
+          <p class="eyebrow">EVENTO DE MERCADO</p>
+          <h2 id="event-title">Aguardando dados</h2>
+          <p class="muted" id="event-category">—</p>
+          <p id="event-description">O último evento simulado aparecerá aqui.</p>
+          <div class="event-footer"><span class="muted">Próximo evento previsto</span><strong id="next-event">—</strong></div>
+        </article>
+      </section>
+
+      <section class="panel trades-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">ATIVIDADE RECENTE</p><h2>Ordens do mercado</h2></div>
+          <span class="muted">Dados públicos simulados</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th scope="col">Lado</th><th scope="col">Usuário</th><th scope="col">Preço</th><th scope="col">Quantidade</th><th scope="col">Total</th><th scope="col">Horário</th></tr></thead>
+            <tbody id="trades-body"><tr><td colspan="6" class="empty-cell">Carregando ordens…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer><p>Simulador para paper trading. Não conectado a bolsas ou corretoras reais; preços e eventos são aleatórios.</p></footer>
+    </main>
+  </body>
+</html>

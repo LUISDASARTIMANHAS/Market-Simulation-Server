@@ -60,6 +60,9 @@ h2 { margin-bottom: 0; font-size: 1.05rem; letter-spacing: -.02em; }
 .account-badge.connected { color: var(--accent); border-color: #285747; background: var(--accent-dark); }
 .account-panel > .muted { margin: 12px 0 18px; font-size: .85rem; line-height: 1.5; }
 .create-account-form { display: grid; gap: 8px; }
+.nav-tabs { display: inline-flex; align-items: center; gap: 8px; }
+.tab-link { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); text-decoration: none; font-size: .8rem; }
+.tab-link.active { color: #071710; border-color: transparent; background: var(--accent); }
 .button { min-height: 42px; padding: 0 15px; border: 1px solid transparent; border-radius: 9px; font-size: .85rem; font-weight: 700; transition: background-color .15s ease, border-color .15s ease; }
 .button-primary { color: #071710; background: var(--accent); }
 .button-primary:hover:not(:disabled) { background: #84ebc9; }
@@ -103,6 +106,8 @@ footer p { margin: 0; }
   .local-note { max-width: 100%; }
   .market-grid, .account-grid { grid-template-columns: 1fr; }
   .event-panel { min-height: 230px; }
+  .topbar { flex-wrap: wrap; gap: 10px; padding-top: 10px; padding-bottom: 10px; }
+  .nav-tabs { width: 100%; justify-content: center; }
 }
 @media (max-width: 480px) {
   .topbar { padding: 0 16px; }
