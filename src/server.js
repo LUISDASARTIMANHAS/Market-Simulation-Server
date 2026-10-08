@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import marketRoutes from './routes/marketRoutes.js';
 import { marketSimulator } from './services/marketSimulator.js';
 import { marketStateStore } from './services/stateStore.js';
@@ -7,6 +9,7 @@ import { logger } from './utils/logger.js';
 
 const app = express();
 const PORT = Number(process.env.MARKET_PORT || 3001);
+const PUBLIC_DIRECTORY = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public');
 
 app.use((req, res, next) => {
   const startedAt = process.hrtime.bigint();
@@ -31,6 +34,7 @@ app.use(cors());
 app.use(express.json({ limit: '10kb' }));
 if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY);
 app.use('/api', marketRoutes);
+app.use(express.static(PUBLIC_DIRECTORY, { index: 'index.html' }));
 
 /**
  * Restaura o mercado antes de começar a publicar preços.

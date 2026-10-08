@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Painel local para acompanhar o mercado simulado e testar ordens de paper trading.">
+    <title>Mercado Simulado | Cliente de teste</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Mercado Simulado, início">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>Mercado<span class="brand-muted"> Simulado</span></span>
+      </a>
+      <span class="connection"><span class="status-dot" id="connection-dot"></span><span id="connection-status">Conectando…</span></span>
+    </header>
+
+    <main class="container">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">AMBIENTE DE TESTE · PAPER TRADING</p>
+          <h1>Seu laboratório de mercado</h1>
+          <p class="intro-copy">Acompanhe os movimentos simulados e teste compras e vendas com uma carteira virtual.</p>
+        </div>
+        <p class="local-note">Use este cliente apenas em ambiente local ou confiável. Não informe chaves em uma instalação pública.</p>
+      </section>
+
+      <p class="notice" id="feedback" role="status" aria-live="polite" hidden></p>
+
+      <section class="market-grid" aria-label="Resumo do mercado">
+        <article class="panel price-panel">
+          <div class="panel-heading"><div><p class="eyebrow">PREÇO ATUAL</p><h2>Ativo simulado</h2></div><span class="sequence" id="sequence">—</span></div>
+          <p class="price" id="current-price" aria-live="polite">Carregando…</p>
+          <p class="muted">Atualizado <time id="updated-at">—</time></p>
+          <div class="chart-wrap">
+            <canvas id="price-chart" role="img" aria-label="Gráfico de histórico recente do preço">Gráfico de histórico recente do preço do mercado simulado.</canvas>
+          </div>
+          <div class="volume-row">
+            <div><span class="muted">Volume total</span><strong id="volume-total">—</strong></div>
+            <div><span class="muted">Compras</span><strong id="volume-buys">—</strong></div>
+            <div><span class="muted">Vendas</span><strong id="volume-sells">—</strong></div>
+          </div>
+        </article>
+
+        <article class="panel event-panel">
+          <p class="eyebrow">EVENTO DE MERCADO</p>
+          <h2 id="event-title">Aguardando dados</h2>
+          <p class="muted" id="event-category">—</p>
+          <p id="event-description">O último evento simulado aparecerá aqui.</p>
+          <div class="event-footer"><span class="muted">Próximo evento previsto</span><strong id="next-event">—</strong></div>
+        </article>
+      </section>
+
+      <section class="account-grid" aria-label="Carteira e ordens">
+        <article class="panel account-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">SUA CARTEIRA</p><h2>Conta de teste</h2></div>
+            <span class="account-badge" id="account-state">Sem conta</span>
+          </div>
+          <p class="muted">Crie uma carteira virtual ou informe a chave de API de uma conta existente.</p>
+          <button class="button button-primary" id="create-account" type="button">Criar carteira de teste</button>
+          <form id="key-form" class="key-form">
+            <label for="api-key">Chave de API</label>
+            <div class="key-entry">
+              <input id="api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Cole sua chave de API" aria-describedby="key-help">
+              <button class="button button-secondary" id="toggle-key" type="button" aria-pressed="false">Mostrar</button>
+              <button class="button button-secondary" id="copy-key" type="button">Copiar</button>
+              <button class="button button-secondary" type="submit">Conectar</button>
+            </div>
+            <small id="key-help">A chave fica somente nesta sessão do navegador.</small>
+          </form>
+          <div class="wallet-values">
+            <div><span class="muted">Saldo USD</span><strong id="account-cash">—</strong></div>
+            <div><span class="muted">Ativos</span><strong id="account-assets">—</strong></div>
+          </div>
+          <button class="text-button" id="disconnect-account" type="button" hidden>Desconectar carteira deste navegador</button>
+        </article>
+
+        <article class="panel order-panel">
+          <p class="eyebrow">NOVA ORDEM</p>
+          <h2>Testar operação</h2>
+          <form id="order-form">
+            <label for="order-side">Tipo de ordem</label>
+            <select id="order-side" name="side">
+              <option value="BUY">Comprar — valor em USD</option>
+              <option value="SELL">Vender — quantidade de ativos</option>
+            </select>
+            <label for="order-amount" id="amount-label">Valor da compra (USD)</label>
+            <input id="order-amount" name="amount" type="number" min="0.000001" max="5000" step="any" placeholder="Ex.: 100" required>
+            <p class="form-hint" id="amount-hint">Máximo de US$ 5.000 por ordem. O saldo da carteira é validado pelo servidor.</p>
+            <button class="button button-primary order-submit" id="submit-order" type="submit" disabled>Conecte uma carteira para operar</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="panel trades-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">ATIVIDADE RECENTE</p><h2>Ordens do mercado</h2></div>
+          <span class="muted">Dados públicos simulados</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th scope="col">Lado</th><th scope="col">Preço</th><th scope="col">Quantidade</th><th scope="col">Total</th><th scope="col">Horário</th></tr></thead>
+            <tbody id="trades-body"><tr><td colspan="5" class="empty-cell">Carregando ordens…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer><p>Simulador para paper trading. Não conectado a bolsas ou corretoras reais; preços e eventos são aleatórios.</p></footer>
+    </main>
+  </body>
+</html>

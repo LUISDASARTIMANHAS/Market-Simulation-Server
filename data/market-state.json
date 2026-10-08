@@ -1,31 +1,6 @@
 {
   "marketHistory": [
     {
-      "sequence": 2013,
-      "price": 91.92,
-      "updatedAt": "2026-10-07T22:58:07.230Z"
-    },
-    {
-      "sequence": 2014,
-      "price": 92.08,
-      "updatedAt": "2026-10-07T22:58:09.240Z"
-    },
-    {
-      "sequence": 2015,
-      "price": 92.18,
-      "updatedAt": "2026-10-07T22:58:11.246Z"
-    },
-    {
-      "sequence": 2016,
-      "price": 92.21,
-      "updatedAt": "2026-10-07T22:58:13.253Z"
-    },
-    {
-      "sequence": 2017,
-      "price": 92.15,
-      "updatedAt": "2026-10-07T22:58:15.261Z"
-    },
-    {
       "sequence": 2018,
       "price": 91.99,
       "updatedAt": "2026-10-07T22:58:17.268Z"
@@ -249,6 +224,31 @@
       "sequence": 2062,
       "price": 83.23,
       "updatedAt": "2026-10-08T01:05:29.002Z"
+    },
+    {
+      "sequence": 2063,
+      "price": 83.47,
+      "updatedAt": "2026-10-08T01:07:23.342Z"
+    },
+    {
+      "sequence": 2064,
+      "price": 84.08,
+      "updatedAt": "2026-10-08T01:08:59.709Z"
+    },
+    {
+      "sequence": 2065,
+      "price": 83.97,
+      "updatedAt": "2026-10-08T01:09:29.110Z"
+    },
+    {
+      "sequence": 2066,
+      "price": 83.26,
+      "updatedAt": "2026-10-08T01:10:32.021Z"
+    },
+    {
+      "sequence": 2067,
+      "price": 83.37,
+      "updatedAt": "2026-10-08T01:11:29.147Z"
     }
   ],
   "accounts": [
@@ -256,8 +256,26 @@
       "accountId": "285ed5df-03b7-4f68-9d87-2d6189f377c1",
       "keyHash": "5e6f29fd89df3682d0c5e827ac4b5519033a9306b17f2df535b34c88969f82a5",
       "balance": 0,
-      "assetBalance": 12.03392277,
+      "assetBalance": 12.15241412,
       "history": [
+        {
+          "id": "bcb5b0d3-318f-404f-a004-27ad89f78903",
+          "timestamp": "2026-10-08T01:11:29.147Z",
+          "type": "BUY",
+          "price": 83.26,
+          "amount": 12.15241412,
+          "total": 1011.81,
+          "impactPercent": 0.1265
+        },
+        {
+          "id": "ed3487db-4156-4a4c-aad2-df29eab4d50e",
+          "timestamp": "2026-10-08T01:09:29.110Z",
+          "type": "SELL",
+          "price": 84.08,
+          "amount": 12.03392277,
+          "total": 1011.81,
+          "impactPercent": -0.1265
+        },
         {
           "id": "b28780b6-3118-4c7b-8beb-0b5deec7ce2e",
           "timestamp": "2026-10-08T01:05:29.002Z",
@@ -309,6 +327,24 @@
   ],
   "recentTrades": [
     {
+      "id": "bcb5b0d3-318f-404f-a004-27ad89f78903",
+      "side": "BUY",
+      "price": 83.26,
+      "amount": 12.15241412,
+      "total": 1011.81,
+      "impactPercent": 0.1265,
+      "timestamp": "2026-10-08T01:11:29.147Z"
+    },
+    {
+      "id": "ed3487db-4156-4a4c-aad2-df29eab4d50e",
+      "side": "SELL",
+      "price": 84.08,
+      "amount": 12.03392277,
+      "total": 1011.81,
+      "impactPercent": -0.1265,
+      "timestamp": "2026-10-08T01:09:29.110Z"
+    },
+    {
       "id": "b28780b6-3118-4c7b-8beb-0b5deec7ce2e",
       "side": "BUY",
       "price": 83.13,
@@ -354,15 +390,15 @@
       "timestamp": "2026-10-08T00:59:28.994Z"
     }
   ],
-  "totalVolume": 4996.04,
-  "buyVolume": 2998.02,
-  "sellVolume": 1998.02,
+  "totalVolume": 7019.66,
+  "buyVolume": 4009.83,
+  "sellVolume": 3009.83,
   "latestMarketEvent": {
     "category": "Juros",
     "title": "Alta inesperada de juros",
     "description": "Juros maiores pressionam os ativos de risco.",
-    "impactPercent": -0.988,
-    "occurredAt": "2026-10-08T01:05:26.845Z"
+    "impactPercent": -0.8425,
+    "occurredAt": "2026-10-08T01:10:32.021Z"
   },
-  "nextMarketEventAt": "2026-10-08T01:07:21.405Z"
+  "nextMarketEventAt": "2026-10-08T01:12:24.800Z"
 }

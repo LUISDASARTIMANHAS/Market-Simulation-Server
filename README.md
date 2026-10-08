@@ -13,6 +13,10 @@ npm start
 
 Durante o desenvolvimento, `npm run dev` reinicia o servidor quando o código muda. No Windows, `start.cmd` inicia o processo.
 
+Ao iniciar o servidor, acesse `http://localhost:3001/` para abrir o cliente web de teste. Ele acompanha o preço e as ordens públicas, permite criar/conectar uma carteira e enviar compras e vendas simuladas. A chave informada fica em `sessionStorage` e é removida ao encerrar a sessão do navegador ou desconectar a carteira.
+
+Use o cliente apenas em ambiente local ou confiável; não informe chaves em uma instalação pública. Em produção, não armazene chaves de API em aplicações web: use um backend próprio com controles de acesso adequados.
+
 ### Docker e persistência
 
 Para iniciar com Docker Compose:
