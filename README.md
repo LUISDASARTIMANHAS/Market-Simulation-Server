@@ -51,6 +51,8 @@ O servidor escreve logs estruturados em JSON no console do processo, um evento p
 
 `GET /api/market/status` é público. Retorna preço, sequência, histórico recente, volume e as ordens públicas recentes, sem expor dados de contas.
 
+`GET /api/backup` baixa um snapshot em JSON do estado atual do mercado, incluindo contas, saldo, histórico, trades públicos e os metadados de identificação (accountId e username). Use esse arquivo para auditoria, backup e recuperação do estado.
+
 ```json
 {
   "success": true,
@@ -77,12 +79,19 @@ O servidor escreve logs estruturados em JSON no console do processo, um evento p
 
 ### Contas e ordens
 
-`POST /api/accounts` cria uma carteira virtual com US$ 1.000 e retorna uma chave de API aleatória. A chave aparece apenas nessa resposta; o servidor guarda somente seu hash. Cada usuário deve criar e proteger sua própria chave.
+`POST /api/accounts` cria uma carteira virtual com US$ 1.000 e retorna uma chave de API aleat?ria. A chave aparece apenas nessa resposta; o servidor guarda somente seu hash. Cada usu?rio deve criar e proteger sua pr?pria chave. O `username` ? obrigat?rio: use 3 a 24 caracteres, sem espa?os, apenas letras, n?meros, ponto, underline e h?fen.
 
-`GET /api/account` e `GET /api/account/history` exigem `Authorization: Bearer SUA_CHAVE_API`.
+Exemplo de cria??o com identificador:
+
+```json
+{ "username": "alice_trader" }
+```
+
+`GET /api/account` e `GET /api/account/history` exigem `Authorization: Bearer <API_KEY>`. A resposta inclui `accountId` e `username` para auditoria; os itens de hist?rico e de trades p?blicos tamb?m exibem essa identifica??o.
+
 `POST /api/account/rotate-key` revoga a chave atual e devolve uma nova, exibida somente uma vez.
 
-`POST /api/orders` também exige essa autenticação. Compra usa valor em dólares; venda usa unidades do ativo:
+`POST /api/orders` tamb?m exige essa autentica??o. Compra usa valor em d?lares; venda usa unidades do ativo:
 
 ```json
 { "side": "BUY", "quoteAmount": 100 }
@@ -90,17 +99,6 @@ O servidor escreve logs estruturados em JSON no console do processo, um evento p
 
 ```json
 { "side": "SELL", "assetAmount": 0.5 }
-```
-
-Exemplo de uso no PowerShell por um cliente externo:
-
-```powershell
-$account = Invoke-RestMethod -Method Post -Uri "http://localhost:3001/api/accounts"
-$apiKey = $account.data.apiKey
-$headers = @{ Authorization = "Bearer $apiKey" }
-Invoke-RestMethod -Uri "http://localhost:3001/api/account" -Headers $headers
-Invoke-RestMethod -Method Post -Uri "http://localhost:3001/api/orders" -Headers $headers -ContentType "application/json" -Body (@{ side = "BUY"; quoteAmount = 100 } | ConvertTo-Json)
-Invoke-RestMethod -Method Post -Uri "http://localhost:3001/api/orders" -Headers $headers -ContentType "application/json" -Body (@{ side = "SELL"; assetAmount = 0.5 } | ConvertTo-Json)
 ```
 
 Cada participante deve guardar sua chave e usar sua própria carteira. Não compartilhe uma chave entre usuários.

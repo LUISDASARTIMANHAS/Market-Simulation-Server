@@ -38,6 +38,40 @@ const MARKET_EVENTS = [
 const randomBetween = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
 
 /**
+ * @param {string | null | undefined} username
+ * @returns {string | null}
+ */
+const normalizeUsername = (username) => {
+  if (typeof username !== 'string') {
+    throw Object.assign(new Error('username é obrigatório. Use 3 a 24 caracteres, sem espaços.'), { statusCode: 400 });
+  }
+  const trimmed = username.trim();
+  if (!trimmed) {
+    throw Object.assign(new Error('username é obrigatório. Use 3 a 24 caracteres, sem espaços.'), { statusCode: 400 });
+  }
+  if (trimmed.length < 3 || trimmed.length > 24) {
+    throw Object.assign(new Error('username deve ter entre 3 e 24 caracteres.'), { statusCode: 400 });
+  }
+  if (!/^[a-zA-Z0-9._-]+$/.test(trimmed)) {
+    throw Object.assign(new Error('username aceita apenas letras, números, ponto, underline e hífen.'), { statusCode: 400 });
+  }
+  return trimmed;
+};
+
+/**
+ * @param {Map<string, Record<string, any>>} accounts
+ * @param {string} username
+ * @returns {void}
+ */
+const assertUsernameAvailable = (accounts, username) => {
+  for (const account of accounts.values()) {
+    if (typeof account.username === 'string' && account.username.toLowerCase() === username.toLowerCase()) {
+      throw Object.assign(new Error('username já está em uso por outra conta.'), { statusCode: 409 });
+    }
+  }
+};
+
+/**
  * Gera e mantém os preços simulados publicados pela API de mercado.
  */
 class MarketSimulator {
@@ -78,10 +112,16 @@ class MarketSimulator {
           && account.balance >= 0
           && Number.isFinite(account.assetBalance)
           && account.assetBalance >= 0)
-        .map((account) => [account.accountId, {
-          ...account,
-          history: Array.isArray(account.history) ? account.history.slice(0, MAX_ACCOUNT_HISTORY) : [],
-        }]));
+        .map((account) => {
+          const username = typeof account.username === 'string' && account.username.trim()
+            ? account.username.trim()
+            : account.accountId;
+          return [account.accountId, {
+            ...account,
+            username,
+            history: Array.isArray(account.history) ? account.history.slice(0, MAX_ACCOUNT_HISTORY) : [],
+          }];
+        }));
     }
     this.recentTrades = Array.isArray(state.recentTrades) ? state.recentTrades.slice(0, MAX_PUBLIC_TRADES) : [];
     this.totalVolume = Number.isFinite(state.totalVolume) ? state.totalVolume : 0;
@@ -188,13 +228,23 @@ class MarketSimulator {
 
   /**
    * Cria uma carteira virtual e entrega a chave secreta apenas uma vez.
+   * @param {{ username?: string, accountName?: string } | undefined} input
    * @returns {Promise<{ account: object, apiKey: string }>}
    */
-  createAccount() {
+  createAccount(input = {}) {
     return this.enqueue(async () => {
       const apiKey = randomBytes(32).toString('base64url');
+      const accountId = randomUUID();
+      const providedUsername = typeof input?.username === 'string'
+        ? input.username
+        : typeof input?.accountName === 'string'
+          ? input.accountName
+          : null;
+      const username = normalizeUsername(providedUsername);
+      assertUsernameAvailable(this.accounts, username);
       const account = {
-        accountId: randomUUID(),
+        accountId,
+        username,
         keyHash: hashApiKey(apiKey),
         balance: INITIAL_VIRTUAL_BALANCE,
         assetBalance: 0,
@@ -208,7 +258,7 @@ class MarketSimulator {
         this.accounts.delete(account.accountId);
         throw error;
       }
-      logger.info('account.created', { accountId: account.accountId });
+      logger.info('account.created', { accountId: account.accountId, username });
       return { account: this.getAccount(account.accountId), apiKey };
     });
   }
@@ -262,6 +312,9 @@ class MarketSimulator {
     if (!account) return null;
     return {
       accountId: account.accountId,
+      username: typeof account.username === 'string' && account.username.trim()
+        ? account.username
+        : account.accountId,
       balance: account.balance,
       assetBalance: account.assetBalance,
       history: account.history.map((trade) => ({ ...trade })),
@@ -333,6 +386,10 @@ class MarketSimulator {
         amount,
         total,
         impactPercent: Number(signedImpact.toFixed(4)),
+        accountId: account.accountId,
+        username: typeof account.username === 'string' && account.username.trim()
+          ? account.username
+          : account.accountId,
       };
       const accountBefore = { ...account, history: account.history };
       const historyBefore = this.history;
@@ -362,6 +419,8 @@ class MarketSimulator {
         amount: order.amount,
         total: order.total,
         impactPercent: order.impactPercent,
+        accountId: order.accountId,
+        username: order.username,
         timestamp,
       }, ...this.recentTrades].slice(0, MAX_PUBLIC_TRADES);
 
@@ -387,6 +446,29 @@ class MarketSimulator {
       });
       return { order, account: this.getAccount(accountId), market: this.getStatus() };
     });
+  }
+
+  /**
+   * Exporta um snapshot completo do mercado para auditoria ou backup.
+   * @returns {{ marketHistory: Array<object>, accounts: Array<object>, recentTrades: Array<object>, totalVolume: number, buyVolume: number, sellVolume: number, latestMarketEvent: object | null, nextMarketEventAt: string | null }}
+   */
+  getBackupSnapshot() {
+    return {
+      marketHistory: this.history.map((tick) => ({ ...tick })),
+      accounts: [...this.accounts.values()].map((account) => ({
+        ...account,
+        username: typeof account.username === 'string' && account.username.trim()
+          ? account.username
+          : account.accountId,
+        history: Array.isArray(account.history) ? account.history.map((trade) => ({ ...trade })) : [],
+      })),
+      recentTrades: this.recentTrades.map((trade) => ({ ...trade })),
+      totalVolume: this.totalVolume,
+      buyVolume: this.buyVolume,
+      sellVolume: this.sellVolume,
+      latestMarketEvent: this.latestEvent ? { ...this.latestEvent } : null,
+      nextMarketEventAt: this.nextEventAt,
+    };
   }
 
   /**

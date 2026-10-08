@@ -38,9 +38,19 @@ router.get('/market/status', (req, res) => {
   return res.status(200).json({ success: true, data: marketSimulator.getStatus() });
 });
 
+router.get('/backup', (req, res) => {
+  const snapshot = marketSimulator.getBackupSnapshot();
+  const fileContents = JSON.stringify(snapshot, null, 2);
+  return res
+    .status(200)
+    .set('Content-Type', 'application/json; charset=utf-8')
+    .set('Content-Disposition', 'attachment; filename="market-backup.json"')
+    .send(fileContents);
+});
+
 router.post('/accounts', accountCreationLimit, async (req, res) => {
   try {
-    const result = await marketSimulator.createAccount();
+    const result = await marketSimulator.createAccount(req.body || {});
     return res.status(201).json({
       success: true,
       data: {
@@ -50,8 +60,12 @@ router.post('/accounts', accountCreationLimit, async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error('account.create_failed', { message: error.message });
-    return res.status(500).json({ success: false, message: 'Não foi possível criar a conta.' });
+    const statusCode = error.statusCode || 500;
+    if (statusCode >= 500) {
+      logger.error('account.create_failed', { message: error.message });
+      return res.status(500).json({ success: false, message: 'Não foi possível criar a conta.' });
+    }
+    return res.status(statusCode).json({ success: false, message: error.message });
   }
 });
 
