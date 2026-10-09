@@ -1,17 +1,17 @@
 {
   "assetId": "SIM",
-  "currentPrice": 57.96,
-  "sequence": 463,
-  "totalVolume": 29997.65,
-  "buyVolume": 15868.44,
-  "sellVolume": 14129.21,
+  "currentPrice": 54.98,
+  "sequence": 488,
+  "totalVolume": 31401.2,
+  "buyVolume": 16368.44,
+  "sellVolume": 15032.76,
   "latestMarketEvent": {
-    "category": "Juros",
-    "title": "Alta inesperada de juros",
-    "description": "Juros maiores pressionam os ativos de risco.",
-    "impactPercent": -0.5822,
-    "occurredAt": "2026-10-09T00:55:18.380Z"
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.4843,
+    "occurredAt": "2026-10-09T01:37:51.044Z"
   },
-  "nextMarketEventAt": "2026-10-09T00:57:02.268Z",
-  "updatedAt": "2026-10-09T00:55:18.380Z"
+  "nextMarketEventAt": "2026-10-09T01:39:30.894Z",
+  "updatedAt": "2026-10-09T01:37:51.044Z"
 }

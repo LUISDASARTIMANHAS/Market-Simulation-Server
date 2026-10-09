@@ -1,5 +1,140 @@
 [
   {
+    "eventId": "ev-1791509871046",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.4843,
+    "occurredAt": "2026-10-09T01:37:51.044Z"
+  },
+  {
+    "eventId": "ev-1791509863025",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.4147,
+    "occurredAt": "2026-10-09T01:37:43.022Z"
+  },
+  {
+    "eventId": "ev-1791509850977",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.4511,
+    "occurredAt": "2026-10-09T01:37:30.975Z"
+  },
+  {
+    "eventId": "ev-1791509848536",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.4116,
+    "occurredAt": "2026-10-09T01:35:47.543Z"
+  },
+  {
+    "eventId": "ev-1791509810814",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -1.4843,
+    "occurredAt": "2026-10-09T01:36:50.810Z"
+  },
+  {
+    "eventId": "ev-1791509738546",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "impactPercent": -0.9458,
+    "occurredAt": "2026-10-09T01:35:38.542Z"
+  },
+  {
+    "eventId": "ev-1791509630171",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.5419,
+    "occurredAt": "2026-10-09T01:33:50.169Z"
+  },
+  {
+    "eventId": "ev-1791509523814",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.4366,
+    "occurredAt": "2026-10-09T01:32:03.810Z"
+  },
+  {
+    "eventId": "ev-1791509450961",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.4588,
+    "occurredAt": "2026-10-09T01:30:50.959Z"
+  },
+  {
+    "eventId": "ev-1791509388717",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.3395,
+    "occurredAt": "2026-10-09T01:29:48.715Z"
+  },
+  {
+    "eventId": "ev-1791509310469",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.7913,
+    "occurredAt": "2026-10-09T01:28:30.465Z"
+  },
+  {
+    "eventId": "ev-1791508897465",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "impactPercent": -0.4299,
+    "occurredAt": "2026-10-09T01:21:37.462Z"
+  },
+  {
+    "eventId": "ev-1791508789102",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.8548,
+    "occurredAt": "2026-10-09T01:19:49.099Z"
+  },
+  {
+    "eventId": "ev-1791508788212",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.8216,
+    "occurredAt": "2026-10-09T01:14:11.201Z"
+  },
+  {
+    "eventId": "ev-1791508776973",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "impactPercent": -0.3038,
+    "occurredAt": "2026-10-09T01:19:36.970Z"
+  },
+  {
     "eventId": "ev-1791507318383",
     "assetId": "SIM",
     "category": "Juros",
