@@ -106,6 +106,7 @@ export class JsonStateStore {
           username: acc.username,
           keyHash: acc.keyHash,
           isAdmin: acc.isAdmin === true,
+          isSystemAdmin: acc.isSystemAdmin === true,
           balance: acc.balance,
           assetBalance: portfolio ? portfolio.quantity : 0,
           averagePrice: portfolio ? portfolio.averagePrice : 0,
@@ -171,6 +172,7 @@ export class JsonStateStore {
       username: acc.username,
       keyHash: acc.keyHash,
       isAdmin: acc.isAdmin === true,
+      isSystemAdmin: acc.isSystemAdmin === true,
       balance: roundMoney(acc.balance),
       createdAt: acc.createdAt || new Date().toISOString(),
       updatedAt: acc.updatedAt || new Date().toISOString(),
@@ -199,7 +201,9 @@ export class JsonStateStore {
     // 4. Prepara trades.json e orders.json
     // O recentTrades contém as negociações recentes
     // Para manter integridade histórica acumulada, buscamos trades existentes e mesclamos os novos
-    const existingTrades = await this.repository.getTrades();
+    const activeAccountIds = new Set(accounts.map((account) => account.accountId));
+    const existingTrades = (await this.repository.getTrades())
+      .filter((trade) => activeAccountIds.has(trade.accountId));
     const tradesMap = new Map();
     for (const t of existingTrades) {
       tradesMap.set(t.tradeId, t);

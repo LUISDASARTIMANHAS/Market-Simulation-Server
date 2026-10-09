@@ -1,17 +1,17 @@
 {
   "assetId": "SIM",
-  "currentPrice": 55.56,
-  "sequence": 503,
-  "totalVolume": 32277.4,
-  "buyVolume": 17244.64,
+  "currentPrice": 55.1,
+  "sequence": 505,
+  "totalVolume": 32427.4,
+  "buyVolume": 17394.64,
   "sellVolume": 15032.76,
   "latestMarketEvent": {
     "category": "Política",
-    "title": "Acordo político",
-    "description": "Avanço em negociações reduz a incerteza.",
-    "impactPercent": 0.4679,
-    "occurredAt": "2026-10-09T02:14:11.633Z"
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "impactPercent": -0.8526,
+    "occurredAt": "2026-10-09T02:16:09.230Z"
   },
-  "nextMarketEventAt": "2026-10-09T02:16:07.938Z",
-  "updatedAt": "2026-10-09T02:14:11.633Z"
+  "nextMarketEventAt": "2026-10-09T02:17:23.526Z",
+  "updatedAt": "2026-10-09T02:17:25.038Z"
 }

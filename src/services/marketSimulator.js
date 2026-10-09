@@ -238,6 +238,17 @@ class MarketSimulator {
    * @returns {Promise<{ account: object, apiKey: string }>}
    */
   createAccount(input = {}) {
+    return this.createAccountWithRole(input, false);
+  }
+
+  /**
+   * Cria uma conta com o papel definido pela administração. Esta operação não
+   * é exposta pela rota pública de cadastro.
+   * @param {{ username?: string, accountName?: string } | undefined} input
+   * @param {boolean} isAdmin
+   * @returns {Promise<{ account: object, apiKey: string }>}
+   */
+  createAccountWithRole(input = {}, isAdmin = false) {
     return this.enqueue(async () => {
       const apiKey = randomBytes(32).toString('base64url');
       const accountId = randomUUID();
@@ -252,6 +263,7 @@ class MarketSimulator {
         accountId,
         username,
         keyHash: hashApiKey(apiKey),
+        isAdmin: isAdmin === true,
         balance: INITIAL_VIRTUAL_BALANCE,
         assetBalance: 0,
         averagePrice: 0,
@@ -330,7 +342,7 @@ class MarketSimulator {
     const keyHash = suppliedToken ? hashApiKey(suppliedToken) : null;
     let account = keyHash
       ? [...this.accounts.values()].find((candidate) => candidate.keyHash === keyHash)
-      : [...this.accounts.values()].find((candidate) => candidate.isAdmin === true);
+      : [...this.accounts.values()].find((candidate) => candidate.isSystemAdmin === true);
     let created = false;
     let changed = false;
 
@@ -347,6 +359,7 @@ class MarketSimulator {
         username,
         keyHash: hashApiKey(generatedToken),
         isAdmin: true,
+        isSystemAdmin: true,
         balance: INITIAL_VIRTUAL_BALANCE,
         assetBalance: 0,
         averagePrice: 0,
@@ -358,6 +371,11 @@ class MarketSimulator {
       apiKey = generatedToken;
     } else if (!account.isAdmin) {
       account.isAdmin = true;
+      changed = true;
+    }
+
+    if (!account.isSystemAdmin) {
+      account.isSystemAdmin = true;
       changed = true;
     }
 
@@ -393,6 +411,100 @@ class MarketSimulator {
       assetBalance: account.assetBalance,
       history: account.history.map((trade) => ({ ...trade })),
     };
+  }
+
+  /** Retorna dados seguros para a lista de contas da administração. */
+  listAccountsForAdministration() {
+    return [...this.accounts.values()]
+      .map((account) => ({
+        accountId: account.accountId,
+        username: typeof account.username === 'string' && account.username.trim()
+          ? account.username
+          : account.accountId,
+        isAdmin: account.isAdmin === true,
+        balance: account.balance,
+        assetBalance: account.assetBalance,
+        createdAt: account.createdAt || null,
+      }))
+      .sort((first, second) => String(first.username).localeCompare(String(second.username), 'pt-BR'));
+  }
+
+  /**
+   * Atualiza os campos administrativos permitidos de uma conta.
+   * @param {string} accountId
+   * @param {{ username?: string, isAdmin?: boolean }} input
+   * @param {string} administratorId
+   */
+  updateAccountAsAdministrator(accountId, input = {}, administratorId) {
+    return this.enqueue(async () => {
+      const account = this.accounts.get(accountId);
+      if (!account) throw Object.assign(new Error('Conta não encontrada.'), { statusCode: 404 });
+
+      if (Object.prototype.hasOwnProperty.call(input, 'isAdmin') && typeof input.isAdmin !== 'boolean') {
+        throw Object.assign(new Error('isAdmin deve ser verdadeiro ou falso.'), { statusCode: 400 });
+      }
+
+      const nextUsername = Object.prototype.hasOwnProperty.call(input, 'username')
+        ? normalizeUsername(input.username)
+        : account.username;
+      if (nextUsername.toLowerCase() !== account.username.toLowerCase()) {
+        const otherAccounts = new Map(this.accounts);
+        otherAccounts.delete(accountId);
+        assertUsernameAvailable(otherAccounts, nextUsername);
+      }
+
+      const nextIsAdmin = Object.prototype.hasOwnProperty.call(input, 'isAdmin') ? input.isAdmin : account.isAdmin === true;
+      if (account.accountId === administratorId && !nextIsAdmin) {
+        throw Object.assign(new Error('Não é possível remover seu próprio acesso administrativo.'), { statusCode: 400 });
+      }
+      if (account.isAdmin === true && !nextIsAdmin
+        && [...this.accounts.values()].filter((candidate) => candidate.isAdmin === true).length === 1) {
+        throw Object.assign(new Error('Deve existir pelo menos um administrador.'), { statusCode: 400 });
+      }
+
+      const previous = { ...account };
+      account.username = nextUsername;
+      account.isAdmin = nextIsAdmin;
+      account.updatedAt = new Date().toISOString();
+      try {
+        await this.persist();
+      } catch (error) {
+        Object.assign(account, previous);
+        throw error;
+      }
+      logger.info('admin.account_updated', { administratorId, accountId, isAdmin: account.isAdmin });
+      return this.getAccount(accountId);
+    });
+  }
+
+  /**
+   * Exclui uma conta e seus dados de negociação do simulador.
+   * @param {string} accountId
+   * @param {string} administratorId
+   */
+  deleteAccountAsAdministrator(accountId, administratorId) {
+    return this.enqueue(async () => {
+      const account = this.accounts.get(accountId);
+      if (!account) throw Object.assign(new Error('Conta não encontrada.'), { statusCode: 404 });
+      if (accountId === administratorId) {
+        throw Object.assign(new Error('Não é possível excluir a própria conta administrativa.'), { statusCode: 400 });
+      }
+      if (account.isAdmin === true && [...this.accounts.values()].filter((candidate) => candidate.isAdmin === true).length === 1) {
+        throw Object.assign(new Error('Não é possível excluir o último administrador.'), { statusCode: 400 });
+      }
+
+      const previousTrades = this.recentTrades;
+      this.accounts.delete(accountId);
+      this.recentTrades = this.recentTrades.filter((trade) => trade.accountId !== accountId);
+      try {
+        await this.persist();
+      } catch (error) {
+        this.accounts.set(accountId, account);
+        this.recentTrades = previousTrades;
+        throw error;
+      }
+      logger.info('admin.account_deleted', { administratorId, accountId });
+    });
   }
 
   /**
@@ -626,7 +738,7 @@ class MarketSimulator {
       await this.store.repository.replaceFullSnapshot(snapshotToRestore);
       const reloaded = await this.store.load();
       this.initialize(reloaded);
-      if (this.recoveryAdministrator && ![...this.accounts.values()].some((account) => account.isAdmin === true)) {
+      if (this.recoveryAdministrator && ![...this.accounts.values()].some((account) => account.isSystemAdmin === true)) {
         this.accounts.set(this.recoveryAdministrator.accountId, this.recoveryAdministrator);
         await this.persist();
       }

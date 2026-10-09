@@ -67,7 +67,7 @@ O servidor escreve logs estruturados em JSON no console do processo, um evento p
 
 O arquivo inclui as oito coleções persistidas: contas, ativos, carteiras, ordens, negociações, histórico de preços, eventos e estado operacional. Ao restaurar, todas elas são substituídas pelo conteúdo do backup; nenhum registro posterior é mesclado ou preservado. A aplicação salva um backup de segurança antes da substituição.
 
-`POST /api/backup/restore` exige `Authorization: Bearer <token-administrador>`. Em cada inicialização, o servidor imprime um token administrativo válido no terminal e persiste somente seu hash. Sem `MARKET_ADMIN_TOKEN`, a chave do administrador é rotacionada a cada início; defina essa variável no ambiente se precisar de uma chave estável entre reinicializações.
+`POST /api/backup/restore` exige `Authorization: Bearer <token-administrador>`. Em cada inicialização, o servidor cria ou atualiza uma conta administrativa de sistema separada das contas admin pessoais, imprime um token válido no terminal e persiste somente seu hash. Sem `MARKET_ADMIN_TOKEN`, a chave dessa conta de sistema é rotacionada a cada início; defina essa variável no ambiente se precisar de uma chave estável entre reinicializações.
 
 ```json
 {
@@ -106,6 +106,17 @@ Exemplo de cria??o com identificador:
 `GET /api/account` e `GET /api/account/history` exigem `Authorization: Bearer <API_KEY>`. A resposta inclui `accountId` e `username` para auditoria; os itens de hist?rico e de trades p?blicos tamb?m exibem essa identifica??o.
 
 `POST /api/account/rotate-key` revoga a chave atual e devolve uma nova, exibida somente uma vez.
+
+### Administração de usuários
+
+Administradores autenticados podem gerenciar contas no painel em `/admin.html`. As rotas administrativas também aceitam `Authorization: Bearer <API_KEY>` de um administrador:
+
+- `GET /api/admin/accounts` lista as contas sem expor hashes ou chaves de API.
+- `POST /api/admin/accounts` cria uma conta com `{ "username": "novo_usuario", "isAdmin": true }`; a chave é retornada somente nessa resposta.
+- `PATCH /api/admin/accounts/:accountId` altera `username` e/ou `isAdmin`.
+- `DELETE /api/admin/accounts/:accountId` remove a conta e suas negociações.
+
+O painel impede que um administrador remova seu próprio acesso, que exclua a própria conta ou que deixe o sistema sem administradores.
 
 `POST /api/orders` tamb?m exige essa autentica??o. Compra usa valor em d?lares; venda usa unidades do ativo:
 

@@ -1,5 +1,14 @@
 [
   {
+    "eventId": "ev-1791512169238",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "impactPercent": -0.8526,
+    "occurredAt": "2026-10-09T02:16:09.230Z"
+  },
+  {
     "eventId": "ev-1791512051638",
     "assetId": "SIM",
     "category": "Política",

@@ -4,6 +4,7 @@
     "username": "LUISDASARTIMANHAS",
     "keyHash": "4b4b90d2b82df0d780281429f7003b951609940884fabe1b57d8d85bee54ca34",
     "isAdmin": true,
+    "isSystemAdmin": false,
     "balance": 360.77,
     "createdAt": "2026-10-08T02:26:18.999Z",
     "updatedAt": "2026-10-08T12:32:57.987Z"
@@ -13,6 +14,7 @@
     "username": "LDASKYNETIA",
     "keyHash": "0942f0186ba2c5e62a6a83fe1febe6b999530834b2ad58985e686f4c69c6514c",
     "isAdmin": false,
+    "isSystemAdmin": false,
     "balance": 0,
     "createdAt": "2026-10-08T02:57:13.787Z",
     "updatedAt": "2026-10-08T12:42:24.315Z"
@@ -22,6 +24,7 @@
     "username": "red",
     "keyHash": "124e07a9863eba0eac2150d790d2c839938752432363e68f9cd90cb4cf3e2890",
     "isAdmin": false,
+    "isSystemAdmin": false,
     "balance": 900,
     "createdAt": "2026-10-08T12:44:45.382Z",
     "updatedAt": "2026-10-08T12:45:17.983Z"
@@ -31,8 +34,29 @@
     "username": "luisgomes_tese",
     "keyHash": "9d92c8efc55302ef7e66c20cf95ec2901dbfce0047f6337216b7b0b098908c5f",
     "isAdmin": false,
+    "isSystemAdmin": false,
     "balance": 527.35,
     "createdAt": "2026-10-09T01:33:18.556Z",
     "updatedAt": "2026-10-09T01:37:50.992Z"
+  },
+  {
+    "accountId": "e0c2bd18-9e98-41ee-8513-a263a491f41e",
+    "username": "system_admin",
+    "keyHash": "1573faa9c16e2171813715c403a5f9166f4eeaf42d1ee90f68e3d963ebce1d77",
+    "isAdmin": true,
+    "isSystemAdmin": true,
+    "balance": 1000,
+    "createdAt": "2026-10-09T02:16:01.775Z",
+    "updatedAt": "2026-10-09T02:16:01.776Z"
+  },
+  {
+    "accountId": "321d96db-d93f-45b2-8d7b-5f298b6238bf",
+    "username": "trader_1791512243684",
+    "keyHash": "b75b895161dd4bac97aab6fe8bcbf6e1c871d9f28b62662610ea3b0636434301",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 850,
+    "createdAt": "2026-10-09T02:17:24.354Z",
+    "updatedAt": "2026-10-09T02:17:25.039Z"
   }
 ]
