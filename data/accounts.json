@@ -3,6 +3,7 @@
     "accountId": "ab74ab24-d6e3-467f-8b3e-94a57f7e3e7d",
     "username": "LUISDASARTIMANHAS",
     "keyHash": "5fe95511f198d0a5a8ba06e69b932b9723d7a8bb278ea31cb0796bb4dd2dfeb9",
+    "isAdmin": true,
     "balance": 360.77,
     "createdAt": "2026-10-08T02:26:18.999Z",
     "updatedAt": "2026-10-08T12:32:57.987Z"
@@ -11,6 +12,7 @@
     "accountId": "3ddb7b99-64e7-40c3-b6bd-2c68eccc8c31",
     "username": "LDASKYNETIA",
     "keyHash": "0942f0186ba2c5e62a6a83fe1febe6b999530834b2ad58985e686f4c69c6514c",
+    "isAdmin": false,
     "balance": 0,
     "createdAt": "2026-10-08T02:57:13.787Z",
     "updatedAt": "2026-10-08T12:42:24.315Z"
@@ -19,6 +21,7 @@
     "accountId": "b7fb415a-6524-446b-b0de-7deeb03149b6",
     "username": "red",
     "keyHash": "124e07a9863eba0eac2150d790d2c839938752432363e68f9cd90cb4cf3e2890",
+    "isAdmin": false,
     "balance": 900,
     "createdAt": "2026-10-08T12:44:45.382Z",
     "updatedAt": "2026-10-08T12:45:17.983Z"
@@ -27,6 +30,7 @@
     "accountId": "70d3d121-7efa-4bde-ae39-a184f0559551",
     "username": "luisgomes_tese",
     "keyHash": "9d92c8efc55302ef7e66c20cf95ec2901dbfce0047f6337216b7b0b098908c5f",
+    "isAdmin": false,
     "balance": 527.35,
     "createdAt": "2026-10-09T01:33:18.556Z",
     "updatedAt": "2026-10-09T01:37:50.992Z"
