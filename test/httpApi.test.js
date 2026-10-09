@@ -1,5 +1,6 @@
 import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import path from 'node:path';
 import express from 'express';
 import cors from 'cors';
 import { MarketRepository } from '../src/data/marketRepository.js';
@@ -8,6 +9,7 @@ import { MarketSimulator } from '../src/services/marketSimulator.js';
 import marketRoutes from '../src/routes/marketRoutes.js';
 import { marketSimulator } from '../src/services/marketSimulator.js';
 import { marketStateStore } from '../src/services/stateStore.js';
+import { runMigration } from '../src/scripts/migrateDatabase.js';
 
 describe('Testes de Integração HTTP da API', () => {
   let server;
@@ -37,6 +39,11 @@ describe('Testes de Integração HTTP da API', () => {
     if (server) {
       await new Promise((resolve) => server.close(resolve));
     }
+    // Restaura o banco oficial limpo a partir do backup para garantir isolamento
+    await runMigration({
+      sourceFile: path.resolve('data/backups/market-state.pre-migration.json'),
+      dataDir: path.resolve('data'),
+    });
   });
 
   test('GET /api/market/status retorna contrato público com dados do mercado', async () => {

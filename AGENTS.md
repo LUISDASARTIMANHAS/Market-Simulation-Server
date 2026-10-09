@@ -8,19 +8,23 @@ Key code paths:
 
 - HTTP bootstrap: [src/server.js](src/server.js)
 - API routing and auth/rate-limit enforcement: [src/routes/marketRoutes.js](src/routes/marketRoutes.js)
+- Central data access layer (MongoDB ready): [src/data/marketRepository.js](src/data/marketRepository.js)
+- Atomic JSON persistence and concurrency control: [src/data/atomicJsonStore.js](src/data/atomicJsonStore.js)
+- Money & asset precision helpers: [src/utils/money.js](src/utils/money.js)
 - Business logic for market events, order matching, balances, and accounts: [src/services/marketSimulator.js](src/services/marketSimulator.js)
-- Atomic JSON persistence and legacy migration: [src/services/stateStore.js](src/services/stateStore.js)
-- Runtime data file: [data/market-state.json](data/market-state.json)
+- State coordinator and legacy adapter: [src/services/stateStore.js](src/services/stateStore.js)
+- Database migration script: [src/scripts/migrateDatabase.js](src/scripts/migrateDatabase.js)
+- Modular data files: [data/](data/) (`accounts.json`, `assets.json`, `portfolios.json`, `orders.json`, `trades.json`, `market-history.json`, `market-events.json`, `market-state.json`)
 - User-facing API and operational details: [README.md](README.md)
 
 ## Workflow and verification
 
 - Install dependencies: `npm install`
+- Run test suite: `npm test`
+- Run/verify database migration: `npm run migrate`
 - Start locally with auto-reload: `npm run dev`
 - Start the standard app script: `npm start`
 - Windows shortcut: `start.cmd`
-
-This repo does not currently include an automated test suite. Validate changes by starting the service and checking the affected endpoints directly.
 
 Useful smoke checks:
 

@@ -1,24 +1,6 @@
 [
   {
-    "eventId": "ev-1791506184776",
-    "assetId": "SIM",
-    "category": "Tecnologia",
-    "title": "Avanço tecnológico",
-    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
-    "impactPercent": 0.9861,
-    "occurredAt": "2026-10-09T00:36:24.772Z"
-  },
-  {
-    "eventId": "ev-1791506102496",
-    "assetId": "SIM",
-    "category": "Guerra",
-    "title": "Escalada de conflito",
-    "description": "Aumento da tensão geopolítica pressiona os ativos.",
-    "impactPercent": -1.3347,
-    "occurredAt": "2026-10-09T00:35:02.492Z"
-  },
-  {
-    "eventId": "0710aba6-c78c-4ec3-a0f3-8226428b1823",
+    "eventId": "7f34495b-ed2c-48cd-a570-5df0cbca6747",
     "assetId": "SIM",
     "category": "Juros",
     "title": "Corte de juros",

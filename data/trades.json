@@ -1,18 +1,5 @@
 [
   {
-    "tradeId": "77cc1b84-a979-4b4b-a363-6ff8a23b2975",
-    "orderId": "77cc1b84-a979-4b4b-a363-6ff8a23b2975",
-    "accountId": "0b5be5ab-0705-460c-9965-2f0591762ddf",
-    "username": "trader_1791506177940",
-    "assetId": "SIM",
-    "side": "BUY",
-    "quantity": 2.59201659,
-    "price": 57.87,
-    "total": 150,
-    "impactPercent": 0.0187,
-    "createdAt": "2026-10-09T00:36:19.118Z"
-  },
-  {
     "tradeId": "427483ba-90f9-482f-9928-d44e95844f7a",
     "orderId": "427483ba-90f9-482f-9928-d44e95844f7a",
     "accountId": "b7fb415a-6524-446b-b0de-7deeb03149b6",

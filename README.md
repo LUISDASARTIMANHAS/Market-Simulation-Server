@@ -25,23 +25,35 @@ Para iniciar com Docker Compose:
 docker compose up -d --build
 ```
 
-O Compose monta `./data` do host em `/app/data` no container e grava o estado em `data/market-state.json`. Esse arquivo inclui contas, hashes das chaves, saldos, histórico de ordens, preço e volume; ele continua disponível ao reiniciar ou recriar o container e pode ser incluído em backups/sincronização do host. O campo `accounts` fica vazio até que uma conta seja criada por `POST /api/accounts`.
+O Compose monta `./data` do host em `/app/data` no container e armazena os dados na estrutura modular em arquivos JSON (`data/accounts.json`, `data/assets.json`, `data/portfolios.json`, `data/orders.json`, `data/trades.json`, `data/market-history.json`, `data/market-events.json` e `data/market-state.json`). Esses arquivos contêm contas, posições de custódia, ordens, trades, preço atual, eventos e volumes, permanecendo disponíveis ao reiniciar ou recriar o container.
 
 Confira as contas persistidas no host com:
 
 ```powershell
-node -e "const s = require('./data/market-state.json'); console.log(s.accounts.length)"
+node -e "const s = require('./data/accounts.json'); console.log(s.length)"
 ```
 
-A chave de API em texto puro não é salva no arquivo, então cada usuário precisa guardar a chave recebida ao criar a conta. Rode apenas uma instância do serviço usando esse arquivo; sincronizar ou compartilhar o mesmo arquivo entre instâncias ativas pode causar sobrescrita de estado.
+Para executar a suíte de testes de consistência financeira e concorrência:
 
-Por padrão, a API escuta na porta `3001` e o estado fica em `data/market-state.json`, dentro deste projeto. Configure `MARKET_PORT` para trocar a porta ou `MARKET_STATE_FILE` para usar outro arquivo de estado.
+```powershell
+npm test
+```
+
+Para rodar ou verificar a migração de banco de dados modular:
+
+```powershell
+npm run migrate
+```
+
+A chave de API em texto puro não é salva no arquivo, então cada usuário precisa guardar a chave recebida ao criar a conta. Rode apenas uma instância do serviço usando esses arquivos; sincronizar ou compartilhar os mesmos arquivos entre instâncias ativas pode causar sobrescrita de estado.
+
+Por padrão, a API escuta na porta `3001` e os dados ficam na pasta `data/`, dentro deste projeto. Configure `MARKET_PORT` para trocar a porta ou `MARKET_STATE_FILE` para apontar o arquivo de estado principal.
 
 Eventos simulados movimentam o preço em intervalos aleatórios de 60 a 120 segundos. Configure `MARKET_EVENT_MIN_INTERVAL_MS` e `MARKET_EVENT_MAX_INTERVAL_MS` para alterar os limites em milissegundos. Se o máximo for menor que o mínimo, o mínimo será usado como os dois limites.
 
 Se estiver atrás de um reverse proxy confiável, configure `TRUST_PROXY` com o endereço ou faixa desse proxy, por exemplo `loopback` para um proxy local. Não use `true` indiscriminadamente: o endereço IP é usado nos limites de requisição.
 
-Ao ser executado dentro da estrutura original do bot, se ainda não houver estado local, o servidor copia automaticamente o histórico legado de `../data/market-state.json`. Essa migração não apaga o arquivo antigo. Inicie o serviço uma vez antes de mover a pasta para levar junto a cópia migrada.
+Ao ser executado pela primeira vez ou a partir da estrutura antiga monolítica, o servidor migra automaticamente o estado existente para a nova estrutura modular em 8 arquivos JSON, mantendo backups de segurança em `data/backups/`.
 
 ## Logs
 
