@@ -330,13 +330,17 @@ describe('Suíte de Testes Obrigatórios — Reestruturação do Banco de Dados 
   });
 
   test('14. Compatibilidade das rotas e snapshots de backup', async () => {
-    const snapshot = testSimulator.getBackupSnapshot();
+    const snapshot = await testSimulator.getBackupSnapshot();
     assert.ok(Array.isArray(snapshot.accounts), 'Snapshot deve conter accounts');
     assert.ok(Array.isArray(snapshot.marketHistory), 'Snapshot deve conter marketHistory');
     assert.ok(Array.isArray(snapshot.recentTrades), 'Snapshot deve conter recentTrades');
     assert.ok(Number.isFinite(snapshot.totalVolume), 'Snapshot deve conter totalVolume');
     assert.ok(Number.isFinite(snapshot.buyVolume), 'Snapshot deve conter buyVolume');
     assert.ok(Number.isFinite(snapshot.sellVolume), 'Snapshot deve conter sellVolume');
+    assert.equal(snapshot.backupVersion, 2, 'Snapshot deve informar a versão completa');
+    assert.ok(Array.isArray(snapshot.orders), 'Snapshot deve conter todas as ordens');
+    assert.ok(Array.isArray(snapshot.trades), 'Snapshot deve conter todas as negociações');
+    assert.ok(Array.isArray(snapshot.marketEvents), 'Snapshot deve conter todos os eventos');
 
     const status = testSimulator.getStatus();
     assert.ok(Number.isFinite(status.currentPrice));

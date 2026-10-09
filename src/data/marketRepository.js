@@ -562,8 +562,8 @@ export class MarketRepository {
       this.getPortfolios(),
       this.getOrders(),
       this.getTrades(),
-      this.getMarketHistory(),
-      this.getMarketEvents(),
+      readJson(this.paths.marketHistory, []),
+      readJson(this.paths.marketEvents, []),
       this.getMarketState(),
     ]);
 
@@ -613,6 +613,20 @@ export class MarketRepository {
     }
 
     await Promise.all(writes);
+  }
+
+  /** Replaces every persisted collection; no previous records are retained. */
+  async replaceFullSnapshot(snapshot) {
+    const collections = [
+      ['accounts', validators.accounts], ['assets', validators.assets],
+      ['portfolios', validators.portfolios], ['orders', validators.orders],
+      ['trades', validators.trades], ['marketHistory', validators.marketHistory],
+      ['marketEvents', validators.marketEvents], ['marketState', validators.marketState],
+    ];
+    for (const [name, validator] of collections) {
+      if (!validator(snapshot?.[name])) throw new Error(`Snapshot inválido: campo ${name} ausente ou inválido.`);
+    }
+    await Promise.all(collections.map(([name, validator]) => writeJson(this.paths[name], snapshot[name], validator)));
   }
 }
 

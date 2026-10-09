@@ -1,5 +1,18 @@
 [
   {
+    "tradeId": "e8a6366c-e6f1-486c-a03e-686930cdd7d3",
+    "orderId": "e8a6366c-e6f1-486c-a03e-686930cdd7d3",
+    "accountId": "3ddb7b99-64e7-40c3-b6bd-2c68eccc8c31",
+    "username": "LDASKYNETIA",
+    "assetId": "SIM",
+    "side": "BUY",
+    "quantity": 15.84448463,
+    "price": 55.3,
+    "total": 876.2,
+    "impactPercent": 0.1095,
+    "createdAt": "2026-10-09T01:42:43.887Z"
+  },
+  {
     "tradeId": "5e5740d0-8140-4f84-a2ce-03a5009ffc40",
     "orderId": "5e5740d0-8140-4f84-a2ce-03a5009ffc40",
     "accountId": "70d3d121-7efa-4bde-ae39-a184f0559551",
@@ -635,70 +648,5 @@
     "total": 908.41,
     "impactPercent": -0.1136,
     "createdAt": "2026-10-08T03:50:19.466Z"
-  },
-  {
-    "tradeId": "10d318cc-7dde-4747-b93b-584cd0d37511",
-    "orderId": "10d318cc-7dde-4747-b93b-584cd0d37511",
-    "accountId": "3ddb7b99-64e7-40c3-b6bd-2c68eccc8c31",
-    "username": "LDASKYNETIA",
-    "assetId": "SIM",
-    "side": "BUY",
-    "quantity": 11.42074006,
-    "price": 87.56,
-    "total": 1000,
-    "impactPercent": 0.125,
-    "createdAt": "2026-10-08T03:16:19.273Z"
-  },
-  {
-    "tradeId": "98df20d4-a352-46ba-aed5-21abec46e3bd",
-    "orderId": "98df20d4-a352-46ba-aed5-21abec46e3bd",
-    "accountId": "ab74ab24-d6e3-467f-8b3e-94a57f7e3e7d",
-    "username": "LUISDASARTIMANHAS",
-    "assetId": "SIM",
-    "side": "BUY",
-    "quantity": 9.63081862,
-    "price": 93.45,
-    "total": 900,
-    "impactPercent": 0.1125,
-    "createdAt": "2026-10-08T02:49:24.935Z"
-  },
-  {
-    "tradeId": "d6878285-76bb-4a97-af29-f0ea30663907",
-    "orderId": "d6878285-76bb-4a97-af29-f0ea30663907",
-    "accountId": "ab74ab24-d6e3-467f-8b3e-94a57f7e3e7d",
-    "username": "LUISDASARTIMANHAS",
-    "assetId": "SIM",
-    "side": "BUY",
-    "quantity": 1.06405618,
-    "price": 93.98,
-    "total": 100,
-    "impactPercent": 0.0125,
-    "createdAt": "2026-10-08T02:48:25.214Z"
-  },
-  {
-    "tradeId": "8eef1912-0a75-4b09-8578-93b8fb76be09",
-    "orderId": "8eef1912-0a75-4b09-8578-93b8fb76be09",
-    "accountId": "ab74ab24-d6e3-467f-8b3e-94a57f7e3e7d",
-    "username": "LUISDASARTIMANHAS",
-    "assetId": "SIM",
-    "side": "SELL",
-    "quantity": 1.022599,
-    "price": 98.14,
-    "total": 100.36,
-    "impactPercent": -0.0125,
-    "createdAt": "2026-10-08T02:32:27.934Z"
-  },
-  {
-    "tradeId": "c3a3d3d3-be37-4677-afeb-a903311d93ce",
-    "orderId": "c3a3d3d3-be37-4677-afeb-a903311d93ce",
-    "accountId": "ab74ab24-d6e3-467f-8b3e-94a57f7e3e7d",
-    "username": "LUISDASARTIMANHAS",
-    "assetId": "SIM",
-    "side": "BUY",
-    "quantity": 1.02259945,
-    "price": 97.79,
-    "total": 100,
-    "impactPercent": 0.0125,
-    "createdAt": "2026-10-08T02:30:52.638Z"
   }
 ]

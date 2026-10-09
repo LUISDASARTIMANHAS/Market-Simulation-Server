@@ -466,22 +466,29 @@ class MarketSimulator {
    * Exporta um snapshot completo do mercado para auditoria ou backup.
    * @returns {{ marketHistory: Array<object>, accounts: Array<object>, recentTrades: Array<object>, totalVolume: number, buyVolume: number, sellVolume: number, latestMarketEvent: object | null, nextMarketEventAt: string | null }}
    */
-  getBackupSnapshot() {
+  async getBackupSnapshot() {
+    const snapshot = await this.store.repository.loadFullMarketState();
     return {
-      marketHistory: this.history.map((tick) => ({ ...tick })),
-      accounts: [...this.accounts.values()].map((account) => ({
-        ...account,
-        username: typeof account.username === 'string' && account.username.trim()
-          ? account.username
-          : account.accountId,
-        history: Array.isArray(account.history) ? account.history.map((trade) => ({ ...trade })) : [],
+      backupVersion: 2,
+      exportedAt: new Date().toISOString(),
+      ...snapshot,
+      // Campos legados para consumidores que apenas exibiam o resumo do backup.
+      recentTrades: snapshot.trades.slice(0, MAX_PUBLIC_TRADES).map((trade) => ({
+        id: trade.tradeId || trade.orderId,
+        side: trade.side,
+        price: trade.price,
+        amount: trade.quantity,
+        total: trade.total,
+        impactPercent: trade.impactPercent,
+        accountId: trade.accountId,
+        username: trade.username,
+        timestamp: trade.createdAt,
       })),
-      recentTrades: this.recentTrades.map((trade) => ({ ...trade })),
-      totalVolume: this.totalVolume,
-      buyVolume: this.buyVolume,
-      sellVolume: this.sellVolume,
-      latestMarketEvent: this.latestEvent ? { ...this.latestEvent } : null,
-      nextMarketEventAt: this.nextEventAt,
+      totalVolume: snapshot.marketState?.totalVolume ?? 0,
+      buyVolume: snapshot.marketState?.buyVolume ?? 0,
+      sellVolume: snapshot.marketState?.sellVolume ?? 0,
+      latestMarketEvent: snapshot.marketState?.latestMarketEvent ?? null,
+      nextMarketEventAt: snapshot.marketState?.nextMarketEventAt ?? null,
     };
   }
 
@@ -505,12 +512,55 @@ class MarketSimulator {
       }
 
       // Cria backup de segurança automático pré-restauração
-      const currentSnapshot = this.getBackupSnapshot();
+      const currentSnapshot = await this.getBackupSnapshot();
       const backupDir = path.join(this.store.dataDir, 'backups');
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const safetyBackupPath = path.join(backupDir, `market-state.pre-restore-${timestamp}.json`);
       await writeJson(safetyBackupPath, currentSnapshot).catch(() => {});
 
+      const completeSnapshot = [
+        'accounts', 'assets', 'portfolios', 'orders', 'trades',
+        'marketHistory', 'marketEvents', 'marketState',
+      ].every((field) => Object.hasOwn(backupData, field));
+
+      let snapshotToRestore = backupData;
+      if (!completeSnapshot) {
+        // Version 1 backups did not include all collections. Convert what they
+        // contain and explicitly reset every collection they did not contain.
+        if (!Array.isArray(backupData.accounts) || !Array.isArray(backupData.marketHistory) || backupData.marketHistory.length === 0) {
+          throw Object.assign(new Error('Backup incompleto. Exporte um novo backup completo antes de restaurar.'), { statusCode: 400 });
+        }
+        const latestTick = backupData.marketHistory.at(-1);
+        const trades = (Array.isArray(backupData.recentTrades) ? backupData.recentTrades : []).map((trade) => ({
+          tradeId: trade.id || trade.tradeId,
+          orderId: trade.id || trade.orderId || trade.tradeId,
+          accountId: trade.accountId,
+          username: trade.username,
+          assetId: 'SIM',
+          side: trade.side || trade.type,
+          quantity: trade.amount ?? trade.quantity,
+          price: trade.price,
+          total: trade.total,
+          impactPercent: trade.impactPercent || 0,
+          createdAt: trade.timestamp || trade.createdAt,
+        }));
+        snapshotToRestore = {
+          accounts: backupData.accounts.map(({ assetBalance, averagePrice, history, ...account }) => account),
+          assets: [{ assetId: 'SIM', symbol: 'SIM', name: 'Ativo Simulado', currentPrice: latestTick.price, updatedAt: latestTick.updatedAt }],
+          portfolios: backupData.accounts.map((account) => ({ accountId: account.accountId, assetId: 'SIM', quantity: account.assetBalance || 0, averagePrice: account.averagePrice || 0, updatedAt: account.updatedAt || latestTick.updatedAt })),
+          orders: trades.map((trade) => ({ orderId: trade.orderId, accountId: trade.accountId, assetId: trade.assetId, side: trade.side, quantity: trade.quantity, price: trade.price, limitPrice: null, total: trade.total, impactPercent: trade.impactPercent, status: 'FILLED', createdAt: trade.createdAt, updatedAt: trade.createdAt })),
+          trades,
+          marketHistory: backupData.marketHistory.map((tick) => ({ assetId: 'SIM', ...tick })),
+          marketEvents: backupData.latestMarketEvent ? [{ eventId: `ev-${Date.now()}`, assetId: 'SIM', ...backupData.latestMarketEvent, occurredAt: backupData.latestMarketEvent.occurredAt || latestTick.updatedAt }] : [],
+          marketState: { assetId: 'SIM', currentPrice: latestTick.price, sequence: latestTick.sequence, totalVolume: backupData.totalVolume || 0, buyVolume: backupData.buyVolume || 0, sellVolume: backupData.sellVolume || 0, latestMarketEvent: backupData.latestMarketEvent || null, nextMarketEventAt: backupData.nextMarketEventAt || null, updatedAt: latestTick.updatedAt },
+        };
+      }
+
+      await this.store.repository.replaceFullSnapshot(snapshotToRestore);
+      const reloaded = await this.store.load();
+      this.initialize(reloaded);
+
+      /*
       if (hasAccounts && hasHistory) {
         await this.store.save({
           marketHistory: backupData.marketHistory,
@@ -532,6 +582,7 @@ class MarketSimulator {
       } else {
         throw Object.assign(new Error('Estrutura de dados não suportada para restauração.'), { statusCode: 400 });
       }
+      */
 
       logger.info('backup.restored', {
         accountsCount: this.accounts.size,

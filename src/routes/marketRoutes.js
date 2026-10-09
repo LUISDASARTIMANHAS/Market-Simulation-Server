@@ -38,8 +38,8 @@ router.get('/market/status', (req, res) => {
   return res.status(200).json({ success: true, data: marketSimulator.getStatus() });
 });
 
-router.get('/backup', (req, res) => {
-  const snapshot = marketSimulator.getBackupSnapshot();
+router.get('/backup', async (req, res) => {
+  const snapshot = await marketSimulator.getBackupSnapshot();
   const fileContents = JSON.stringify(snapshot, null, 2);
   return res
     .status(200)
