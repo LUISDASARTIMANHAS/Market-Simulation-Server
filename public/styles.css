@@ -96,6 +96,11 @@ tbody tr:last-child td { border-bottom: 0; }
 .empty-cell { padding: 25px 14px; color: var(--muted); text-align: center; }
 .notice { margin: 0 0 18px; padding: 12px 15px; border: 1px solid #285747; border-radius: 9px; color: #a9f3d8; background: #14342c; font-size: .88rem; }
 .notice.error { border-color: #60333a; color: #ffc3c5; background: #351c23; }
+.backup-panel { margin-top: 18px; }
+.backup-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+.backup-file-label { display: inline-flex; cursor: pointer; }
+.backup-file-label input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.backup-warning { margin: 14px 0 0; padding: 10px 14px; border: 1px solid #5a4a1a; border-radius: 8px; color: #e9c88c; background: #231e10; font-size: .8rem; line-height: 1.5; }
 footer { padding: 26px 0 34px; color: var(--muted); text-align: center; font-size: .75rem; }
 footer p { margin: 0; }
 :focus-visible { outline: 3px solid #8feccf; outline-offset: 3px; }

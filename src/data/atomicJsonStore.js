@@ -108,3 +108,4 @@ export function writeJson(filePath, data, validator = null) {
   fileWriteQueues.set(filePath, currentWrite);
   return currentWrite;
 }
+

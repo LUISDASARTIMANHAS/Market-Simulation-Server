@@ -1,6 +1,15 @@
 [
   {
-    "eventId": "7f34495b-ed2c-48cd-a570-5df0cbca6747",
+    "eventId": "ev-1791507318383",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.5822,
+    "occurredAt": "2026-10-09T00:55:18.380Z"
+  },
+  {
+    "eventId": "b2ca16bf-eb15-4946-a9be-5cb154ec8546",
     "assetId": "SIM",
     "category": "Juros",
     "title": "Corte de juros",

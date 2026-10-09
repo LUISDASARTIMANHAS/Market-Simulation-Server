@@ -10,8 +10,10 @@ import {
   REFERENCE_LIQUIDITY_USD,
   TICKER_INTERVAL_MS,
 } from '../config/constants.js';
+import path from 'node:path';
 import { marketStateStore } from './stateStore.js';
 import { logger } from '../utils/logger.js';
+import { writeJson } from '../data/atomicJsonStore.js';
 import {
   roundMoney,
   roundAsset,
@@ -481,6 +483,70 @@ class MarketSimulator {
       latestMarketEvent: this.latestEvent ? { ...this.latestEvent } : null,
       nextMarketEventAt: this.nextEventAt,
     };
+  }
+
+  /**
+   * Restaura o banco de dados a partir de um snapshot ou backup em JSON.
+   * Cria backup de segurança automático do estado atual antes de aplicar a alteração.
+   * @param {Record<string, any>} backupData
+   * @returns {Promise<{ accountsCount: number, historyTicksCount: number, tradesCount: number, currentPrice: number, safetyBackupFile: string }>}
+   */
+  restoreFromBackup(backupData) {
+    return this.enqueue(async () => {
+      if (!backupData || typeof backupData !== 'object' || Array.isArray(backupData)) {
+        throw Object.assign(new Error('Formato de backup inválido: deve ser um objeto JSON.'), { statusCode: 400 });
+      }
+
+      const hasHistory = Array.isArray(backupData.marketHistory);
+      const hasAccounts = Array.isArray(backupData.accounts);
+
+      if (!hasHistory && !hasAccounts && !backupData.marketState) {
+        throw Object.assign(new Error('O arquivo de backup não contém dados reconhecíveis de histórico, contas ou estado.'), { statusCode: 400 });
+      }
+
+      // Cria backup de segurança automático pré-restauração
+      const currentSnapshot = this.getBackupSnapshot();
+      const backupDir = path.join(this.store.dataDir, 'backups');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const safetyBackupPath = path.join(backupDir, `market-state.pre-restore-${timestamp}.json`);
+      await writeJson(safetyBackupPath, currentSnapshot).catch(() => {});
+
+      if (hasAccounts && hasHistory) {
+        await this.store.save({
+          marketHistory: backupData.marketHistory,
+          accounts: backupData.accounts,
+          recentTrades: Array.isArray(backupData.recentTrades) ? backupData.recentTrades : [],
+          totalVolume: Number.isFinite(backupData.totalVolume) ? backupData.totalVolume : 0,
+          buyVolume: Number.isFinite(backupData.buyVolume) ? backupData.buyVolume : 0,
+          sellVolume: Number.isFinite(backupData.sellVolume) ? backupData.sellVolume : 0,
+          latestMarketEvent: backupData.latestMarketEvent || null,
+          nextMarketEventAt: backupData.nextMarketEventAt || null,
+        });
+
+        const reloaded = await this.store.load();
+        this.initialize(reloaded);
+      } else if (backupData.marketState && backupData.assets) {
+        await this.store.repository.saveFullSnapshot(backupData);
+        const reloaded = await this.store.load();
+        this.initialize(reloaded);
+      } else {
+        throw Object.assign(new Error('Estrutura de dados não suportada para restauração.'), { statusCode: 400 });
+      }
+
+      logger.info('backup.restored', {
+        accountsCount: this.accounts.size,
+        historyTicks: this.history.length,
+        currentPrice: this.history[this.history.length - 1]?.price,
+      });
+
+      return {
+        accountsCount: this.accounts.size,
+        historyTicksCount: this.history.length,
+        tradesCount: this.recentTrades.length,
+        currentPrice: this.history[this.history.length - 1]?.price,
+        safetyBackupFile: safetyBackupPath,
+      };
+    });
   }
 
   /**

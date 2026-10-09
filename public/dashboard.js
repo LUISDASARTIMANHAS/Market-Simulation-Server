@@ -59,7 +59,7 @@ function renderTrades(trades) {
   if (!trades.length) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
-    cell.colSpan = 5;
+    cell.colSpan = 6;
     cell.className = 'empty-cell';
     cell.textContent = 'Ainda não há ordens neste mercado.';
     row.append(cell);
@@ -125,3 +125,71 @@ window.addEventListener('resize', () => {
 
 refreshMarket();
 window.setInterval(refreshMarket, 3000);
+
+// ── Backup & Restore ───────────────────────────────────────────────────────────
+const backupFeedback = document.querySelector('#backup-feedback');
+const importFileInput = document.querySelector('#import-file');
+const importFileName = document.querySelector('#import-file-name');
+const importBtn = document.querySelector('#import-backup');
+
+function showBackupFeedback(message, isError = false) {
+  if (!backupFeedback) return;
+  backupFeedback.textContent = message;
+  backupFeedback.classList.toggle('error', isError);
+  backupFeedback.hidden = !message;
+}
+
+document.querySelector('#export-backup')?.addEventListener('click', () => {
+  window.location.href = '/api/backup';
+});
+
+importFileInput?.addEventListener('change', () => {
+  const file = importFileInput.files[0];
+  if (file) {
+    importFileName.textContent = `Arquivo selecionado: ${file.name}`;
+    importFileName.hidden = false;
+    importBtn.disabled = false;
+    showBackupFeedback('');
+  } else {
+    importFileName.hidden = true;
+    importBtn.disabled = true;
+  }
+});
+
+importBtn?.addEventListener('click', async () => {
+  const file = importFileInput.files[0];
+  if (!file) {
+    showBackupFeedback('Selecione um arquivo de backup .json primeiro.', true);
+    return;
+  }
+  importBtn.disabled = true;
+  importBtn.textContent = 'Restaurando…';
+  showBackupFeedback('');
+  try {
+    const text = await file.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error('Arquivo inválido: não é um JSON válido.');
+    }
+    const result = await request('/backup/restore', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    showBackupFeedback(
+      `✅ Restauração concluída! ${result.accountsCount} conta(s), ${result.historyTicksCount} ticks de histórico, preço atual: ${money(result.currentPrice)}.`
+    );
+    // Reset file input after successful restore
+    importFileInput.value = '';
+    importFileName.hidden = true;
+    importBtn.disabled = true;
+    // Refresh market data immediately
+    refreshMarket();
+  } catch (error) {
+    showBackupFeedback(`❌ Erro na restauração: ${error.message}`, true);
+    importBtn.disabled = false;
+  } finally {
+    importBtn.textContent = '↩ Restaurar banco';
+  }
+});

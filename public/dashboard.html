@@ -70,6 +70,24 @@
         </div>
       </section>
 
+      <section class="panel backup-panel" aria-label="Backup e restauração do banco de dados">
+        <div class="panel-heading">
+          <div><p class="eyebrow">ADMINISTRAÇÃO</p><h2>Backup &amp; Restauração</h2></div>
+        </div>
+        <p class="muted" style="margin-top:12px;font-size:.85rem;line-height:1.5;">Exporte o estado atual do banco de dados ou restaure a partir de um arquivo de backup previamente exportado.</p>
+        <div class="backup-actions">
+          <button id="export-backup" class="button button-secondary" type="button">⬇ Exportar backup</button>
+          <label class="backup-file-label" for="import-file">
+            <span class="button button-secondary" aria-hidden="true">📂 Escolher arquivo…</span>
+            <input type="file" id="import-file" accept=".json" aria-label="Arquivo de backup JSON">
+          </label>
+          <button id="import-backup" class="button button-primary" type="button" disabled>↩ Restaurar banco</button>
+        </div>
+        <p id="import-file-name" class="muted" style="margin-top:10px;font-size:.78rem;" hidden></p>
+        <p class="backup-warning">⚠️ A restauração substitui <strong>todos</strong> os dados atuais do mercado. Um backup de segurança automático é salvo no servidor antes de aplicar a restauração.</p>
+        <p class="notice" id="backup-feedback" role="status" aria-live="polite" hidden></p>
+      </section>
+
       <footer><p>Simulador para paper trading. Não conectado a bolsas ou corretoras reais; preços e eventos são aleatórios.</p></footer>
     </main>
   </body>

@@ -48,6 +48,25 @@ router.get('/backup', (req, res) => {
     .send(fileContents);
 });
 
+router.post('/backup/restore', async (req, res) => {
+  try {
+    const backupData = req.body;
+    if (!backupData || typeof backupData !== 'object' || Array.isArray(backupData)) {
+      return res.status(400).json({ success: false, message: 'O arquivo de backup deve ser um objeto JSON válido.' });
+    }
+    const result = await marketSimulator.restoreFromBackup(backupData);
+    return res.status(200).json({
+      success: true,
+      message: 'Banco de dados restaurado com sucesso!',
+      data: result,
+    });
+  } catch (error) {
+    const statusCode = error.statusCode || 400;
+    logger.error('backup.restore_failed', { message: error.message });
+    return res.status(statusCode).json({ success: false, message: error.message || 'Falha ao restaurar backup.' });
+  }
+});
+
 router.post('/accounts', accountCreationLimit, async (req, res) => {
   try {
     const result = await marketSimulator.createAccount(req.body || {});

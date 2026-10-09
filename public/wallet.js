@@ -54,7 +54,7 @@ function renderHistory(history) {
   if (!history.length) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
-    cell.colSpan = 5;
+    cell.colSpan = 6;
     cell.className = 'empty-cell';
     cell.textContent = 'Sem histórico disponível.';
     row.append(cell);
