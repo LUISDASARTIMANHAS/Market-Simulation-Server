@@ -12,12 +12,14 @@ import {
 } from '../config/constants.js';
 import { marketStateStore } from './stateStore.js';
 import { logger } from '../utils/logger.js';
-
-/** @param {number} value */
-const roundMoney = (value) => Math.round((value + Number.EPSILON) * 100) / 100;
-
-/** @param {number} value */
-const roundAsset = (value) => Math.round((value + Number.EPSILON) * 1e8) / 1e8;
+import {
+  roundMoney,
+  roundAsset,
+  addMoney,
+  subtractMoney,
+  addAsset,
+  subtractAsset,
+} from '../utils/money.js';
 
 /** @param {string} apiKey */
 const hashApiKey = (apiKey) => createHash('sha256').update(apiKey).digest('hex');
@@ -75,7 +77,8 @@ const assertUsernameAvailable = (accounts, username) => {
  * Gera e mantém os preços simulados publicados pela API de mercado.
  */
 class MarketSimulator {
-  constructor() {
+  constructor(store = marketStateStore) {
+    this.store = store;
     this.history = [{ sequence: 0, price: 100, updatedAt: new Date().toISOString() }];
     this.interval = null;
     this.accounts = new Map();
@@ -119,6 +122,7 @@ class MarketSimulator {
           return [account.accountId, {
             ...account,
             username,
+            averagePrice: Number.isFinite(account.averagePrice) ? account.averagePrice : 0,
             history: Array.isArray(account.history) ? account.history.slice(0, MAX_ACCOUNT_HISTORY) : [],
           }];
         }));
@@ -214,7 +218,7 @@ class MarketSimulator {
    * Persiste preço, contas e negócios como um único estado do mercado.
    */
   persist() {
-    return marketStateStore.save({
+    return this.store.save({
       marketHistory: this.history,
       accounts: [...this.accounts.values()],
       recentTrades: this.recentTrades,
@@ -248,6 +252,7 @@ class MarketSimulator {
         keyHash: hashApiKey(apiKey),
         balance: INITIAL_VIRTUAL_BALANCE,
         assetBalance: 0,
+        averagePrice: 0,
         history: [],
         createdAt: new Date().toISOString(),
       };
@@ -397,16 +402,23 @@ class MarketSimulator {
       const volumesBefore = [this.totalVolume, this.buyVolume, this.sellVolume];
 
       if (input.side === 'BUY') {
-        account.balance = roundMoney(account.balance - total);
-        account.assetBalance = roundAsset(account.assetBalance + amount);
-        this.buyVolume = roundMoney(this.buyVolume + total);
+        const currentCost = (account.averagePrice || 0) * account.assetBalance;
+        account.balance = subtractMoney(account.balance, total);
+        account.assetBalance = addAsset(account.assetBalance, amount);
+        account.averagePrice = account.assetBalance > 0
+          ? roundMoney((currentCost + total) / account.assetBalance)
+          : 0;
+        this.buyVolume = addMoney(this.buyVolume, total);
       } else {
-        account.balance = roundMoney(account.balance + total);
-        account.assetBalance = roundAsset(account.assetBalance - amount);
-        this.sellVolume = roundMoney(this.sellVolume + total);
+        account.balance = addMoney(account.balance, total);
+        account.assetBalance = subtractAsset(account.assetBalance, amount);
+        if (account.assetBalance === 0) {
+          account.averagePrice = 0;
+        }
+        this.sellVolume = addMoney(this.sellVolume, total);
       }
       account.history = [order, ...account.history].slice(0, MAX_ACCOUNT_HISTORY);
-      this.totalVolume = roundMoney(this.totalVolume + total);
+      this.totalVolume = addMoney(this.totalVolume, total);
       this.history = [...this.history, {
         sequence: current.sequence + 1,
         price: updatedPrice,
@@ -491,3 +503,4 @@ class MarketSimulator {
 }
 
 export const marketSimulator = new MarketSimulator();
+export { MarketSimulator };
