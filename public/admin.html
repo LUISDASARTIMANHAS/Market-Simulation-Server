@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mercado Simulado | Administração</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/common.js"></script>
+    <script type="module" src="/admin.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Mercado Simulado, início">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>Mercado<span class="brand-muted"> Simulado</span></span>
+      </a>
+      <nav class="nav-tabs" aria-label="Navegação principal">
+        <a class="tab-link" href="/dashboard.html">Dashboard</a>
+        <a class="tab-link" href="/wallet.html">Carteira</a>
+        <a class="tab-link active" href="/admin.html">Administração</a>
+      </nav>
+      <span class="connection"><span class="status-dot" id="connection-dot"></span><span id="connection-status">Verificando acesso…</span></span>
+    </header>
+
+    <main class="container" id="admin-content" hidden>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">ÁREA RESTRITA</p>
+          <h1>Backup e restauração</h1>
+          <p class="intro-copy">Administre cópias completas do estado do mercado.</p>
+        </div>
+        <a class="button button-secondary" href="/dashboard.html">Voltar ao dashboard</a>
+      </section>
+
+      <section class="panel backup-panel" aria-label="Backup e restauração do banco de dados">
+        <div class="panel-heading"><div><p class="eyebrow">ADMINISTRAÇÃO</p><h2>Backup completo</h2></div></div>
+        <p class="muted backup-description">Exporte todas as coleções persistidas ou restaure um arquivo de backup.</p>
+        <div class="backup-actions">
+          <button id="export-backup" class="button button-secondary" type="button">Exportar backup</button>
+          <label class="backup-file-label" for="import-file">
+            <span class="button button-secondary" aria-hidden="true">Escolher arquivo…</span>
+            <input type="file" id="import-file" accept=".json" aria-label="Arquivo de backup JSON">
+          </label>
+          <button id="import-backup" class="button button-primary" type="button" disabled>Restaurar banco</button>
+        </div>
+        <p id="import-file-name" class="muted backup-file-name" hidden></p>
+        <p class="backup-warning">A restauração substitui <strong>todos</strong> os dados atuais. Um backup de segurança é salvo no servidor antes da operação.</p>
+        <p class="notice" id="backup-feedback" role="status" aria-live="polite" hidden></p>
+      </section>
+      <footer><p>Simulador para paper trading. Não conectado a bolsas ou corretoras reais.</p></footer>
+    </main>
+  </body>
+</html>

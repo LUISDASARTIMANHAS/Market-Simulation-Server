@@ -60,6 +60,19 @@ function setConnectionState(isConnected, message = 'Mercado conectado') {
   }
 }
 
+async function updateAdminNavigation() {
+  const adminLinks = document.querySelectorAll('[data-admin-link]');
+  if (!adminLinks.length || !getApiKey()) return;
+  try {
+    const data = await request('/account');
+    if (data.account?.isAdmin) adminLinks.forEach((link) => { link.hidden = false; });
+  } catch {
+    // A navegação administrativa fica oculta para tokens inválidos ou usuários comuns.
+  }
+}
+
+updateAdminNavigation();
+
 export {
   API_BASE,
   API_KEY_STORAGE,

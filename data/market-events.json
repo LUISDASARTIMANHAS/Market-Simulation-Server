@@ -1,5 +1,23 @@
 [
   {
+    "eventId": "ev-1791511216127",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.4443,
+    "occurredAt": "2026-10-09T02:00:16.122Z"
+  },
+  {
+    "eventId": "ev-1791511096685",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.2889,
+    "occurredAt": "2026-10-09T01:58:16.680Z"
+  },
+  {
     "eventId": "ev-1791511010359",
     "assetId": "SIM",
     "category": "Emprego",

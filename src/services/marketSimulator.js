@@ -373,6 +373,7 @@ class MarketSimulator {
       username: typeof account.username === 'string' && account.username.trim()
         ? account.username
         : account.accountId,
+      isAdmin: account.isAdmin === true,
       balance: account.balance,
       assetBalance: account.assetBalance,
       history: account.history.map((trade) => ({ ...trade })),
