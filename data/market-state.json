@@ -1,17 +1,17 @@
 {
   "assetId": "SIM",
-  "currentPrice": 55.1,
-  "sequence": 505,
-  "totalVolume": 32427.4,
-  "buyVolume": 17394.64,
-  "sellVolume": 15032.76,
+  "currentPrice": 51.22,
+  "sequence": 925,
+  "totalVolume": 76706.06,
+  "buyVolume": 39583.97,
+  "sellVolume": 37122.09,
   "latestMarketEvent": {
-    "category": "Política",
-    "title": "Instabilidade política",
-    "description": "Incerteza política aumenta a aversão ao risco.",
-    "impactPercent": -0.8526,
-    "occurredAt": "2026-10-09T02:16:09.230Z"
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.3718,
+    "occurredAt": "2026-10-09T15:06:00.174Z"
   },
-  "nextMarketEventAt": "2026-10-09T02:17:23.526Z",
-  "updatedAt": "2026-10-09T02:17:25.038Z"
+  "nextMarketEventAt": "2026-10-09T15:07:49.007Z",
+  "updatedAt": "2026-10-09T15:06:00.174Z"
 }

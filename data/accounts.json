@@ -42,7 +42,7 @@
   {
     "accountId": "e0c2bd18-9e98-41ee-8513-a263a491f41e",
     "username": "system_admin",
-    "keyHash": "1573faa9c16e2171813715c403a5f9166f4eeaf42d1ee90f68e3d963ebce1d77",
+    "keyHash": "09a20addedd0e616155f448b6f00c4e392b937f8e75f46a8be08ebaf907697f5",
     "isAdmin": true,
     "isSystemAdmin": true,
     "balance": 1000,
@@ -50,13 +50,13 @@
     "updatedAt": "2026-10-09T02:16:01.776Z"
   },
   {
-    "accountId": "321d96db-d93f-45b2-8d7b-5f298b6238bf",
-    "username": "trader_1791512243684",
-    "keyHash": "b75b895161dd4bac97aab6fe8bcbf6e1c871d9f28b62662610ea3b0636434301",
-    "isAdmin": false,
+    "accountId": "01ca53be-df95-48bc-bd2b-24956046914c",
+    "username": "luisgomesotuga",
+    "keyHash": "f1e83de01f134c8315bf64676b4ce3d0c78599299004f2fbca0d7ea142182865",
+    "isAdmin": true,
     "isSystemAdmin": false,
-    "balance": 850,
-    "createdAt": "2026-10-09T02:17:24.354Z",
-    "updatedAt": "2026-10-09T02:17:25.039Z"
+    "balance": 900,
+    "createdAt": "2026-10-09T14:57:21.683Z",
+    "updatedAt": "2026-10-09T14:59:39.014Z"
   }
 ]
