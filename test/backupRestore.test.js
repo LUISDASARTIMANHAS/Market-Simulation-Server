@@ -22,10 +22,12 @@ test('restauração substitui todas as coleções e remove atividade posterior a
 
     const simulator = new MarketSimulator(stateStore);
     simulator.initialize(await stateStore.load());
-    const adminToken = 'x9cldk6m5QqJkY3RRRWI2wJW9rhKucdSDj0VPooCcrM';
-    const admin = await simulator.ensureAdministrator(adminToken);
-    assert.equal(simulator.authenticateApiKey(adminToken), admin.accountId);
+    const admin = await simulator.ensureAdministrator();
+    assert.ok(admin.apiKey);
+    assert.equal(simulator.authenticateApiKey(admin.apiKey), admin.accountId);
     assert.equal(simulator.isAdministrator(admin.accountId), true);
+    const persistedAdmin = (await repository.getAccounts()).find((account) => account.accountId === admin.accountId);
+    assert.notEqual(persistedAdmin.keyHash, admin.apiKey, 'O token administrativo não pode ser salvo em texto puro');
     const preserved = await simulator.createAccount({ username: 'preserved_user' });
     const backup = await simulator.getBackupSnapshot();
 

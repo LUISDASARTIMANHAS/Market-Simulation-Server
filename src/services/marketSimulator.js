@@ -41,8 +41,6 @@ const MARKET_EVENTS = [
 
 const randomBetween = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
 
-export const DEFAULT_ADMIN_API_KEY = 'x9cldk6m5QqJkY3RRRWI2wJW9rhKucdSDj0VPooCcrM';
-
 /**
  * @param {string | null | undefined} username
  * @returns {string | null}
@@ -317,21 +315,26 @@ class MarketSimulator {
   }
 
   /**
-   * Ensures that the configured recovery token always belongs to an administrator.
-   * @param {string} apiKey
-   * @returns {Promise<{ accountId: string, created: boolean }>}
+   * Creates an administrator only when none exists. Only the key hash is persisted.
+   * An explicit token may be supplied by the deployment environment.
+   * @param {string | undefined} apiKey
+   * @returns {Promise<{ accountId: string, created: boolean, apiKey: string | null }>}
    */
-  ensureAdministrator(apiKey = DEFAULT_ADMIN_API_KEY) {
-    this.recoveryAdminToken = apiKey;
+  ensureAdministrator(apiKey) {
     return this.enqueue(() => this.ensureAdministratorNow(apiKey));
   }
 
   async ensureAdministratorNow(apiKey) {
-    const keyHash = hashApiKey(apiKey);
-    let account = [...this.accounts.values()].find((candidate) => candidate.keyHash === keyHash);
+    const suppliedToken = typeof apiKey === 'string' && apiKey.length >= 40 ? apiKey : null;
+    const keyHash = suppliedToken ? hashApiKey(suppliedToken) : null;
+    let account = keyHash
+      ? [...this.accounts.values()].find((candidate) => candidate.keyHash === keyHash)
+      : [...this.accounts.values()].find((candidate) => candidate.isAdmin === true);
     let created = false;
+    let changed = false;
 
     if (!account) {
+      const generatedToken = suppliedToken || randomBytes(32).toString('base64url');
       let username = 'system_admin';
       let suffix = 1;
       while ([...this.accounts.values()].some((candidate) => candidate.username?.toLowerCase() === username)) {
@@ -341,7 +344,7 @@ class MarketSimulator {
       account = {
         accountId: randomUUID(),
         username,
-        keyHash,
+        keyHash: hashApiKey(generatedToken),
         isAdmin: true,
         balance: INITIAL_VIRTUAL_BALANCE,
         assetBalance: 0,
@@ -351,13 +354,16 @@ class MarketSimulator {
       };
       this.accounts.set(account.accountId, account);
       created = true;
+      apiKey = generatedToken;
     } else if (!account.isAdmin) {
       account.isAdmin = true;
+      changed = true;
     }
 
-    if (created || account.isAdmin) await this.persist();
+    if (created || changed) await this.persist();
+    this.recoveryAdministrator = { ...account, history: account.history.map((trade) => ({ ...trade })) };
     logger.info('admin.ready', { accountId: account.accountId, created });
-    return { accountId: account.accountId, created };
+    return { accountId: account.accountId, created, apiKey: created ? apiKey : null };
   }
 
   /**
@@ -611,7 +617,10 @@ class MarketSimulator {
       await this.store.repository.replaceFullSnapshot(snapshotToRestore);
       const reloaded = await this.store.load();
       this.initialize(reloaded);
-      if (this.recoveryAdminToken) await this.ensureAdministratorNow(this.recoveryAdminToken);
+      if (this.recoveryAdministrator && ![...this.accounts.values()].some((account) => account.isAdmin === true)) {
+        this.accounts.set(this.recoveryAdministrator.accountId, this.recoveryAdministrator);
+        await this.persist();
+      }
 
       /*
       if (hasAccounts && hasHistory) {

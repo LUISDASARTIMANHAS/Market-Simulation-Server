@@ -1,5 +1,32 @@
 [
   {
+    "eventId": "ev-1791511587276",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.4871,
+    "occurredAt": "2026-10-09T02:06:27.261Z"
+  },
+  {
+    "eventId": "ev-1791511509314",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.7329,
+    "occurredAt": "2026-10-09T02:05:09.311Z"
+  },
+  {
+    "eventId": "ev-1791511414901",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.8648,
+    "occurredAt": "2026-10-09T02:03:34.899Z"
+  },
+  {
     "eventId": "ev-1791511340615",
     "assetId": "SIM",
     "category": "Política",

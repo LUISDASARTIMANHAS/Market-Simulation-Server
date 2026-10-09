@@ -67,7 +67,7 @@ O servidor escreve logs estruturados em JSON no console do processo, um evento p
 
 O arquivo inclui as oito coleções persistidas: contas, ativos, carteiras, ordens, negociações, histórico de preços, eventos e estado operacional. Ao restaurar, todas elas são substituídas pelo conteúdo do backup; nenhum registro posterior é mesclado ou preservado. A aplicação salva um backup de segurança antes da substituição.
 
-`POST /api/backup/restore` exige `Authorization: Bearer <token-administrador>`. Na inicialização, o servidor garante que o token configurado em `MARKET_ADMIN_TOKEN` (ou o token administrativo de recuperação exibido no terminal) pertence a uma conta administradora.
+`POST /api/backup/restore` exige `Authorization: Bearer <token-administrador>`. Na primeira inicialização, o servidor cria um administrador e exibe sua chave uma única vez no terminal; somente o hash da chave é persistido. Para definir uma chave administrativa no ambiente de implantação, configure `MARKET_ADMIN_TOKEN` antes de iniciar o servidor.
 
 ```json
 {

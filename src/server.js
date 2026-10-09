@@ -3,7 +3,7 @@ import cors from 'cors';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import marketRoutes from './routes/marketRoutes.js';
-import { DEFAULT_ADMIN_API_KEY, marketSimulator } from './services/marketSimulator.js';
+import { marketSimulator } from './services/marketSimulator.js';
 import { marketStateStore } from './services/stateStore.js';
 import { logger } from './utils/logger.js';
 
@@ -43,8 +43,7 @@ app.use(express.static(PUBLIC_DIRECTORY, { index: 'index.html' }));
 async function startMarketServer() {
   const savedState = await marketStateStore.load();
   marketSimulator.initialize(savedState);
-  const adminToken = process.env.MARKET_ADMIN_TOKEN || DEFAULT_ADMIN_API_KEY;
-  await marketSimulator.ensureAdministrator(adminToken);
+  const adminSetup = await marketSimulator.ensureAdministrator(process.env.MARKET_ADMIN_TOKEN);
   marketSimulator.start();
   logger.info('market.state_restored', {
     historyEntries: Array.isArray(savedState.marketHistory) ? savedState.marketHistory.length : 0,
@@ -52,7 +51,11 @@ async function startMarketServer() {
   });
 
   app.listen(PORT, () => {
-    console.log(`ADMIN API TOKEN (guarde em local seguro): ${adminToken}`);
+    if (adminSetup.apiKey) {
+      console.log(`ADMIN API TOKEN (guarde em local seguro; será exibido apenas nesta criação): ${adminSetup.apiKey}`);
+    } else {
+      console.log(`Administrador pronto: ${adminSetup.accountId}. O token não é armazenado em texto puro.`);
+    }
     logger.info('server.started', {
       port: PORT,
       marketStatusUrl: `http://localhost:${PORT}/api/market/status`,
