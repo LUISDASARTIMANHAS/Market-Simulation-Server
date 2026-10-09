@@ -1,8 +1,8 @@
 export const TICKER_INTERVAL_MS = 2000;
 export const INITIAL_VIRTUAL_BALANCE = 1000;
 export const MAX_ORDER_NOTIONAL_USD = 5000;
-export const MAX_ORDER_IMPACT_PERCENT = 0.25;
-export const REFERENCE_LIQUIDITY_USD = 2000;
+export const MAX_ORDER_IMPACT_PERCENT = 2;
+export const REFERENCE_LIQUIDITY_USD = 1000;
 export const MAX_ACCOUNT_HISTORY = 100;
 export const MAX_PUBLIC_TRADES = 50;
 

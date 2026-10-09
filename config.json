@@ -1,0 +1,67 @@
+{
+  "discordLogs": {
+    "color": "FF00FF",
+    "footerText": null,
+    "footerUrl": "https://cdn.discordapp.com/attachments/952004420265205810/1188643212378787940/pingobras-logo-fundo.png?ex=6682a481&is=66815301&hm=cc9c387ac2aad7fa8040738f47ae0ab43e2b77027d188e272a147b1829e3a53f&"
+  },
+  "userAgent": "BACKEND NODE SERVER",
+  "cacheDurationInMinutes": 30,
+  "requireValidKeyRoutes": [
+    "/default/api",
+    "/api/auth",
+    "/api/discord",
+    "/api/mongodb",
+    "/api/users",
+    "/api/youtube"
+  ],
+  "discordRequestLogger": {
+    "enabled": true
+  },
+  "ORIGIN": [
+    "/^https://.+/",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+  ],
+  "METHODS": "GET,PUT,POST,DELETE",
+  "ALLOWED_HEADERS": [
+    "Content-Type",
+    "Access-Control-Allow-Origin",
+    "authorization",
+    "id",
+    "key",
+    "urlParams",
+    "cache-control",
+    "X-Disable-Cache",
+    "x-nonce",
+    "x-signature",
+    "x-timestamp",
+    "x-ip-info"
+  ],
+  "ALLOWED_USER_AGENTS": [
+    "Mozilla",
+    "Chrome",
+    "Firefox",
+    "custom/1.0",
+    "Discordbot",
+    "iPhone OS",
+    "WordPress"
+  ],
+  "BLOCKED_USER_AGENTS": [
+    "CensysInspect",
+    "Shodan",
+    "curl",
+    "python-requests",
+    "nmap"
+  ],
+  "requestLogger": {
+    "enabled": true
+  },
+  "emailSystem": {
+    "service": "Gmail",
+    "host": "smtp.gmail.com",
+    "ssl_port": 465,
+    "tls_port: ": 587,
+    "user: ": "example@gmail.com",
+    "ssl_tls: ": true
+  }
+}

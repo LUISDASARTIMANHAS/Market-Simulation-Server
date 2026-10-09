@@ -1,4 +1,9 @@
-import { createHash, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
+import {
+  createHash,
+  randomBytes,
+  randomUUID,
+  timingSafeEqual,
+} from "node:crypto";
 import {
   INITIAL_VIRTUAL_BALANCE,
   MARKET_EVENT_MAX_INTERVAL_MS,
@@ -9,11 +14,13 @@ import {
   MAX_PUBLIC_TRADES,
   REFERENCE_LIQUIDITY_USD,
   TICKER_INTERVAL_MS,
-} from '../config/constants.js';
-import path from 'node:path';
-import { marketStateStore } from './stateStore.js';
-import { logger } from '../utils/logger.js';
-import { writeJson } from '../data/atomicJsonStore.js';
+} from "../config/constants.js";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { fopen } from "npm-package-nodejs-utils-lda";
+import { marketStateStore } from "./stateStore.js";
+import { logger } from "../utils/logger.js";
+import { writeJson } from "../data/atomicJsonStore.js";
 import {
   roundMoney,
   roundAsset,
@@ -21,43 +28,67 @@ import {
   subtractMoney,
   addAsset,
   subtractAsset,
-} from '../utils/money.js';
+} from "../utils/money.js";
 
 /** @param {string} apiKey */
-const hashApiKey = (apiKey) => createHash('sha256').update(apiKey).digest('hex');
+const hashApiKey = (apiKey) =>
+  createHash("sha256").update(apiKey).digest("hex");
 
-const MARKET_EVENTS = [
-  { category: 'Inflação', title: 'Inflação acima do esperado', description: 'Pressão inflacionária reduz o apetite por risco.', minImpact: -1.2, maxImpact: -0.3 },
-  { category: 'Inflação', title: 'Inflação desacelera', description: 'Alívio inflacionário melhora o apetite por risco.', minImpact: 0.2, maxImpact: 0.9 },
-  { category: 'Guerra', title: 'Escalada de conflito', description: 'Aumento da tensão geopolítica pressiona os ativos.', minImpact: -1.5, maxImpact: -0.5 },
-  { category: 'Guerra', title: 'Acordo de cessar-fogo', description: 'Redução da tensão geopolítica favorece os ativos.', minImpact: 0.3, maxImpact: 1.2 },
-  { category: 'Política', title: 'Instabilidade política', description: 'Incerteza política aumenta a aversão ao risco.', minImpact: -1.1, maxImpact: -0.3 },
-  { category: 'Política', title: 'Acordo político', description: 'Avanço em negociações reduz a incerteza.', minImpact: 0.2, maxImpact: 0.8 },
-  { category: 'Juros', title: 'Alta inesperada de juros', description: 'Juros maiores pressionam os ativos de risco.', minImpact: -1, maxImpact: -0.3 },
-  { category: 'Juros', title: 'Corte de juros', description: 'Juros menores favorecem ativos de risco.', minImpact: 0.2, maxImpact: 0.9 },
-  { category: 'Tecnologia', title: 'Avanço tecnológico', description: 'Uma inovação relevante melhora as perspectivas do mercado.', minImpact: 0.3, maxImpact: 1.1 },
-  { category: 'Emprego', title: 'Mercado de trabalho enfraquece', description: 'Sinais de desaceleração aumentam a cautela dos investidores.', minImpact: -0.9, maxImpact: -0.2 },
-];
+const MARKET_EVENTS_FILE = fileURLToPath(
+  new URL("../config/market-events.json", import.meta.url),
+);
+const MARKET_EVENTS = fopen(MARKET_EVENTS_FILE);
 
-const randomBetween = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
+if (
+  !Array.isArray(MARKET_EVENTS) ||
+  MARKET_EVENTS.length === 0 ||
+  MARKET_EVENTS.some(
+    (event) =>
+      typeof event.category !== "string" ||
+      typeof event.title !== "string" ||
+      typeof event.description !== "string" ||
+      !Number.isFinite(event.minImpact) ||
+      !Number.isFinite(event.maxImpact) ||
+      event.minImpact >= event.maxImpact,
+  )
+) {
+  throw new Error(`Catálogo de eventos inválido: ${MARKET_EVENTS_FILE}`);
+}
+
+const randomBetween = (minimum, maximum) =>
+  minimum + Math.random() * (maximum - minimum);
 
 /**
  * @param {string | null | undefined} username
  * @returns {string | null}
  */
 const normalizeUsername = (username) => {
-  if (typeof username !== 'string') {
-    throw Object.assign(new Error('username é obrigatório. Use 3 a 24 caracteres, sem espaços.'), { statusCode: 400 });
+  if (typeof username !== "string") {
+    throw Object.assign(
+      new Error("username é obrigatório. Use 3 a 24 caracteres, sem espaços."),
+      { statusCode: 400 },
+    );
   }
   const trimmed = username.trim();
   if (!trimmed) {
-    throw Object.assign(new Error('username é obrigatório. Use 3 a 24 caracteres, sem espaços.'), { statusCode: 400 });
+    throw Object.assign(
+      new Error("username é obrigatório. Use 3 a 24 caracteres, sem espaços."),
+      { statusCode: 400 },
+    );
   }
   if (trimmed.length < 3 || trimmed.length > 24) {
-    throw Object.assign(new Error('username deve ter entre 3 e 24 caracteres.'), { statusCode: 400 });
+    throw Object.assign(
+      new Error("username deve ter entre 3 e 24 caracteres."),
+      { statusCode: 400 },
+    );
   }
   if (!/^[a-zA-Z0-9._-]+$/.test(trimmed)) {
-    throw Object.assign(new Error('username aceita apenas letras, números, ponto, underline e hífen.'), { statusCode: 400 });
+    throw Object.assign(
+      new Error(
+        "username aceita apenas letras, números, ponto, underline e hífen.",
+      ),
+      { statusCode: 400 },
+    );
   }
   return trimmed;
 };
@@ -69,8 +100,14 @@ const normalizeUsername = (username) => {
  */
 const assertUsernameAvailable = (accounts, username) => {
   for (const account of accounts.values()) {
-    if (typeof account.username === 'string' && account.username.toLowerCase() === username.toLowerCase()) {
-      throw Object.assign(new Error('username já está em uso por outra conta.'), { statusCode: 409 });
+    if (
+      typeof account.username === "string" &&
+      account.username.toLowerCase() === username.toLowerCase()
+    ) {
+      throw Object.assign(
+        new Error("username já está em uso por outra conta."),
+        { statusCode: 409 },
+      );
     }
   }
 };
@@ -81,7 +118,9 @@ const assertUsernameAvailable = (accounts, username) => {
 class MarketSimulator {
   constructor(store = marketStateStore) {
     this.store = store;
-    this.history = [{ sequence: 0, price: 100, updatedAt: new Date().toISOString() }];
+    this.history = [
+      { sequence: 0, price: 100, updatedAt: new Date().toISOString() },
+    ];
     this.interval = null;
     this.accounts = new Map();
     this.recentTrades = [];
@@ -99,47 +138,68 @@ class MarketSimulator {
    */
   initialize(state) {
     if (Array.isArray(state.marketHistory)) {
-      const savedHistory = state.marketHistory.filter((tick) =>
-        Number.isInteger(tick.sequence)
-        && Number.isFinite(tick.price)
-        && tick.price > 0
-        && typeof tick.updatedAt === 'string'
+      const savedHistory = state.marketHistory.filter(
+        (tick) =>
+          Number.isInteger(tick.sequence) &&
+          Number.isFinite(tick.price) &&
+          tick.price > 0 &&
+          typeof tick.updatedAt === "string",
       );
       if (savedHistory.length > 0) this.history = savedHistory.slice(-50);
     }
 
     if (Array.isArray(state.accounts)) {
-      this.accounts = new Map(state.accounts
-        .filter((account) => typeof account.accountId === 'string'
-          && typeof account.keyHash === 'string'
-          && /^[a-f0-9]{64}$/.test(account.keyHash)
-          && Number.isFinite(account.balance)
-          && account.balance >= 0
-          && Number.isFinite(account.assetBalance)
-          && account.assetBalance >= 0)
-        .map((account) => {
-          const username = typeof account.username === 'string' && account.username.trim()
-            ? account.username.trim()
-            : account.accountId;
-          return [account.accountId, {
-            ...account,
-            username,
-            averagePrice: Number.isFinite(account.averagePrice) ? account.averagePrice : 0,
-            history: Array.isArray(account.history) ? account.history.slice(0, MAX_ACCOUNT_HISTORY) : [],
-          }];
-        }));
+      this.accounts = new Map(
+        state.accounts
+          .filter(
+            (account) =>
+              typeof account.accountId === "string" &&
+              typeof account.keyHash === "string" &&
+              /^[a-f0-9]{64}$/.test(account.keyHash) &&
+              Number.isFinite(account.balance) &&
+              account.balance >= 0 &&
+              Number.isFinite(account.assetBalance) &&
+              account.assetBalance >= 0,
+          )
+          .map((account) => {
+            const username =
+              typeof account.username === "string" && account.username.trim()
+                ? account.username.trim()
+                : account.accountId;
+            return [
+              account.accountId,
+              {
+                ...account,
+                username,
+                averagePrice: Number.isFinite(account.averagePrice)
+                  ? account.averagePrice
+                  : 0,
+                history: Array.isArray(account.history)
+                  ? account.history.slice(0, MAX_ACCOUNT_HISTORY)
+                  : [],
+              },
+            ];
+          }),
+      );
     }
-    this.recentTrades = Array.isArray(state.recentTrades) ? state.recentTrades.slice(0, MAX_PUBLIC_TRADES) : [];
-    this.totalVolume = Number.isFinite(state.totalVolume) ? state.totalVolume : 0;
+    this.recentTrades = Array.isArray(state.recentTrades)
+      ? state.recentTrades.slice(0, MAX_PUBLIC_TRADES)
+      : [];
+    this.totalVolume = Number.isFinite(state.totalVolume)
+      ? state.totalVolume
+      : 0;
     this.buyVolume = Number.isFinite(state.buyVolume) ? state.buyVolume : 0;
     this.sellVolume = Number.isFinite(state.sellVolume) ? state.sellVolume : 0;
-    this.latestEvent = state.latestMarketEvent && typeof state.latestMarketEvent.title === 'string'
-      ? state.latestMarketEvent
-      : null;
-    this.nextEventAt = typeof state.nextMarketEventAt === 'string'
-      && Number.isFinite(Date.parse(state.nextMarketEventAt))
-      ? state.nextMarketEventAt
-      : null;
+    this.latestEvent =
+      state.latestMarketEvent &&
+      typeof state.latestMarketEvent.title === "string"
+        ? state.latestMarketEvent
+        : null;
+    this.nextEventAt =
+      typeof state.nextMarketEventAt === "string" &&
+      Number.isFinite(Date.parse(state.nextMarketEventAt))
+        ? state.nextMarketEventAt
+        : null;
   }
 
   /**
@@ -151,9 +211,16 @@ class MarketSimulator {
       if (Date.now() < Date.parse(this.nextEventAt)) return;
 
       const previous = this.history[this.history.length - 1];
-      const template = MARKET_EVENTS[Math.floor(Math.random() * MARKET_EVENTS.length)];
-      const changePercent = randomBetween(template.minImpact, template.maxImpact);
-      const price = Number(Math.max(0.01, previous.price * (1 + changePercent / 100)).toFixed(2));
+      const template =
+        MARKET_EVENTS[Math.floor(Math.random() * MARKET_EVENTS.length)];
+      const changePercent = randomBetween(
+        template.minImpact,
+        template.maxImpact,
+      );
+      const actualImpactPercent = (Math.exp(changePercent / 100) - 1) * 100;
+      const price = Number(
+        Math.max(0.01, previous.price * Math.exp(changePercent / 100)).toFixed(2),
+      );
       const occurredAt = new Date().toISOString();
       this.history.push({
         sequence: previous.sequence + 1,
@@ -165,17 +232,17 @@ class MarketSimulator {
         category: template.category,
         title: template.title,
         description: template.description,
-        impactPercent: Number(changePercent.toFixed(4)),
+        impactPercent: Number(actualImpactPercent.toFixed(4)),
         occurredAt,
       };
       this.scheduleNextEvent();
 
-      logger.info('market.event_applied', {
+      logger.info("market.event_applied", {
         category: template.category,
         title: template.title,
         previousPrice: previous.price,
         currentPrice: price,
-        impactPercent: Number(changePercent.toFixed(4)),
+        impactPercent: Number(actualImpactPercent.toFixed(4)),
         sequence: previous.sequence + 1,
         nextEventAt: this.nextEventAt,
       });
@@ -185,7 +252,10 @@ class MarketSimulator {
 
   /** Agenda o próximo evento dentro da janela configurada. */
   scheduleNextEvent() {
-    const delay = randomBetween(MARKET_EVENT_MIN_INTERVAL_MS, MARKET_EVENT_MAX_INTERVAL_MS);
+    const delay = randomBetween(
+      MARKET_EVENT_MIN_INTERVAL_MS,
+      MARKET_EVENT_MAX_INTERVAL_MS,
+    );
     this.nextEventAt = new Date(Date.now() + delay).toISOString();
   }
 
@@ -197,9 +267,11 @@ class MarketSimulator {
     if (this.interval) return false;
     if (!this.nextEventAt) this.scheduleNextEvent();
     this.interval = setInterval(() => {
-      this.tick().catch((error) => logger.error('market.tick_failed', { message: error.message }));
+      this.tick().catch((error) =>
+        logger.error("market.tick_failed", { message: error.message }),
+      );
     }, TICKER_INTERVAL_MS);
-    logger.info('market.ticker_started', {
+    logger.info("market.ticker_started", {
       tickIntervalMs: TICKER_INTERVAL_MS,
       nextEventAt: this.nextEventAt,
     });
@@ -250,13 +322,14 @@ class MarketSimulator {
    */
   createAccountWithRole(input = {}, isAdmin = false) {
     return this.enqueue(async () => {
-      const apiKey = randomBytes(32).toString('base64url');
+      const apiKey = randomBytes(32).toString("base64url");
       const accountId = randomUUID();
-      const providedUsername = typeof input?.username === 'string'
-        ? input.username
-        : typeof input?.accountName === 'string'
-          ? input.accountName
-          : null;
+      const providedUsername =
+        typeof input?.username === "string"
+          ? input.username
+          : typeof input?.accountName === "string"
+            ? input.accountName
+            : null;
       const username = normalizeUsername(providedUsername);
       assertUsernameAvailable(this.accounts, username);
       const account = {
@@ -277,7 +350,10 @@ class MarketSimulator {
         this.accounts.delete(account.accountId);
         throw error;
       }
-      logger.info('account.created', { accountId: account.accountId, username });
+      logger.info("account.created", {
+        accountId: account.accountId,
+        username,
+      });
       return { account: this.getAccount(account.accountId), apiKey };
     });
   }
@@ -290,10 +366,13 @@ class MarketSimulator {
   rotateApiKey(accountId) {
     return this.enqueue(async () => {
       const account = this.accounts.get(accountId);
-      if (!account) throw Object.assign(new Error('Conta não encontrada.'), { statusCode: 404 });
+      if (!account)
+        throw Object.assign(new Error("Conta não encontrada."), {
+          statusCode: 404,
+        });
 
       const previousHash = account.keyHash;
-      const apiKey = randomBytes(32).toString('base64url');
+      const apiKey = randomBytes(32).toString("base64url");
       account.keyHash = hashApiKey(apiKey);
       try {
         await this.persist();
@@ -301,7 +380,7 @@ class MarketSimulator {
         account.keyHash = previousHash;
         throw error;
       }
-      logger.info('account.api_key_rotated', { accountId });
+      logger.info("account.api_key_rotated", { accountId });
       return { account: this.getAccount(accountId), apiKey };
     });
   }
@@ -312,11 +391,16 @@ class MarketSimulator {
    * @returns {string | null}
    */
   authenticateApiKey(apiKey) {
-    if (typeof apiKey !== 'string' || apiKey.length < 40 || apiKey.length > 100) return null;
-    const candidate = Buffer.from(hashApiKey(apiKey), 'hex');
+    if (typeof apiKey !== "string" || apiKey.length < 40 || apiKey.length > 100)
+      return null;
+    const candidate = Buffer.from(hashApiKey(apiKey), "hex");
     for (const account of this.accounts.values()) {
-      const stored = Buffer.from(account.keyHash, 'hex');
-      if (candidate.length === stored.length && timingSafeEqual(candidate, stored)) return account.accountId;
+      const stored = Buffer.from(account.keyHash, "hex");
+      if (
+        candidate.length === stored.length &&
+        timingSafeEqual(candidate, stored)
+      )
+        return account.accountId;
     }
     return null;
   }
@@ -338,19 +422,29 @@ class MarketSimulator {
   }
 
   async ensureAdministratorNow(apiKey) {
-    const suppliedToken = typeof apiKey === 'string' && apiKey.length >= 40 ? apiKey : null;
+    const suppliedToken =
+      typeof apiKey === "string" && apiKey.length >= 40 ? apiKey : null;
     const keyHash = suppliedToken ? hashApiKey(suppliedToken) : null;
     let account = keyHash
-      ? [...this.accounts.values()].find((candidate) => candidate.keyHash === keyHash)
-      : [...this.accounts.values()].find((candidate) => candidate.isSystemAdmin === true);
+      ? [...this.accounts.values()].find(
+          (candidate) => candidate.keyHash === keyHash,
+        )
+      : [...this.accounts.values()].find(
+          (candidate) => candidate.isSystemAdmin === true,
+        );
     let created = false;
     let changed = false;
 
     if (!account) {
-      const generatedToken = suppliedToken || randomBytes(32).toString('base64url');
-      let username = 'system_admin';
+      const generatedToken =
+        suppliedToken || randomBytes(32).toString("base64url");
+      let username = "system_admin";
       let suffix = 1;
-      while ([...this.accounts.values()].some((candidate) => candidate.username?.toLowerCase() === username)) {
+      while (
+        [...this.accounts.values()].some(
+          (candidate) => candidate.username?.toLowerCase() === username,
+        )
+      ) {
         suffix += 1;
         username = `system_admin_${suffix}`;
       }
@@ -382,14 +476,17 @@ class MarketSimulator {
     // Without an environment-provided token, create a fresh valid key at every
     // boot. This keeps the terminal value usable even if an admin already exists.
     if (!suppliedToken && !created) {
-      apiKey = randomBytes(32).toString('base64url');
+      apiKey = randomBytes(32).toString("base64url");
       account.keyHash = hashApiKey(apiKey);
       changed = true;
     }
 
     if (created || changed) await this.persist();
-    this.recoveryAdministrator = { ...account, history: account.history.map((trade) => ({ ...trade })) };
-    logger.info('admin.ready', { accountId: account.accountId, created });
+    this.recoveryAdministrator = {
+      ...account,
+      history: account.history.map((trade) => ({ ...trade })),
+    };
+    logger.info("admin.ready", { accountId: account.accountId, created });
     return { accountId: account.accountId, created, apiKey };
   }
 
@@ -403,9 +500,10 @@ class MarketSimulator {
     if (!account) return null;
     return {
       accountId: account.accountId,
-      username: typeof account.username === 'string' && account.username.trim()
-        ? account.username
-        : account.accountId,
+      username:
+        typeof account.username === "string" && account.username.trim()
+          ? account.username
+          : account.accountId,
       isAdmin: account.isAdmin === true,
       balance: account.balance,
       assetBalance: account.assetBalance,
@@ -418,15 +516,18 @@ class MarketSimulator {
     return [...this.accounts.values()]
       .map((account) => ({
         accountId: account.accountId,
-        username: typeof account.username === 'string' && account.username.trim()
-          ? account.username
-          : account.accountId,
+        username:
+          typeof account.username === "string" && account.username.trim()
+            ? account.username
+            : account.accountId,
         isAdmin: account.isAdmin === true,
         balance: account.balance,
         assetBalance: account.assetBalance,
         createdAt: account.createdAt || null,
       }))
-      .sort((first, second) => String(first.username).localeCompare(String(second.username), 'pt-BR'));
+      .sort((first, second) =>
+        String(first.username).localeCompare(String(second.username), "pt-BR"),
+      );
   }
 
   /**
@@ -438,13 +539,25 @@ class MarketSimulator {
   updateAccountAsAdministrator(accountId, input = {}, administratorId) {
     return this.enqueue(async () => {
       const account = this.accounts.get(accountId);
-      if (!account) throw Object.assign(new Error('Conta não encontrada.'), { statusCode: 404 });
+      if (!account)
+        throw Object.assign(new Error("Conta não encontrada."), {
+          statusCode: 404,
+        });
 
-      if (Object.prototype.hasOwnProperty.call(input, 'isAdmin') && typeof input.isAdmin !== 'boolean') {
-        throw Object.assign(new Error('isAdmin deve ser verdadeiro ou falso.'), { statusCode: 400 });
+      if (
+        Object.prototype.hasOwnProperty.call(input, "isAdmin") &&
+        typeof input.isAdmin !== "boolean"
+      ) {
+        throw Object.assign(
+          new Error("isAdmin deve ser verdadeiro ou falso."),
+          { statusCode: 400 },
+        );
       }
 
-      const nextUsername = Object.prototype.hasOwnProperty.call(input, 'username')
+      const nextUsername = Object.prototype.hasOwnProperty.call(
+        input,
+        "username",
+      )
         ? normalizeUsername(input.username)
         : account.username;
       if (nextUsername.toLowerCase() !== account.username.toLowerCase()) {
@@ -453,13 +566,28 @@ class MarketSimulator {
         assertUsernameAvailable(otherAccounts, nextUsername);
       }
 
-      const nextIsAdmin = Object.prototype.hasOwnProperty.call(input, 'isAdmin') ? input.isAdmin : account.isAdmin === true;
+      const nextIsAdmin = Object.prototype.hasOwnProperty.call(input, "isAdmin")
+        ? input.isAdmin
+        : account.isAdmin === true;
       if (account.accountId === administratorId && !nextIsAdmin) {
-        throw Object.assign(new Error('Não é possível remover seu próprio acesso administrativo.'), { statusCode: 400 });
+        throw Object.assign(
+          new Error(
+            "Não é possível remover seu próprio acesso administrativo.",
+          ),
+          { statusCode: 400 },
+        );
       }
-      if (account.isAdmin === true && !nextIsAdmin
-        && [...this.accounts.values()].filter((candidate) => candidate.isAdmin === true).length === 1) {
-        throw Object.assign(new Error('Deve existir pelo menos um administrador.'), { statusCode: 400 });
+      if (
+        account.isAdmin === true &&
+        !nextIsAdmin &&
+        [...this.accounts.values()].filter(
+          (candidate) => candidate.isAdmin === true,
+        ).length === 1
+      ) {
+        throw Object.assign(
+          new Error("Deve existir pelo menos um administrador."),
+          { statusCode: 400 },
+        );
       }
 
       const previous = { ...account };
@@ -472,7 +600,11 @@ class MarketSimulator {
         Object.assign(account, previous);
         throw error;
       }
-      logger.info('admin.account_updated', { administratorId, accountId, isAdmin: account.isAdmin });
+      logger.info("admin.account_updated", {
+        administratorId,
+        accountId,
+        isAdmin: account.isAdmin,
+      });
       return this.getAccount(accountId);
     });
   }
@@ -485,17 +617,33 @@ class MarketSimulator {
   deleteAccountAsAdministrator(accountId, administratorId) {
     return this.enqueue(async () => {
       const account = this.accounts.get(accountId);
-      if (!account) throw Object.assign(new Error('Conta não encontrada.'), { statusCode: 404 });
+      if (!account)
+        throw Object.assign(new Error("Conta não encontrada."), {
+          statusCode: 404,
+        });
       if (accountId === administratorId) {
-        throw Object.assign(new Error('Não é possível excluir a própria conta administrativa.'), { statusCode: 400 });
+        throw Object.assign(
+          new Error("Não é possível excluir a própria conta administrativa."),
+          { statusCode: 400 },
+        );
       }
-      if (account.isAdmin === true && [...this.accounts.values()].filter((candidate) => candidate.isAdmin === true).length === 1) {
-        throw Object.assign(new Error('Não é possível excluir o último administrador.'), { statusCode: 400 });
+      if (
+        account.isAdmin === true &&
+        [...this.accounts.values()].filter(
+          (candidate) => candidate.isAdmin === true,
+        ).length === 1
+      ) {
+        throw Object.assign(
+          new Error("Não é possível excluir o último administrador."),
+          { statusCode: 400 },
+        );
       }
 
       const previousTrades = this.recentTrades;
       this.accounts.delete(accountId);
-      this.recentTrades = this.recentTrades.filter((trade) => trade.accountId !== accountId);
+      this.recentTrades = this.recentTrades.filter(
+        (trade) => trade.accountId !== accountId,
+      );
       try {
         await this.persist();
       } catch (error) {
@@ -503,7 +651,7 @@ class MarketSimulator {
         this.recentTrades = previousTrades;
         throw error;
       }
-      logger.info('admin.account_deleted', { administratorId, accountId });
+      logger.info("admin.account_deleted", { administratorId, accountId });
     });
   }
 
@@ -517,52 +665,79 @@ class MarketSimulator {
   placeOrder(accountId, input) {
     return this.enqueue(async () => {
       const account = this.accounts.get(accountId);
-      if (!account) throw Object.assign(new Error('Conta não encontrada.'), { statusCode: 404 });
+      if (!account)
+        throw Object.assign(new Error("Conta não encontrada."), {
+          statusCode: 404,
+        });
       const current = this.history[this.history.length - 1];
       let amount;
       let total;
 
-      if (input?.side === 'BUY') {
+      if (input?.side === "BUY") {
         const quoteAmount = Number(input.quoteAmount);
         if (!Number.isFinite(quoteAmount) || quoteAmount <= 0) {
-          throw Object.assign(new Error('Informe quoteAmount maior que zero para compra.'), { statusCode: 400 });
+          throw Object.assign(
+            new Error("Informe quoteAmount maior que zero para compra."),
+            { statusCode: 400 },
+          );
         }
         if (quoteAmount > MAX_ORDER_NOTIONAL_USD) {
-          throw Object.assign(new Error(`O limite por ordem é US$ ${MAX_ORDER_NOTIONAL_USD}.`), { statusCode: 400 });
+          throw Object.assign(
+            new Error(`O limite por ordem é US$ ${MAX_ORDER_NOTIONAL_USD}.`),
+            { statusCode: 400 },
+          );
         }
         total = roundMoney(quoteAmount);
         if (total > account.balance) {
-          throw Object.assign(new Error('Saldo virtual insuficiente.'), { statusCode: 400 });
+          throw Object.assign(new Error("Saldo virtual insuficiente."), {
+            statusCode: 400,
+          });
         }
         amount = roundAsset(total / current.price);
-      } else if (input?.side === 'SELL') {
+      } else if (input?.side === "SELL") {
         amount = Number(input.assetAmount);
         if (!Number.isFinite(amount) || amount <= 0) {
-          throw Object.assign(new Error('Informe assetAmount maior que zero para venda.'), { statusCode: 400 });
+          throw Object.assign(
+            new Error("Informe assetAmount maior que zero para venda."),
+            { statusCode: 400 },
+          );
         }
         amount = roundAsset(amount);
         if (amount > account.assetBalance) {
-          throw Object.assign(new Error('Saldo de ativo insuficiente.'), { statusCode: 400 });
+          throw Object.assign(new Error("Saldo de ativo insuficiente."), {
+            statusCode: 400,
+          });
         }
         total = roundMoney(amount * current.price);
         if (total > MAX_ORDER_NOTIONAL_USD) {
-          throw Object.assign(new Error(`O limite por ordem é US$ ${MAX_ORDER_NOTIONAL_USD}.`), { statusCode: 400 });
+          throw Object.assign(
+            new Error(`O limite por ordem é US$ ${MAX_ORDER_NOTIONAL_USD}.`),
+            { statusCode: 400 },
+          );
         }
       } else {
-        throw Object.assign(new Error('side deve ser BUY ou SELL.'), { statusCode: 400 });
+        throw Object.assign(new Error("side deve ser BUY ou SELL."), {
+          statusCode: 400,
+        });
       }
 
       if (amount <= 0 || total <= 0) {
-        throw Object.assign(new Error('A ordem é menor que a precisão mínima permitida.'), { statusCode: 400 });
+        throw Object.assign(
+          new Error("A ordem é menor que a precisão mínima permitida."),
+          { statusCode: 400 },
+        );
       }
 
       const notional = total;
       const impactPercent = Math.min(
         MAX_ORDER_IMPACT_PERCENT,
-        (notional / REFERENCE_LIQUIDITY_USD) * MAX_ORDER_IMPACT_PERCENT
+        (notional / REFERENCE_LIQUIDITY_USD) * MAX_ORDER_IMPACT_PERCENT,
       );
-      const signedImpact = input.side === 'BUY' ? impactPercent : -impactPercent;
-      const updatedPrice = Number(Math.max(0.01, current.price * (1 + signedImpact / 100)).toFixed(2));
+      const signedImpact =
+        input.side === "BUY" ? impactPercent : -impactPercent;
+      const updatedPrice = Number(
+        Math.max(0.01, current.price * (1 + signedImpact / 100)).toFixed(2),
+      );
       const timestamp = new Date().toISOString();
       const order = {
         id: randomUUID(),
@@ -573,22 +748,24 @@ class MarketSimulator {
         total,
         impactPercent: Number(signedImpact.toFixed(4)),
         accountId: account.accountId,
-        username: typeof account.username === 'string' && account.username.trim()
-          ? account.username
-          : account.accountId,
+        username:
+          typeof account.username === "string" && account.username.trim()
+            ? account.username
+            : account.accountId,
       };
       const accountBefore = { ...account, history: account.history };
       const historyBefore = this.history;
       const tradesBefore = this.recentTrades;
       const volumesBefore = [this.totalVolume, this.buyVolume, this.sellVolume];
 
-      if (input.side === 'BUY') {
+      if (input.side === "BUY") {
         const currentCost = (account.averagePrice || 0) * account.assetBalance;
         account.balance = subtractMoney(account.balance, total);
         account.assetBalance = addAsset(account.assetBalance, amount);
-        account.averagePrice = account.assetBalance > 0
-          ? roundMoney((currentCost + total) / account.assetBalance)
-          : 0;
+        account.averagePrice =
+          account.assetBalance > 0
+            ? roundMoney((currentCost + total) / account.assetBalance)
+            : 0;
         this.buyVolume = addMoney(this.buyVolume, total);
       } else {
         account.balance = addMoney(account.balance, total);
@@ -598,24 +775,33 @@ class MarketSimulator {
         }
         this.sellVolume = addMoney(this.sellVolume, total);
       }
-      account.history = [order, ...account.history].slice(0, MAX_ACCOUNT_HISTORY);
+      account.history = [order, ...account.history].slice(
+        0,
+        MAX_ACCOUNT_HISTORY,
+      );
       this.totalVolume = addMoney(this.totalVolume, total);
-      this.history = [...this.history, {
-        sequence: current.sequence + 1,
-        price: updatedPrice,
-        updatedAt: timestamp,
-      }].slice(-50);
-      this.recentTrades = [{
-        id: order.id,
-        side: order.type,
-        price: order.price,
-        amount: order.amount,
-        total: order.total,
-        impactPercent: order.impactPercent,
-        accountId: order.accountId,
-        username: order.username,
-        timestamp,
-      }, ...this.recentTrades].slice(0, MAX_PUBLIC_TRADES);
+      this.history = [
+        ...this.history,
+        {
+          sequence: current.sequence + 1,
+          price: updatedPrice,
+          updatedAt: timestamp,
+        },
+      ].slice(-50);
+      this.recentTrades = [
+        {
+          id: order.id,
+          side: order.type,
+          price: order.price,
+          amount: order.amount,
+          total: order.total,
+          impactPercent: order.impactPercent,
+          accountId: order.accountId,
+          username: order.username,
+          timestamp,
+        },
+        ...this.recentTrades,
+      ].slice(0, MAX_PUBLIC_TRADES);
 
       try {
         await this.persist();
@@ -627,7 +813,7 @@ class MarketSimulator {
         throw error;
       }
 
-      logger.info('order.executed', {
+      logger.info("order.executed", {
         accountId,
         orderId: order.id,
         side: input.side,
@@ -637,7 +823,11 @@ class MarketSimulator {
         currentPrice: updatedPrice,
         impactPercent: Number(signedImpact.toFixed(4)),
       });
-      return { order, account: this.getAccount(accountId), market: this.getStatus() };
+      return {
+        order,
+        account: this.getAccount(accountId),
+        market: this.getStatus(),
+      };
     });
   }
 
@@ -652,17 +842,19 @@ class MarketSimulator {
       exportedAt: new Date().toISOString(),
       ...snapshot,
       // Campos legados para consumidores que apenas exibiam o resumo do backup.
-      recentTrades: snapshot.trades.slice(0, MAX_PUBLIC_TRADES).map((trade) => ({
-        id: trade.tradeId || trade.orderId,
-        side: trade.side,
-        price: trade.price,
-        amount: trade.quantity,
-        total: trade.total,
-        impactPercent: trade.impactPercent,
-        accountId: trade.accountId,
-        username: trade.username,
-        timestamp: trade.createdAt,
-      })),
+      recentTrades: snapshot.trades
+        .slice(0, MAX_PUBLIC_TRADES)
+        .map((trade) => ({
+          id: trade.tradeId || trade.orderId,
+          side: trade.side,
+          price: trade.price,
+          amount: trade.quantity,
+          total: trade.total,
+          impactPercent: trade.impactPercent,
+          accountId: trade.accountId,
+          username: trade.username,
+          timestamp: trade.createdAt,
+        })),
       totalVolume: snapshot.marketState?.totalVolume ?? 0,
       buyVolume: snapshot.marketState?.buyVolume ?? 0,
       sellVolume: snapshot.marketState?.sellVolume ?? 0,
@@ -679,43 +871,75 @@ class MarketSimulator {
    */
   restoreFromBackup(backupData) {
     return this.enqueue(async () => {
-      if (!backupData || typeof backupData !== 'object' || Array.isArray(backupData)) {
-        throw Object.assign(new Error('Formato de backup inválido: deve ser um objeto JSON.'), { statusCode: 400 });
+      if (
+        !backupData ||
+        typeof backupData !== "object" ||
+        Array.isArray(backupData)
+      ) {
+        throw Object.assign(
+          new Error("Formato de backup inválido: deve ser um objeto JSON."),
+          { statusCode: 400 },
+        );
       }
 
       const hasHistory = Array.isArray(backupData.marketHistory);
       const hasAccounts = Array.isArray(backupData.accounts);
 
       if (!hasHistory && !hasAccounts && !backupData.marketState) {
-        throw Object.assign(new Error('O arquivo de backup não contém dados reconhecíveis de histórico, contas ou estado.'), { statusCode: 400 });
+        throw Object.assign(
+          new Error(
+            "O arquivo de backup não contém dados reconhecíveis de histórico, contas ou estado.",
+          ),
+          { statusCode: 400 },
+        );
       }
 
       // Cria backup de segurança automático pré-restauração
       const currentSnapshot = await this.getBackupSnapshot();
-      const backupDir = path.join(this.store.dataDir, 'backups');
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const safetyBackupPath = path.join(backupDir, `market-state.pre-restore-${timestamp}.json`);
+      const backupDir = path.join(this.store.dataDir, "backups");
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const safetyBackupPath = path.join(
+        backupDir,
+        `market-state.pre-restore-${timestamp}.json`,
+      );
       await writeJson(safetyBackupPath, currentSnapshot).catch(() => {});
 
       const completeSnapshot = [
-        'accounts', 'assets', 'portfolios', 'orders', 'trades',
-        'marketHistory', 'marketEvents', 'marketState',
+        "accounts",
+        "assets",
+        "portfolios",
+        "orders",
+        "trades",
+        "marketHistory",
+        "marketEvents",
+        "marketState",
       ].every((field) => Object.hasOwn(backupData, field));
 
       let snapshotToRestore = backupData;
       if (!completeSnapshot) {
         // Version 1 backups did not include all collections. Convert what they
         // contain and explicitly reset every collection they did not contain.
-        if (!Array.isArray(backupData.accounts) || !Array.isArray(backupData.marketHistory) || backupData.marketHistory.length === 0) {
-          throw Object.assign(new Error('Backup incompleto. Exporte um novo backup completo antes de restaurar.'), { statusCode: 400 });
+        if (
+          !Array.isArray(backupData.accounts) ||
+          !Array.isArray(backupData.marketHistory) ||
+          backupData.marketHistory.length === 0
+        ) {
+          throw Object.assign(
+            new Error(
+              "Backup incompleto. Exporte um novo backup completo antes de restaurar.",
+            ),
+            { statusCode: 400 },
+          );
         }
         const latestTick = backupData.marketHistory.at(-1);
-        const trades = (Array.isArray(backupData.recentTrades) ? backupData.recentTrades : []).map((trade) => ({
+        const trades = (
+          Array.isArray(backupData.recentTrades) ? backupData.recentTrades : []
+        ).map((trade) => ({
           tradeId: trade.id || trade.tradeId,
           orderId: trade.id || trade.orderId || trade.tradeId,
           accountId: trade.accountId,
           username: trade.username,
-          assetId: 'SIM',
+          assetId: "SIM",
           side: trade.side || trade.type,
           quantity: trade.amount ?? trade.quantity,
           price: trade.price,
@@ -724,22 +948,83 @@ class MarketSimulator {
           createdAt: trade.timestamp || trade.createdAt,
         }));
         snapshotToRestore = {
-          accounts: backupData.accounts.map(({ assetBalance, averagePrice, history, ...account }) => account),
-          assets: [{ assetId: 'SIM', symbol: 'SIM', name: 'Ativo Simulado', currentPrice: latestTick.price, updatedAt: latestTick.updatedAt }],
-          portfolios: backupData.accounts.map((account) => ({ accountId: account.accountId, assetId: 'SIM', quantity: account.assetBalance || 0, averagePrice: account.averagePrice || 0, updatedAt: account.updatedAt || latestTick.updatedAt })),
-          orders: trades.map((trade) => ({ orderId: trade.orderId, accountId: trade.accountId, assetId: trade.assetId, side: trade.side, quantity: trade.quantity, price: trade.price, limitPrice: null, total: trade.total, impactPercent: trade.impactPercent, status: 'FILLED', createdAt: trade.createdAt, updatedAt: trade.createdAt })),
+          accounts: backupData.accounts.map(
+            ({ assetBalance, averagePrice, history, ...account }) => account,
+          ),
+          assets: [
+            {
+              assetId: "SIM",
+              symbol: "SIM",
+              name: "Ativo Simulado",
+              currentPrice: latestTick.price,
+              updatedAt: latestTick.updatedAt,
+            },
+          ],
+          portfolios: backupData.accounts.map((account) => ({
+            accountId: account.accountId,
+            assetId: "SIM",
+            quantity: account.assetBalance || 0,
+            averagePrice: account.averagePrice || 0,
+            updatedAt: account.updatedAt || latestTick.updatedAt,
+          })),
+          orders: trades.map((trade) => ({
+            orderId: trade.orderId,
+            accountId: trade.accountId,
+            assetId: trade.assetId,
+            side: trade.side,
+            quantity: trade.quantity,
+            price: trade.price,
+            limitPrice: null,
+            total: trade.total,
+            impactPercent: trade.impactPercent,
+            status: "FILLED",
+            createdAt: trade.createdAt,
+            updatedAt: trade.createdAt,
+          })),
           trades,
-          marketHistory: backupData.marketHistory.map((tick) => ({ assetId: 'SIM', ...tick })),
-          marketEvents: backupData.latestMarketEvent ? [{ eventId: `ev-${Date.now()}`, assetId: 'SIM', ...backupData.latestMarketEvent, occurredAt: backupData.latestMarketEvent.occurredAt || latestTick.updatedAt }] : [],
-          marketState: { assetId: 'SIM', currentPrice: latestTick.price, sequence: latestTick.sequence, totalVolume: backupData.totalVolume || 0, buyVolume: backupData.buyVolume || 0, sellVolume: backupData.sellVolume || 0, latestMarketEvent: backupData.latestMarketEvent || null, nextMarketEventAt: backupData.nextMarketEventAt || null, updatedAt: latestTick.updatedAt },
+          marketHistory: backupData.marketHistory.map((tick) => ({
+            assetId: "SIM",
+            ...tick,
+          })),
+          marketEvents: backupData.latestMarketEvent
+            ? [
+                {
+                  eventId: `ev-${Date.now()}`,
+                  assetId: "SIM",
+                  ...backupData.latestMarketEvent,
+                  occurredAt:
+                    backupData.latestMarketEvent.occurredAt ||
+                    latestTick.updatedAt,
+                },
+              ]
+            : [],
+          marketState: {
+            assetId: "SIM",
+            currentPrice: latestTick.price,
+            sequence: latestTick.sequence,
+            totalVolume: backupData.totalVolume || 0,
+            buyVolume: backupData.buyVolume || 0,
+            sellVolume: backupData.sellVolume || 0,
+            latestMarketEvent: backupData.latestMarketEvent || null,
+            nextMarketEventAt: backupData.nextMarketEventAt || null,
+            updatedAt: latestTick.updatedAt,
+          },
         };
       }
 
       await this.store.repository.replaceFullSnapshot(snapshotToRestore);
       const reloaded = await this.store.load();
       this.initialize(reloaded);
-      if (this.recoveryAdministrator && ![...this.accounts.values()].some((account) => account.isSystemAdmin === true)) {
-        this.accounts.set(this.recoveryAdministrator.accountId, this.recoveryAdministrator);
+      if (
+        this.recoveryAdministrator &&
+        ![...this.accounts.values()].some(
+          (account) => account.isSystemAdmin === true,
+        )
+      ) {
+        this.accounts.set(
+          this.recoveryAdministrator.accountId,
+          this.recoveryAdministrator,
+        );
         await this.persist();
       }
 
@@ -767,7 +1052,7 @@ class MarketSimulator {
       }
       */
 
-      logger.info('backup.restored', {
+      logger.info("backup.restored", {
         accountsCount: this.accounts.size,
         historyTicks: this.history.length,
         currentPrice: this.history[this.history.length - 1]?.price,
@@ -795,7 +1080,11 @@ class MarketSimulator {
       updatedAt: current.updatedAt,
       history: this.history.map((tick) => ({ ...tick })),
       recentTrades: this.recentTrades.map((trade) => ({ ...trade })),
-      volume: { total: this.totalVolume, buys: this.buyVolume, sells: this.sellVolume },
+      volume: {
+        total: this.totalVolume,
+        buys: this.buyVolume,
+        sells: this.sellVolume,
+      },
       latestEvent: this.latestEvent ? { ...this.latestEvent } : null,
       nextEventAt: this.nextEventAt,
     };
