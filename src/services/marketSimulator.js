@@ -315,7 +315,8 @@ class MarketSimulator {
   }
 
   /**
-   * Creates an administrator only when none exists. Only the key hash is persisted.
+   * Creates an administrator when none exists, or rotates an existing admin key.
+   * Only the key hash is persisted.
    * An explicit token may be supplied by the deployment environment.
    * @param {string | undefined} apiKey
    * @returns {Promise<{ accountId: string, created: boolean, apiKey: string | null }>}
@@ -360,10 +361,18 @@ class MarketSimulator {
       changed = true;
     }
 
+    // Without an environment-provided token, create a fresh valid key at every
+    // boot. This keeps the terminal value usable even if an admin already exists.
+    if (!suppliedToken && !created) {
+      apiKey = randomBytes(32).toString('base64url');
+      account.keyHash = hashApiKey(apiKey);
+      changed = true;
+    }
+
     if (created || changed) await this.persist();
     this.recoveryAdministrator = { ...account, history: account.history.map((trade) => ({ ...trade })) };
     logger.info('admin.ready', { accountId: account.accountId, created });
-    return { accountId: account.accountId, created, apiKey: created ? apiKey : null };
+    return { accountId: account.accountId, created, apiKey };
   }
 
   /**

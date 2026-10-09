@@ -28,6 +28,9 @@ test('restauração substitui todas as coleções e remove atividade posterior a
     assert.equal(simulator.isAdministrator(admin.accountId), true);
     const persistedAdmin = (await repository.getAccounts()).find((account) => account.accountId === admin.accountId);
     assert.notEqual(persistedAdmin.keyHash, admin.apiKey, 'O token administrativo não pode ser salvo em texto puro');
+    const rotatedAdmin = await simulator.ensureAdministrator();
+    assert.equal(simulator.authenticateApiKey(admin.apiKey), null, 'O token anterior deve ser revogado na nova inicialização');
+    assert.equal(simulator.authenticateApiKey(rotatedAdmin.apiKey), admin.accountId);
     const preserved = await simulator.createAccount({ username: 'preserved_user' });
     const backup = await simulator.getBackupSnapshot();
 

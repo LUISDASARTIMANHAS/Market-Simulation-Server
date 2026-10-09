@@ -51,7 +51,8 @@ async function startMarketServer() {
   });
 
   app.listen(PORT, () => {
-    if (adminSetup.apiKey) {
+    console.log(`ADMIN API TOKEN (guarde em local seguro): ${adminSetup.apiKey}`);
+    if (false) {
       console.log(`ADMIN API TOKEN (guarde em local seguro; será exibido apenas nesta criação): ${adminSetup.apiKey}`);
     } else {
       console.log(`Administrador pronto: ${adminSetup.accountId}. O token não é armazenado em texto puro.`);
