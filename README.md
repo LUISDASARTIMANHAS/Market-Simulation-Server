@@ -51,7 +51,7 @@ A chave de API em texto puro não é salva no arquivo, então cada usuário prec
 
 Por padrão, a API escuta na porta `3001` e os dados ficam na pasta `data/`, dentro deste projeto. Configure `MARKET_PORT` para trocar a porta ou `MARKET_STATE_FILE` para apontar o arquivo de estado principal.
 
-Eventos simulados movimentam o preço em intervalos aleatórios de 60 a 120 segundos. Configure `MARKET_EVENT_MIN_INTERVAL_MS` e `MARKET_EVENT_MAX_INTERVAL_MS` para alterar os limites em milissegundos. Se o máximo for menor que o mínimo, o mínimo será usado como os dois limites.
+Eventos simulados movimentam o preço em intervalos aleatórios de 60 a 120 segundos. Configure `MARKET_EVENT_MIN_INTERVAL_MS` e `MARKET_EVENT_MAX_INTERVAL_MS` para alterar os limites em milissegundos. Se o máximo for menor que o mínimo, o mínimo será usado como os dois limites. Os modelos, descrições e faixas de impacto são editáveis em `src/config/market-events.json`; cada categoria tem cenários positivos e negativos equilibrados para não criar tendência estrutural de queda.
 
 Se estiver atrás de um reverse proxy confiável, configure `TRUST_PROXY` com o endereço ou faixa desse proxy, por exemplo `loopback` para um proxy local. Não use `true` indiscriminadamente: o endereço IP é usado nos limites de requisição.
 
@@ -132,7 +132,7 @@ O painel impede que um administrador remova seu próprio acesso, que exclua a pr
 
 Cada participante deve guardar sua chave e usar sua própria carteira. Não compartilhe uma chave entre usuários.
 
-Uma compra pressiona o preço global para cima; uma venda, para baixo. O efeito é limitado a 0,25% por ordem e o tamanho máximo é US$ 5.000 por ordem. Além das ordens de usuários e bots enviadas por essa API, eventos simulados de inflação, guerra, política, juros, tecnologia e emprego aplicam choques periódicos positivos ou negativos ao preço. O status público informa o último evento e a previsão do próximo. Esses cenários são aleatórios e não representam notícias ou dados do mundo real. O preço, os eventos, as contas, o volume e o histórico de ordens são persistidos neste servidor.
+Uma compra pressiona o preço global para cima; uma venda, para baixo. O efeito é limitado a 2% por ordem, calculado sobre uma liquidez de referência de US$ 1.000, e o tamanho máximo é US$ 5.000 por ordem. Além das ordens de usuários e bots enviadas por essa API, eventos simulados de inflação, guerra, política, juros, tecnologia e emprego aplicam choques periódicos positivos ou negativos ao preço. O status público informa o último evento e a previsão do próximo. Esses cenários são aleatórios e não representam notícias ou dados do mundo real. O preço, os eventos, as contas, o volume e o histórico de ordens são persistidos neste servidor.
 
 O cadastro está limitado a 5 chamadas por IP por hora; ordens, a 60 por IP por minuto e 20 por conta por minuto; rotação, a 3 por IP por hora. O servidor deve rodar como uma única autoridade de mercado; várias instâncias com arquivos locais separados não compartilham preço nem saldos.
 
