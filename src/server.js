@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json({ limit: '25mb' }));
 if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY);
-app.use(marketRoutes);
+app.use("/api",marketRoutes);
 app.use(express.static(PUBLIC_DIRECTORY, { index: 'index.html' }));
 
 /**

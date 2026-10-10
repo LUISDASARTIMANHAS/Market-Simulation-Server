@@ -11,12 +11,12 @@ import userRoutes from './user.routes.js';
 
 const router = Router();
 
-router.use('/api/market', marketRoutes);
-router.use('/api/backup', backupRoutes);
-router.use('/api/accounts', accountsRoutes);
-router.use('/api/admin/accounts', adminRoutes);
-router.use('/api/account', userRoutes);
-router.use('/api/account', authRoutes);
-router.use('/api/orders', ordersRoutes);
+router.use('/market', marketRoutes);
+router.use('/backup', backupRoutes);
+router.use('/accounts', accountsRoutes);
+router.use('/admin/accounts', adminRoutes);
+router.use('/account', userRoutes);
+router.use('/account', authRoutes);
+router.use('/orders', ordersRoutes);
 
 export default router;

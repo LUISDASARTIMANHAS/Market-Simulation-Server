@@ -1,12 +1,12 @@
 [
   {
-    "eventId": "ev-1791571974526",
+    "eventId": "ev-1791598863978",
     "assetId": "SIM",
-    "category": "Tecnologia",
-    "title": "Recuo tecnológico",
-    "description": "Um atraso relevante reduz as perspectivas do mercado.",
-    "impactPercent": -0.558,
-    "occurredAt": "2026-10-09T18:52:54.522Z"
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.8562,
+    "occurredAt": "2026-10-10T02:21:03.969Z"
   },
   {
     "eventId": "ev-1791570256664",
