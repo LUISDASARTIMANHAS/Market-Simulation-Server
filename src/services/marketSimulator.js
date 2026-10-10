@@ -53,6 +53,15 @@ import {
   calculateMarketEvent,
 } from "./marketEventService.js";
 
+import { rotateAccountApiKey, restoreAccountApiKey } from "./apiKeyService.js";
+
+import { createAccountRecord } from "./accountCreationService.js";
+
+import {
+  normalizeMarketHistory,
+  normalizeMarketAccounts,
+} from "./marketStateService.js";
+
 // Funções centralizadas para arredondamento e operações monetárias.
 // A utilização desses métodos ajuda a reduzir inconsistências de ponto flutuante.
 import {
@@ -150,58 +159,17 @@ class MarketSimulator {
    */
   initialize(state) {
     // Recupera o histórico de preços e mantém apenas os ticks mais recentes.
-    if (Array.isArray(state.marketHistory)) {
-      const savedHistory = state.marketHistory.filter(
-        (tick) =>
-          Number.isInteger(tick.sequence) &&
-          Number.isFinite(tick.price) &&
-          tick.price > 0 &&
-          typeof tick.updatedAt === "string",
-      );
+    const savedHistory = normalizeMarketHistory(state.marketHistory);
 
-      if (savedHistory.length > 0) this.history = savedHistory.slice(-50);
+    if (savedHistory) {
+      this.history = savedHistory;
     }
 
     // Recupera as contas, verificando os campos essenciais e o formato do hash.
-    if (Array.isArray(state.accounts)) {
-      this.accounts = new Map(
-        state.accounts
-          .filter(
-            (account) =>
-              typeof account.accountId === "string" &&
-              typeof account.keyHash === "string" &&
-              /^[a-f0-9]{64}$/.test(account.keyHash) &&
-              Number.isFinite(account.balance) &&
-              account.balance >= 0 &&
-              Number.isFinite(account.assetBalance) &&
-              account.assetBalance >= 0,
-          )
-          .map((account) => {
-            // Mantém um identificador legível mesmo em registros antigos.
-            const username =
-              typeof account.username === "string" && account.username.trim()
-                ? account.username.trim()
-                : account.accountId;
+    const savedAccounts = normalizeMarketAccounts(state.accounts);
 
-            return [
-              account.accountId,
-              {
-                ...account,
-                username,
-
-                // Garante valores padrão para campos ausentes em registros antigos.
-                averagePrice: Number.isFinite(account.averagePrice)
-                  ? account.averagePrice
-                  : 0,
-
-                // Limita o tamanho do histórico individual de cada conta.
-                history: Array.isArray(account.history)
-                  ? account.history.slice(0, MAX_ACCOUNT_HISTORY)
-                  : [],
-              },
-            ];
-          }),
-      );
+    if (savedAccounts) {
+      this.accounts = savedAccounts;
     }
 
     // Recupera as negociações públicas e os volumes acumulados.
@@ -370,55 +338,26 @@ class MarketSimulator {
    */
   createAccountWithRole(input = {}, isAdmin = false) {
     return this.enqueue(async () => {
-      // Gera uma credencial aleatória e um identificador independente da conta.
-      const apiKey = randomBytes(32).toString("base64url");
-      const accountId = randomUUID();
-
-      // Aceita username como campo preferencial e accountName como alternativa.
-      const providedUsername =
-        typeof input?.username === "string"
-          ? input.username
-          : typeof input?.accountName === "string"
-            ? input.accountName
-            : null;
-
-      const username = normalizeUsername(providedUsername);
-
-      // Impede a criação de duas contas com o mesmo nome, ignorando caixa.
-      assertUsernameAvailable(this.accounts, username);
-
-      const account = {
-        accountId,
-        username,
-
-        // Nunca persiste a chave original em texto puro.
-        keyHash: hashApiKey(apiKey),
-
-        isAdmin: isAdmin === true,
-        balance: INITIAL_VIRTUAL_BALANCE,
-        assetBalance: 0,
-        averagePrice: 0,
-        history: [],
-        createdAt: new Date().toISOString(),
-      };
+      const { account, apiKey } = createAccountRecord(
+        this.accounts,
+        input,
+        isAdmin,
+      );
 
       this.accounts.set(account.accountId, account);
 
       try {
         await this.persist();
       } catch (error) {
-        // Desfaz a criação em memória se a gravação falhar.
         this.accounts.delete(account.accountId);
         throw error;
       }
 
       logger.info("account.created", {
         accountId: account.accountId,
-        username,
+        username: account.username,
       });
 
-      // Retorna a visão pública da conta e a chave que deverá ser guardada
-      // pelo usuário, pois ela não poderá ser recuperada a partir do hash.
       return { account: this.getAccount(account.accountId), apiKey };
     });
   }
@@ -440,16 +379,12 @@ class MarketSimulator {
           statusCode: 404,
         });
 
-      // Guarda o hash anterior para permitir reversão caso a gravação falhe.
-      const previousHash = account.keyHash;
-      const apiKey = randomBytes(32).toString("base64url");
-
-      account.keyHash = hashApiKey(apiKey);
+      const { apiKey, previousHash } = rotateAccountApiKey(account);
 
       try {
         await this.persist();
       } catch (error) {
-        account.keyHash = previousHash;
+        restoreAccountApiKey(account, previousHash);
         throw error;
       }
 
