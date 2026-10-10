@@ -24,7 +24,7 @@ describe('Testes de Integração HTTP da API', () => {
     const app = express();
     app.use(cors());
     app.use(express.json());
-    app.use('/api', marketRoutes);
+    app.use(marketRoutes);
 
     await new Promise((resolve) => {
       server = app.listen(0, () => {
