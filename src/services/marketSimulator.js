@@ -6,11 +6,8 @@ import { randomBytes, randomUUID } from "node:crypto";
 // de eventos do mercado e a quantidade máxima de registros mantidos em memória.
 import {
   INITIAL_VIRTUAL_BALANCE,
-  MARKET_EVENT_MAX_INTERVAL_MS,
-  MARKET_EVENT_MIN_INTERVAL_MS,
   MAX_ACCOUNT_HISTORY,
   MAX_ORDER_IMPACT_PERCENT,
-  MAX_ORDER_NOTIONAL_USD,
   MAX_PUBLIC_TRADES,
   REFERENCE_LIQUIDITY_USD,
   TICKER_INTERVAL_MS,
@@ -49,6 +46,13 @@ import {
   validateAccountAdministrationDeletion,
 } from "./administrationService.js";
 
+import { validateAndCalculateOrder } from "./orderService.js";
+
+import {
+  scheduleNextMarketEvent,
+  calculateMarketEvent,
+} from "./marketEventService.js";
+
 // Funções centralizadas para arredondamento e operações monetárias.
 // A utilização desses métodos ajuda a reduzir inconsistências de ponto flutuante.
 import {
@@ -86,19 +90,6 @@ if (
 ) {
   throw new Error(`Catálogo de eventos inválido: ${MARKET_EVENTS_FILE}`);
 }
-
-/**
- * Gera um número aleatório dentro do intervalo informado.
- *
- * O limite máximo não é incluído quando o resultado é gerado pelo Math.random.
- * Esta função serve para simulações, não para gerar segredos criptográficos.
- *
- * @param {number} minimum - Limite mínimo.
- * @param {number} maximum - Limite máximo.
- * @returns {number} Número aleatório dentro do intervalo.
- */
-const randomBetween = (minimum, maximum) =>
-  minimum + Math.random() * (maximum - minimum);
 
 /**
  * Simulador de mercado com carteiras virtuais e ordens de compra e venda.
@@ -248,74 +239,35 @@ class MarketSimulator {
    *
    * @returns {Promise<void>}
    */
+
   tick() {
-    // A fila impede que este processamento concorra com outras mutações.
     return this.enqueue(async () => {
-      // Agenda um evento caso ainda não exista uma data prevista.
       if (!this.nextEventAt) this.scheduleNextEvent();
 
-      // Não altera o mercado antes do horário programado.
       if (Date.now() < Date.parse(this.nextEventAt)) return;
 
       const previous = this.history[this.history.length - 1];
 
-      // Seleciona aleatoriamente um evento válido do catálogo.
-      const template =
-        MARKET_EVENTS[Math.floor(Math.random() * MARKET_EVENTS.length)];
+      const { tick, event } = calculateMarketEvent(previous, MARKET_EVENTS);
 
-      // Define a variação percentual dentro dos limites do evento.
-      const changePercent = randomBetween(
-        template.minImpact,
-        template.maxImpact,
-      );
+      this.history.push(tick);
 
-      // Converte a variação logarítmica aplicada ao preço em variação percentual
-      // efetiva, para que o registro reflita o impacto composto real.
-      const actualImpactPercent = (Math.exp(changePercent / 100) - 1) * 100;
-
-      // Aplica a variação e impede que o preço fique abaixo de US$ 0,01.
-      const price = Number(
-        Math.max(0.01, previous.price * Math.exp(changePercent / 100)).toFixed(
-          2,
-        ),
-      );
-
-      const occurredAt = new Date().toISOString();
-
-      // Acrescenta o novo preço ao histórico, incrementando a sequência.
-      this.history.push({
-        sequence: previous.sequence + 1,
-        price,
-        updatedAt: occurredAt,
-      });
-
-      // Mantém apenas os 50 ticks mais recentes.
       if (this.history.length > 50) this.history.shift();
 
-      // Registra os detalhes do evento aplicado.
-      this.latestEvent = {
-        category: template.category,
-        title: template.title,
-        description: template.description,
-        impactPercent: Number(actualImpactPercent.toFixed(4)),
-        occurredAt,
-      };
+      this.latestEvent = event;
 
-      // Agenda a próxima alteração independente do mercado.
       this.scheduleNextEvent();
 
-      // Registra informações operacionais sem incluir segredos de autenticação.
       logger.info("market.event_applied", {
-        category: template.category,
-        title: template.title,
+        category: event.category,
+        title: event.title,
         previousPrice: previous.price,
-        currentPrice: price,
-        impactPercent: Number(actualImpactPercent.toFixed(4)),
-        sequence: previous.sequence + 1,
+        currentPrice: tick.price,
+        impactPercent: event.impactPercent,
+        sequence: tick.sequence,
         nextEventAt: this.nextEventAt,
       });
 
-      // Persiste o estado após atualizar o preço e os metadados do evento.
       await this.persist();
     });
   }
@@ -325,13 +277,9 @@ class MarketSimulator {
    *
    * @returns {void}
    */
-  scheduleNextEvent() {
-    const delay = randomBetween(
-      MARKET_EVENT_MIN_INTERVAL_MS,
-      MARKET_EVENT_MAX_INTERVAL_MS,
-    );
 
-    this.nextEventAt = new Date(Date.now() + delay).toISOString();
+  scheduleNextEvent() {
+    this.nextEventAt = scheduleNextMarketEvent();
   }
 
   /**
@@ -777,6 +725,7 @@ class MarketSimulator {
    * @param {{ side: string, quoteAmount?: number, assetAmount?: number }} input
    * @returns {Promise<{ order: object, account: object, market: object }>}
    */
+
   placeOrder(accountId, input) {
     return this.enqueue(async () => {
       const account = this.accounts.get(accountId);
@@ -789,85 +738,14 @@ class MarketSimulator {
       // Utiliza o último preço registrado como referência para a negociação.
       const current = this.history[this.history.length - 1];
 
-      let amount;
-      let total;
+      // Valida a ordem e calcula a quantidade e o valor total.
+      const { amount, total } = validateAndCalculateOrder(
+        account,
+        input,
+        current.price,
+      );
 
-      if (input?.side === "BUY") {
-        // Na compra, o cliente informa quanto deseja gastar em moeda de cotação.
-        const quoteAmount = Number(input.quoteAmount);
-
-        if (!Number.isFinite(quoteAmount) || quoteAmount <= 0) {
-          throw Object.assign(
-            new Error("Informe quoteAmount maior que zero para compra."),
-            { statusCode: 400 },
-          );
-        }
-
-        // Limita o valor financeiro máximo de uma única ordem.
-        if (quoteAmount > MAX_ORDER_NOTIONAL_USD) {
-          throw Object.assign(
-            new Error(`O limite por ordem é US$ ${MAX_ORDER_NOTIONAL_USD}.`),
-            { statusCode: 400 },
-          );
-        }
-
-        total = roundMoney(quoteAmount);
-
-        // Impede que a carteira gaste mais dinheiro do que possui.
-        if (total > account.balance) {
-          throw Object.assign(new Error("Saldo virtual insuficiente."), {
-            statusCode: 400,
-          });
-        }
-
-        // Calcula a quantidade do ativo comprada pelo valor informado.
-        amount = roundAsset(total / current.price);
-      } else if (input?.side === "SELL") {
-        // Na venda, o cliente informa a quantidade de ativo a liquidar.
-        amount = Number(input.assetAmount);
-
-        if (!Number.isFinite(amount) || amount <= 0) {
-          throw Object.assign(
-            new Error("Informe assetAmount maior que zero para venda."),
-            { statusCode: 400 },
-          );
-        }
-
-        amount = roundAsset(amount);
-
-        // Não permite vender mais unidades do que a conta possui.
-        if (amount > account.assetBalance) {
-          throw Object.assign(new Error("Saldo de ativo insuficiente."), {
-            statusCode: 400,
-          });
-        }
-
-        // Calcula o valor monetário bruto da venda pelo preço atual.
-        total = roundMoney(amount * current.price);
-
-        if (total > MAX_ORDER_NOTIONAL_USD) {
-          throw Object.assign(
-            new Error(`O limite por ordem é US$ ${MAX_ORDER_NOTIONAL_USD}.`),
-            { statusCode: 400 },
-          );
-        }
-      } else {
-        // Rejeita operações que não sejam explicitamente compra ou venda.
-        throw Object.assign(new Error("side deve ser BUY ou SELL."), {
-          statusCode: 400,
-        });
-      }
-
-      // Rejeita ordens que desapareçam após os arredondamentos financeiros.
-      if (amount <= 0 || total <= 0) {
-        throw Object.assign(
-          new Error("A ordem é menor que a precisão mínima permitida."),
-          { statusCode: 400 },
-        );
-      }
-
-      // Estima o impacto da ordem sobre o preço em função do valor negociado
-      // e da liquidez de referência configurada para a simulação.
+      // Estima o impacto da ordem sobre o preço em função do valor negociado.
       const notional = total;
       const impactPercent = Math.min(
         MAX_ORDER_IMPACT_PERCENT,
@@ -900,8 +778,7 @@ class MarketSimulator {
             : account.accountId,
       };
 
-      // Guarda referências e valores anteriores para rollback caso o salvamento
-      // falhe depois de as estruturas em memória terem sido alteradas.
+      // Guarda o estado anterior para permitir rollback em caso de falha.
       const accountBefore = { ...account, history: account.history };
       const historyBefore = this.history;
       const tradesBefore = this.recentTrades;
@@ -911,11 +788,10 @@ class MarketSimulator {
         // Calcula o custo histórico da posição antes da nova compra.
         const currentCost = (account.averagePrice || 0) * account.assetBalance;
 
-        // Atualiza o saldo monetário e a quantidade do ativo.
         account.balance = subtractMoney(account.balance, total);
         account.assetBalance = addAsset(account.assetBalance, amount);
 
-        // Recalcula o preço médio ponderado da posição comprada.
+        // Recalcula o preço médio ponderado da posição.
         account.averagePrice =
           account.assetBalance > 0
             ? roundMoney((currentCost + total) / account.assetBalance)
@@ -935,16 +811,15 @@ class MarketSimulator {
         this.sellVolume = addMoney(this.sellVolume, total);
       }
 
-      // Mantém as operações mais recentes no histórico individual da conta.
+      // Atualiza o histórico individual da conta.
       account.history = [order, ...account.history].slice(
         0,
         MAX_ACCOUNT_HISTORY,
       );
 
-      // Atualiza o volume total negociado.
       this.totalVolume = addMoney(this.totalVolume, total);
 
-      // Registra o novo preço e limita o histórico a 50 ticks.
+      // Atualiza o histórico global de preços.
       this.history = [
         ...this.history,
         {
@@ -954,7 +829,7 @@ class MarketSimulator {
         },
       ].slice(-50);
 
-      // Publica um resumo da ordem sem expor informações de autenticação.
+      // Publica o resumo da negociação.
       this.recentTrades = [
         {
           id: order.id,
@@ -971,14 +846,16 @@ class MarketSimulator {
       ].slice(0, MAX_PUBLIC_TRADES);
 
       try {
-        // Persiste conjuntamente os saldos, o histórico, os volumes e as ordens.
+        // Persiste conjuntamente os saldos, o histórico e as ordens.
         await this.persist();
       } catch (error) {
-        // Restaura os dados anteriores se a persistência não for concluída.
+        // Restaura os dados anteriores se a persistência falhar.
         Object.assign(account, accountBefore);
         this.history = historyBefore;
         this.recentTrades = tradesBefore;
+
         [this.totalVolume, this.buyVolume, this.sellVolume] = volumesBefore;
+
         throw error;
       }
 
@@ -993,7 +870,6 @@ class MarketSimulator {
         impactPercent: Number(signedImpact.toFixed(4)),
       });
 
-      // Retorna os dados públicos da ordem, da carteira e do mercado.
       return {
         order,
         account: this.getAccount(accountId),
