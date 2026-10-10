@@ -120,14 +120,14 @@ Administradores autenticados podem gerenciar contas no painel em `/admin.html`. 
 
 O painel impede que um administrador remova seu próprio acesso, que exclua a própria conta ou que deixe o sistema sem administradores.
 
-`POST /api/orders` tamb?m exige essa autentica??o. Compra usa valor em d?lares; venda usa unidades do ativo:
+`POST /api/orders/buy` e `POST /api/orders/sell` também exigem essa autenticação. O path define o lado da operação, e o corpo contém apenas `amount`: em compras, o valor em dólares; em vendas, a quantidade de unidades do ativo.
 
 ```json
-{ "side": "BUY", "quoteAmount": 100 }
+{ "amount": 100 }
 ```
 
 ```json
-{ "side": "SELL", "assetAmount": 0.5 }
+{ "amount": 0.5 }
 ```
 
 Cada participante deve guardar sua chave e usar sua própria carteira. Não compartilhe uma chave entre usuários.

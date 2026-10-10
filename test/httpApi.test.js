@@ -68,7 +68,7 @@ describe('Testes de Integração HTTP da API', () => {
     assert.ok(Array.isArray(body.recentTrades));
   });
 
-  test('Fluxo completo: POST /api/accounts -> GET /api/account -> POST /api/orders', async () => {
+  test('Fluxo completo: POST /api/accounts -> GET /api/account -> POST /api/orders/buy e /sell', async () => {
     // 1. Cria conta
     const username = `trader_${Date.now()}`;
     const createRes = await fetch(`${baseUrl}/accounts`, {
@@ -97,13 +97,13 @@ describe('Testes de Integração HTTP da API', () => {
     assert.equal(accountData.data.account.keyHash, undefined);
 
     // 3. Envia ordem de compra
-    const orderRes = await fetch(`${baseUrl}/orders`, {
+    const orderRes = await fetch(`${baseUrl}/orders/buy`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ side: 'BUY', quoteAmount: 150 }),
+      body: JSON.stringify({ amount: 150 }),
     });
     assert.equal(orderRes.status, 201);
     const orderData = await orderRes.json();
@@ -112,6 +112,19 @@ describe('Testes de Integração HTTP da API', () => {
     assert.equal(orderData.data.account.balance, 850);
     assert.ok(orderData.data.account.assetBalance > 0);
 
+    const sellRes = await fetch(`${baseUrl}/orders/sell`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ amount: orderData.data.order.amount / 2 }),
+    });
+    assert.equal(sellRes.status, 201);
+    const sellData = await sellRes.json();
+    assert.equal(sellData.success, true);
+    assert.equal(sellData.data.order.side, 'SELL');
+
     // 4. Consulta histórico
     const historyRes = await fetch(`${baseUrl}/account/history`, {
       headers: { Authorization: `Bearer ${apiKey}` },
@@ -119,7 +132,7 @@ describe('Testes de Integração HTTP da API', () => {
     assert.equal(historyRes.status, 200);
     const historyData = await historyRes.json();
     assert.ok(Array.isArray(historyData.data));
-    assert.equal(historyData.data.length, 1);
-    assert.equal(historyData.data[0].id, orderData.data.order.id);
+    assert.equal(historyData.data.length, 2);
+    assert.equal(historyData.data[0].id, sellData.data.order.id);
   });
 });

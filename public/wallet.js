@@ -189,11 +189,14 @@ elements.orderForm.addEventListener('submit', async (event) => {
     showFeedback('Informe um valor maior que zero.', true);
     return;
   }
-  const body = side === 'BUY' ? { side, quoteAmount: amount } : { side, assetAmount: amount };
+  const action = side === 'BUY' ? 'buy' : 'sell';
 
   elements.submitOrder.disabled = true;
   try {
-    const data = await request('/orders', { method: 'POST', body: JSON.stringify(body) });
+    const data = await request(`/orders/${action}`, {
+      method: 'POST',
+      body: JSON.stringify({ amount }),
+    });
     renderAccount(data.account);
     elements.orderAmount.value = '';
     showFeedback(`${side === 'BUY' ? 'Compra' : 'Venda'} executada. ${number(data.order.amount)} ativo(s) por ${money(data.order.total)}.`);
