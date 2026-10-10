@@ -34,7 +34,7 @@ const createOrderHandler = (side) => async (req, res) => {
 				? { side, quoteAmount: input.amount }
 				: { side, assetAmount: input.amount },
 		);
-		return res.status(201).json({ success: true, data: result.order });
+		return res.status(201).json({ success: true, data: result });
 	} catch (error) {
 		const statusCode = error.statusCode || 500;
 		if (statusCode >= 500) {

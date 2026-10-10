@@ -537,6 +537,7 @@ class MarketSimulator {
   getAccount(accountId) {
     const account = this.accounts.get(accountId);
     if (!account) return null;
+    const currentPrice = this.history[this.history.length - 1].price;
 
     return {
       accountId: account.accountId,
@@ -547,6 +548,8 @@ class MarketSimulator {
       isAdmin: account.isAdmin === true,
       balance: account.balance,
       assetBalance: account.assetBalance,
+      currentPrice,
+      estimatedSaleValue: roundMoney(account.assetBalance * currentPrice),
 
       // Copia os registros para evitar expor diretamente o array interno.
       history: account.history.map((trade) => ({ ...trade })),

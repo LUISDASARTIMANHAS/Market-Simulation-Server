@@ -14,6 +14,7 @@ const elements = {
   accountState: document.querySelector('#account-state'),
   accountCash: document.querySelector('#account-cash'),
   accountAssets: document.querySelector('#account-assets'),
+  accountEstimatedValue: document.querySelector('#account-estimated-value'),
   disconnect: document.querySelector('#disconnect-account'),
   orderForm: document.querySelector('#order-form'),
   orderSide: document.querySelector('#order-side'),
@@ -32,6 +33,7 @@ function renderAccount(account) {
     elements.accountState.classList.remove('connected');
     elements.accountCash.textContent = '—';
     elements.accountAssets.textContent = '—';
+    elements.accountEstimatedValue.textContent = '—';
     elements.submitOrder.disabled = true;
     elements.submitOrder.textContent = 'Conecte uma carteira para operar';
     elements.disconnect.hidden = true;
@@ -42,6 +44,7 @@ function renderAccount(account) {
   elements.accountState.classList.add('connected');
   elements.accountCash.textContent = money(account.balance);
   elements.accountAssets.textContent = number(account.assetBalance);
+  elements.accountEstimatedValue.textContent = money(account.estimatedSaleValue);
   elements.submitOrder.disabled = false;
   elements.submitOrder.textContent = 'Enviar ordem simulada';
   elements.disconnect.hidden = false;
