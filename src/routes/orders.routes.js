@@ -28,6 +28,7 @@ router.post(
 				.json({
 					success: false,
 					message: "Parâmetros inválidos para a ordem.",
+					input: input,
 				});
 		}
 
