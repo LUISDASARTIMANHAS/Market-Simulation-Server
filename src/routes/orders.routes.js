@@ -15,28 +15,26 @@ router.post(
 	orderLimit,
 	accountOrderLimit,
 	async (req, res) => {
+		const input = req.body;
+		if (
+			!input ||
+			typeof input !== "object" ||
+			Array.isArray(input) ||
+			typeof input.side !== "string" ||
+			!input.side.trim()
+		) {
+			return res
+				.status(400)
+				.json({
+					success: false,
+					message: "Parâmetros inválidos para a ordem.",
+				});
+		}
+
 		try {
-			if (
-				!req.body ||
-				!req.body.type ||
-				!req.body.symbol ||
-				!req.body.quantity
-			) {
-				return res
-					.status(400)
-					.json({
-						success: false,
-						message: "Parâmetros inválidos para a ordem.",
-					});
-			}
-			if (!req.marketAccountId) {
-				return res
-					.status(400)
-					.json({ success: false, message: "ID da conta de mercado ausente." });
-			}
 			const result = await marketSimulator.placeOrder(
 				req.marketAccountId,
-				req.body,
+				input,
 			);
 			return res.status(201).json({ success: true, data: result });
 		} catch (error) {
