@@ -1,0 +1,86 @@
+[
+  {
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "minImpact": -0.9,
+    "maxImpact": -0.3
+  },
+  {
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "minImpact": 0.3,
+    "maxImpact": 0.9
+  },
+  {
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "minImpact": -1.0,
+    "maxImpact": -0.4
+  },
+  {
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "minImpact": 0.4,
+    "maxImpact": 1.0
+  },
+  {
+    "category": "Política",
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "minImpact": -0.8,
+    "maxImpact": -0.2
+  },
+  {
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "minImpact": 0.2,
+    "maxImpact": 0.8
+  },
+  {
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "minImpact": -0.8,
+    "maxImpact": -0.2
+  },
+  {
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "minImpact": 0.2,
+    "maxImpact": 0.8
+  },
+  {
+    "category": "Tecnologia",
+    "title": "Recuo tecnológico",
+    "description": "Um atraso relevante reduz as perspectivas do mercado.",
+    "minImpact": -1.0,
+    "maxImpact": -0.4
+  },
+  {
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "minImpact": 0.4,
+    "maxImpact": 1.0
+  },
+  {
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "minImpact": -0.7,
+    "maxImpact": -0.1
+  },
+  {
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "minImpact": 0.1,
+    "maxImpact": 0.7
+  }
+]

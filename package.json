@@ -10,11 +10,15 @@
   "scripts": {
     "start": "npm run autoUpdate && nodemon src/server.js",
     "autoUpdate": "npm install && npm update",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "test": "node --test test/*.test.js",
+    "migrate": "node src/scripts/migrateDatabase.js"
   },
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.7.1"
+    "express-rate-limit": "^8.7.1",
+    "nodemon": "^3.1.14",
+    "npm-package-nodejs-utils-lda": "^1.0.96"
   }
 }
