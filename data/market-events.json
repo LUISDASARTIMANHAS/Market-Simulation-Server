@@ -1,5 +1,68 @@
 [
   {
+    "eventId": "96d9e8a3-64e5-4c82-ac73-9a714c53f3a2",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.9314,
+    "occurredAt": "2026-10-12T19:56:50.468Z"
+  },
+  {
+    "eventId": "d546b544-b2f1-4a5d-a8dd-10d568f87b30",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 1.2858,
+    "occurredAt": "2026-10-12T19:54:52.441Z"
+  },
+  {
+    "eventId": "c4f26c4f-b580-4487-a632-6872ff2eb461",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 1.4529,
+    "occurredAt": "2026-10-12T19:53:00.419Z"
+  },
+  {
+    "eventId": "04194bd2-4f37-4936-a829-401bce2743d7",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 1.3164,
+    "occurredAt": "2026-10-12T19:51:20.403Z"
+  },
+  {
+    "eventId": "3cb361d7-c92c-41cb-9c9b-20369113e8e3",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": 0.0311,
+    "occurredAt": "2026-10-12T19:50:06.391Z"
+  },
+  {
+    "eventId": "f2d94374-8335-4705-aa90-a3a2982c35db",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 1.4864,
+    "occurredAt": "2026-10-12T19:48:38.375Z"
+  },
+  {
+    "eventId": "fef4014c-3e33-4582-a0e0-898dcddf6fec",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": 0.2905,
+    "occurredAt": "2026-10-12T19:47:06.356Z"
+  },
+  {
     "eventId": "54cc7adc-3852-43cb-b5af-99b59718abd9",
     "assetId": "SIM",
     "category": "Política",

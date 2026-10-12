@@ -81,16 +81,17 @@ export function createMarketSyncRouter({
     try {
       const result = await simulator.enqueue(async () => {
         const currentState = await store.repository.getMarketState();
-        recordNodeActivity(
-          req.syncNodeId,
-          result.conflict ? "conflict" : "push",
-          result.conflict ? req.syncNodeRevision : result.revision,
-        );
         const currentRevision = Number.isInteger(currentState?.syncRevision)
           ? currentState.syncRevision
           : 0;
-        if (baseRevision !== currentRevision)
+        if (baseRevision !== currentRevision) {
+          recordNodeActivity(
+            req.syncNodeId,
+            "conflict",
+            req.syncNodeRevision,
+          );
           return { conflict: true, revision: currentRevision };
+        }
 
         await store.repository.replaceFullSnapshot({
           ...snapshot,
@@ -100,7 +101,9 @@ export function createMarketSyncRouter({
           },
         });
         simulator.initialize(await store.load());
-        return { conflict: false, revision: currentRevision + 1 };
+        const revision = currentRevision + 1;
+        recordNodeActivity(req.syncNodeId, "push", revision);
+        return { conflict: false, revision };
       });
 
       if (result.conflict) {
