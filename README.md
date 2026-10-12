@@ -155,7 +155,7 @@ O servidor suporta sincronização distribuída entre múltiplos servidores com 
 - `MARKET_SYNC_ROLE`: define o papel da instância (`standalone` por padrão, `master` ou `node`).
 - `MARKET_SYNC_MASTER_URL`: endereço do servidor master (ex.: `http://master:3001`), obrigatório quando em modo `node`.
 - `MARKET_SYNC_TOKEN`: token secreto compartilhado para autenticação via cabeçalho `X-Market-Sync-Token`.
-- `MARKET_SYNC_INTERVAL_MS`: intervalo de reconciliação periódica em milissegundos (padrão `5000` ms).
+- `MARKET_SYNC_INTERVAL_SECONDS`: intervalo de reconciliação periódica em segundos (padrão `5` segundos).
 
 **Regras de Sincronização e Concorrência:**
 - O servidor master aceita snapshots enviados pelos nodes desde que o node não esteja desatualizado (baseado no controle de concorrência por revisão otimista).

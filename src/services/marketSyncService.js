@@ -12,7 +12,7 @@ export class MarketSyncService {
     nodeId = process.env.MARKET_NODE_ID || hostname(),
     store,
     simulator,
-    intervalMs = Number(process.env.MARKET_SYNC_INTERVAL_MS || 5000),
+    intervalMs = Number(process.env.MARKET_SYNC_INTERVAL_SECONDS || 5) * 1000,
     fetchImpl = fetch,
   }) {
     this.role = role;
