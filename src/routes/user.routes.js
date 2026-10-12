@@ -12,8 +12,8 @@ router.get('/', requireApiAccount, (req, res) => {
 });
 
 router.get('/history', requireApiAccount, (req, res) => {
-  const account = marketSimulator.getAccount(req.marketAccountId);
-  return res.status(200).json({ success: true, data: account.history });
+  const history = marketSimulator.getAccountHistory(req.marketAccountId);
+  return res.status(200).json({ success: true, data: history });
 });
 
 export default router;

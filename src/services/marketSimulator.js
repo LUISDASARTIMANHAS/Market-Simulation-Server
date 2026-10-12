@@ -532,7 +532,7 @@ class MarketSimulator {
    * O hash da chave de API e outros campos internos não são incluídos na resposta.
    *
    * @param {string} accountId - ID da conta.
-   * @returns {{ accountId: string, balance: number, assetBalance: number, history: object[] } | null}
+    * @returns {object | null}
    */
   getAccount(accountId) {
     const account = this.accounts.get(accountId);
@@ -550,10 +550,21 @@ class MarketSimulator {
       assetBalance: account.assetBalance,
       currentPrice,
       estimatedSaleValue: roundMoney(account.assetBalance * currentPrice),
-
-      // Copia os registros para evitar expor diretamente o array interno.
-      history: account.history.map((trade) => ({ ...trade })),
     };
+  }
+
+  /**
+    * Retorna o histórico de negociações de uma conta.
+   *
+   * @param {string} accountId - ID da conta.
+    * @returns {object[] | null}
+   */
+  getAccountHistory(accountId) {
+    const account = this.accounts.get(accountId);
+    if (!account) return null;
+
+    // Copia os registros para evitar expor diretamente o array interno.
+    return account.history.map((trade) => ({ ...trade }));
   }
 
   /**

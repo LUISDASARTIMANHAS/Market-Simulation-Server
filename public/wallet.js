@@ -34,6 +34,7 @@ function renderAccount(account) {
     elements.accountCash.textContent = '—';
     elements.accountAssets.textContent = '—';
     elements.accountEstimatedValue.textContent = '—';
+    renderHistory([]);
     elements.submitOrder.disabled = true;
     elements.submitOrder.textContent = 'Conecte uma carteira para operar';
     elements.disconnect.hidden = true;
@@ -49,7 +50,6 @@ function renderAccount(account) {
   elements.submitOrder.textContent = 'Enviar ordem simulada';
   elements.disconnect.hidden = false;
 
-  renderHistory(account.history || []);
 }
 
 function renderHistory(history) {
@@ -98,12 +98,22 @@ async function refreshAccount() {
   try {
     const data = await request('/account');
     renderAccount(data.account);
+    await refreshHistory();
     setConnectionState(true, 'Carteira conectada');
   } catch (error) {
     clearAccount();
     showFeedback(`${error.message} Informe uma chave válida para reconectar.`, true);
   } finally {
     accountRequestInProgress = false;
+  }
+}
+
+async function refreshHistory() {
+  try {
+    const history = await request('/account/history');
+    renderHistory(history);
+  } catch (error) {
+    showFeedback(error.message, true);
   }
 }
 
@@ -124,6 +134,7 @@ elements.createAccountForm.addEventListener('submit', async (event) => {
     saveApiKey(data.apiKey);
     elements.apiKey.value = data.apiKey;
     renderAccount(data.account);
+    await refreshHistory();
     showFeedback('Carteira criada. Copie e guarde sua chave agora; ela só é exibida nesta resposta.');
   } catch (error) {
     showFeedback(error.message, true);
@@ -201,6 +212,7 @@ elements.orderForm.addEventListener('submit', async (event) => {
       body: JSON.stringify({ amount }),
     });
     renderAccount(data.account);
+    await refreshHistory();
     elements.orderAmount.value = '';
     showFeedback(`${side === 'BUY' ? 'Compra' : 'Venda'} executada. ${number(data.order.amount)} ativo(s) por ${money(data.order.total)}.`);
   } catch (error) {
