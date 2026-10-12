@@ -10,7 +10,7 @@ import {
   MAX_ORDER_IMPACT_PERCENT,
   MAX_PUBLIC_TRADES,
   REFERENCE_LIQUIDITY_USD,
-  TICKER_INTERVAL_MS,
+  TICKER_INTERVAL_SECONDS,
 } from "../config/constants.js";
 
 // Utilitários para manipulação de caminhos e resolução de URLs de módulos.
@@ -267,10 +267,10 @@ class MarketSimulator {
       this.tick().catch((error) =>
         logger.error("market.tick_failed", { message: error.message }),
       );
-    }, TICKER_INTERVAL_MS);
+    }, TICKER_INTERVAL_SECONDS * 1000);
 
     logger.info("market.ticker_started", {
-      tickIntervalMs: TICKER_INTERVAL_MS,
+      tickIntervalSeconds: TICKER_INTERVAL_SECONDS,
       nextEventAt: this.nextEventAt,
     });
 

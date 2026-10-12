@@ -1,19 +1,19 @@
 import { rateLimit } from 'express-rate-limit';
 import {
   ACCOUNT_CREATION_RATE_LIMIT,
-  ACCOUNT_CREATION_RATE_LIMIT_WINDOW_MS,
+  ACCOUNT_CREATION_RATE_LIMIT_WINDOW_SECONDS,
   ACCOUNT_ORDER_RATE_LIMIT,
-  ACCOUNT_ORDER_RATE_LIMIT_WINDOW_MS,
+  ACCOUNT_ORDER_RATE_LIMIT_WINDOW_SECONDS,
   KEY_ROTATION_RATE_LIMIT,
-  KEY_ROTATION_RATE_LIMIT_WINDOW_MS,
+  KEY_ROTATION_RATE_LIMIT_WINDOW_SECONDS,
   ORDER_RATE_LIMIT,
-  ORDER_RATE_LIMIT_WINDOW_MS,
+  ORDER_RATE_LIMIT_WINDOW_SECONDS,
 } from '../config/constants.js';
 import { marketSimulator } from '../services/marketSimulator.js';
 import { logger } from '../utils/logger.js';
 
 export const accountCreationLimit = rateLimit({
-  windowMs: ACCOUNT_CREATION_RATE_LIMIT_WINDOW_MS,
+  windowMs: 1000*ACCOUNT_CREATION_RATE_LIMIT_WINDOW_SECONDS,
   limit: ACCOUNT_CREATION_RATE_LIMIT,
   standardHeaders: true,
   legacyHeaders: false,
@@ -21,7 +21,7 @@ export const accountCreationLimit = rateLimit({
 });
 
 export const orderLimit = rateLimit({
-  windowMs: ORDER_RATE_LIMIT_WINDOW_MS,
+  windowMs: 1000*ORDER_RATE_LIMIT_WINDOW_SECONDS,
   limit: ORDER_RATE_LIMIT,
   standardHeaders: true,
   legacyHeaders: false,
@@ -29,7 +29,7 @@ export const orderLimit = rateLimit({
 });
 
 export const accountOrderLimit = rateLimit({
-  windowMs: ACCOUNT_ORDER_RATE_LIMIT_WINDOW_MS,
+  windowMs: 1000*ACCOUNT_ORDER_RATE_LIMIT_WINDOW_SECONDS,
   limit: ACCOUNT_ORDER_RATE_LIMIT,
   keyGenerator: (req) => req.marketAccountId,
   standardHeaders: true,
@@ -38,7 +38,7 @@ export const accountOrderLimit = rateLimit({
 });
 
 export const keyRotationLimit = rateLimit({
-  windowMs: KEY_ROTATION_RATE_LIMIT_WINDOW_MS,
+  windowMs: 1000*KEY_ROTATION_RATE_LIMIT_WINDOW_SECONDS,
   limit: KEY_ROTATION_RATE_LIMIT,
   standardHeaders: true,
   legacyHeaders: false,
