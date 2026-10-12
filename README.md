@@ -51,7 +51,7 @@ A chave de API em texto puro não é salva no arquivo, então cada usuário prec
 
 Por padrão, a API escuta na porta `3001` e os dados ficam na pasta `data/`, dentro deste projeto. Configure `MARKET_PORT` para trocar a porta ou `MARKET_STATE_FILE` para apontar o arquivo de estado principal.
 
-Eventos simulados movimentam o preço em intervalos aleatórios de 60 a 120 segundos. Configure `MARKET_EVENT_MIN_INTERVAL_MS` e `MARKET_EVENT_MAX_INTERVAL_MS` para alterar os limites em milissegundos. Se o máximo for menor que o mínimo, o mínimo será usado como os dois limites. Os modelos, descrições e faixas de impacto são editáveis em `src/config/market-events.json`; cada categoria tem cenários positivos e negativos equilibrados para não criar tendência estrutural de queda.
+Eventos simulados movimentam o preço em intervalos aleatórios de 60 a 120 segundos. Configure `MARKET_EVENT_MIN_INTERVAL_MS` e `MARKET_EVENT_MAX_INTERVAL_MS` para alterar os limites em milissegundos. Se o máximo for menor que o mínimo, o mínimo será usado como os dois limites. Os modelos, descrições e faixas de impacto são editáveis em `src/config/market-events.json`; cada categoria tem cenários positivos e negativos equilibrados. Os eventos também aplicam uma reversão gradual em direção ao preço de referência de US$ 100 para limitar tendências aleatórias prolongadas.
 
 Se estiver atrás de um reverse proxy confiável, configure `TRUST_PROXY` com o endereço ou faixa desse proxy, por exemplo `loopback` para um proxy local. Não use `true` indiscriminadamente: o endereço IP é usado nos limites de requisição.
 
@@ -59,11 +59,11 @@ Ao ser executado pela primeira vez ou a partir da estrutura antiga monolítica, 
 
 ## Logs
 
-O servidor escreve logs estruturados em JSON no console do processo, um evento por linha. Registra requisições HTTP com método, caminho, status e duração, além de eventos de mercado, ordens, ciclo de contas e operações de persistência. Erros são enviados ao `stderr`; os demais níveis vão para `stdout`. Query strings, corpos das requisições e cabeçalhos de autenticação não são registrados, portanto chaves de API não aparecem nos logs.
+O servidor grava logs estruturados em JSON, um evento por linha, em arquivos diários dentro de `data/logs/` (`market-AAAA-MM-DD.log`). O diretório é ignorado pelo Git e, no Docker Compose, permanece disponível no volume `./data`. Configure `MARKET_LOG_DIRECTORY` para escolher outro diretório. Os registros incluem requisições HTTP, eventos de mercado, ordens e operações de persistência; query strings, corpos das requisições e cabeçalhos de autenticação não são registrados. Se ocorrer uma falha ao gravar os logs, o erro é informado uma única vez no console.
 
-## API
+`GET /api/market/status` é público. Retorna preço, sequência, histórico recente, volume, todos os eventos decorridos (`events`) e as ordens públicas recentes, sem expor dados de contas.
 
-`GET /api/market/status` é público. Retorna preço, sequência, histórico recente, volume e as ordens públicas recentes, sem expor dados de contas.
+`GET /api/market/events` é público. Retorna a lista completa de todos os eventos de mercado decorridos, do mais recente ao mais antigo. Aceita o parâmetro opcional `?limit=N` para limitar a quantidade retornada.
 
 `GET /api/backup` baixa um snapshot em JSON do estado atual do mercado, incluindo contas, saldo, histórico, trades públicos e os metadados de identificação (accountId e username). Use esse arquivo para auditoria, backup e recuperação do estado.
 
@@ -79,12 +79,24 @@ O arquivo inclui as oito coleções persistidas: contas, ativos, carteiras, orde
     "sequence": 42,
     "updatedAt": "2026-10-07T21:00:00.000Z",
     "latestEvent": {
+      "eventId": "a1b2c3d4-...",
       "category": "Inflação",
       "title": "Inflação desacelera",
       "description": "Alívio inflacionário melhora o apetite por risco.",
       "impactPercent": 0.52,
       "occurredAt": "2026-10-07T20:59:00.000Z"
     },
+    "events": [
+      {
+        "eventId": "a1b2c3d4-...",
+        "assetId": "SIM",
+        "category": "Inflação",
+        "title": "Inflação desacelera",
+        "description": "Alívio inflacionário melhora o apetite por risco.",
+        "impactPercent": 0.52,
+        "occurredAt": "2026-10-07T20:59:00.000Z"
+      }
+    ],
     "nextEventAt": "2026-10-07T21:00:30.000Z",
     "volume": { "total": 100, "buys": 100, "sells": 0 },
     "recentTrades": [],
@@ -132,11 +144,26 @@ O painel impede que um administrador remova seu próprio acesso, que exclua a pr
 
 Cada participante deve guardar sua chave e usar sua própria carteira. Não compartilhe uma chave entre usuários.
 
-Uma compra pressiona o preço global para cima; uma venda, para baixo. O efeito é limitado a 2% por ordem, calculado sobre uma liquidez de referência de US$ 1.000, e o tamanho máximo é US$ 5.000 por ordem. Além das ordens de usuários e bots enviadas por essa API, eventos simulados de inflação, guerra, política, juros, tecnologia e emprego aplicam choques periódicos positivos ou negativos ao preço. O status público informa o último evento e a previsão do próximo. Esses cenários são aleatórios e não representam notícias ou dados do mundo real. O preço, os eventos, as contas, o volume e o histórico de ordens são persistidos neste servidor.
+Uma compra pressiona o preço global para cima; uma venda, para baixo. O efeito é limitado a 2% por ordem, calculado sobre uma liquidez de referência de US$ 250, e o tamanho máximo é US$ 5.000 por ordem. Além das ordens de usuários e bots enviadas por essa API, eventos simulados de inflação, guerra, política, juros, tecnologia e emprego aplicam choques periódicos positivos ou negativos ao preço. O status público informa o último evento e a previsão do próximo. Esses cenários são aleatórios e não representam notícias ou dados do mundo real. O preço, os eventos, as contas, o volume e o histórico de ordens são persistidos neste servidor.
 
-O cadastro está limitado a 5 chamadas por IP por hora; ordens, a 60 por IP por minuto e 20 por conta por minuto; rotação, a 3 por IP por hora. O servidor deve rodar como uma única autoridade de mercado; várias instâncias com arquivos locais separados não compartilham preço nem saldos.
+O cadastro está limitado a 5 chamadas por IP por hora; ordens, a 60 por IP por minuto e 20 por conta por minuto; rotação, a 3 por IP por hora.
 
-Os limites usam armazenamento em memória e reiniciam quando o processo reinicia. Para alto volume ou múltiplas instâncias, migre contas, ordens, preço e limites para um banco compartilhado antes de escalar.
+### Sincronização entre Servidores (Master / Node)
+
+O servidor suporta sincronização distribuída entre múltiplos servidores com autoridade única (master) e nós replicados (nodes):
+
+- `MARKET_SYNC_ROLE`: define o papel da instância (`standalone` por padrão, `master` ou `node`).
+- `MARKET_SYNC_MASTER_URL`: endereço do servidor master (ex.: `http://master:3001`), obrigatório quando em modo `node`.
+- `MARKET_SYNC_TOKEN`: token secreto compartilhado para autenticação via cabeçalho `X-Market-Sync-Token`.
+- `MARKET_SYNC_INTERVAL_MS`: intervalo de reconciliação periódica em milissegundos (padrão `5000` ms).
+
+**Regras de Sincronização e Concorrência:**
+- O servidor master aceita snapshots enviados pelos nodes desde que o node não esteja desatualizado (baseado no controle de concorrência por revisão otimista).
+- O primeiro node a registrar uma ordem ou alteração envia seus dados ao master; o master aceita e incrementa a revisão do mercado.
+- Se dois nodes submeterem ordens ao mesmo tempo, o mais rápido a alcançar o master prevalece como vencedor. O node concorrente recebe conflito (`HTTP 409`), descarta a operação rejeitada e baixa o estado atualizado do master contendo a transação vencedora.
+- Caso um node fique atrasado por oscilações ou falhas de rede, baixa automaticamente o snapshot mais recente do master durante a reconciliação periódica ou ao detectar divergência de revisão.
+
+Os limites usam armazenamento em memória e reiniciam quando o processo reinicia.
 
 Clientes podem consultar essa rota sem conta ou chave. Se o servidor estiver em outra máquina, use a URL pública HTTPS e libere somente a porta necessária no firewall.
 Qualquer cliente pode usar essas rotas com sua própria conta e chave Bearer. Não embuta a chave em código público de navegador, URLs ou repositórios; aplicações web devem intermediar ordens por um backend protegido. A integração para o bot automatizar ordens fica para outra etapa. Ao publicar na internet, use HTTPS.

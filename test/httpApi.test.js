@@ -24,7 +24,7 @@ describe('Testes de Integração HTTP da API', () => {
     const app = express();
     app.use(cors());
     app.use(express.json());
-    app.use(marketRoutes);
+    app.use('/api', marketRoutes);
 
     await new Promise((resolve) => {
       server = app.listen(0, () => {
@@ -37,6 +37,7 @@ describe('Testes de Integração HTTP da API', () => {
 
   after(async () => {
     if (server) {
+      server.closeAllConnections?.();
       await new Promise((resolve) => server.close(resolve));
     }
     // Restaura o banco oficial limpo a partir do backup para garantir isolamento

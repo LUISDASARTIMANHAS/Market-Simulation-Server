@@ -49,12 +49,21 @@
           </div>
         </article>
 
-        <article class="panel event-panel">
-          <p class="eyebrow">EVENTO DE MERCADO</p>
-          <h2 id="event-title">Aguardando dados</h2>
-          <p class="muted" id="event-category">—</p>
-          <p id="event-description">O último evento simulado aparecerá aqui.</p>
-          <div class="event-footer"><span class="muted">Próximo evento previsto</span><strong id="next-event">—</strong></div>
+        <article class="panel event-panel" aria-label="Eventos de mercado decorridos">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">EVENTOS DE MERCADO</p>
+              <h2>Eventos decorridos</h2>
+            </div>
+            <span class="sequence" id="events-count">0 eventos</span>
+          </div>
+          <div class="event-status-bar">
+            <span class="muted">Próximo evento previsto</span>
+            <strong id="next-event">—</strong>
+          </div>
+          <div class="events-scroll" id="events-list" tabindex="0" role="region" aria-label="Histórico de eventos de mercado decorridos">
+            <div class="empty-cell">Carregando eventos…</div>
+          </div>
         </article>
       </section>
 

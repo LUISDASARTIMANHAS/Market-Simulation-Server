@@ -55,3 +55,22 @@ test('restauração substitui todas as coleções e remove atividade posterior a
     await rm(dataDir, { recursive: true, force: true });
   }
 });
+
+test('revisão de sincronização aumenta no master e permanece estável no node', async () => {
+  const dataDir = await mkdtemp(path.join(tmpdir(), 'market-sync-revision-'));
+  const previousRole = process.env.MARKET_SYNC_ROLE;
+  try {
+    const stateStore = new JsonStateStore(path.join(dataDir, 'market-state.json'));
+    process.env.MARKET_SYNC_ROLE = 'master';
+    await stateStore.save({ accounts: [], marketHistory: [] });
+    assert.equal((await stateStore.load()).syncRevision, 1);
+
+    process.env.MARKET_SYNC_ROLE = 'node';
+    await stateStore.save({});
+    assert.equal((await stateStore.load()).syncRevision, 1);
+  } finally {
+    if (previousRole === undefined) delete process.env.MARKET_SYNC_ROLE;
+    else process.env.MARKET_SYNC_ROLE = previousRole;
+    await rm(dataDir, { recursive: true, force: true });
+  }
+});

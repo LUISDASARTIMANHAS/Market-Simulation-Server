@@ -10,7 +10,7 @@ import {
   MAX_ORDER_IMPACT_PERCENT,
   MAX_PUBLIC_TRADES,
   REFERENCE_LIQUIDITY_USD,
-  TICKER_INTERVAL_MS,
+  TICKER_INTERVAL_SECONDS,
 } from "../config/constants.js";
 
 // Utilitários para manipulação de caminhos e resolução de URLs de módulos.
@@ -143,8 +143,11 @@ class MarketSimulator {
     // conflitantes nos saldos, no histórico e no estado persistido.
     this.operationQueue = Promise.resolve();
 
+    this.synchronizationHandler = null;
+
     // Informações sobre o evento mais recente e a próxima ocorrência prevista.
     this.latestEvent = null;
+    this.events = [];
     this.nextEventAt = null;
   }
 
@@ -184,12 +187,25 @@ class MarketSimulator {
     this.buyVolume = Number.isFinite(state.buyVolume) ? state.buyVolume : 0;
     this.sellVolume = Number.isFinite(state.sellVolume) ? state.sellVolume : 0;
 
+    // Restaura o histórico de eventos decorridos do mercado.
+    this.events = Array.isArray(state.marketEvents)
+      ? state.marketEvents.map((event) => ({ ...event }))
+      : (Array.isArray(state.events) ? state.events.map((event) => ({ ...event })) : []);
+
     // Restaura o evento mais recente quando há um título válido.
     this.latestEvent =
       state.latestMarketEvent &&
       typeof state.latestMarketEvent.title === "string"
         ? state.latestMarketEvent
-        : null;
+        : (this.events[0] || null);
+
+    if (this.latestEvent && this.events.length === 0) {
+      this.events.push({
+        eventId: this.latestEvent.eventId || `ev-${Date.now()}`,
+        assetId: "SIM",
+        ...this.latestEvent,
+      });
+    }
 
     // Só aceita uma data de próximo evento que possa ser interpretada.
     this.nextEventAt =
@@ -222,7 +238,14 @@ class MarketSimulator {
 
       if (this.history.length > 50) this.history.shift();
 
-      this.latestEvent = event;
+      const eventRecord = {
+        eventId: randomUUID(),
+        assetId: "SIM",
+        ...event,
+      };
+
+      this.events.unshift(eventRecord);
+      this.latestEvent = eventRecord;
 
       this.scheduleNextEvent();
 
@@ -267,10 +290,10 @@ class MarketSimulator {
       this.tick().catch((error) =>
         logger.error("market.tick_failed", { message: error.message }),
       );
-    }, TICKER_INTERVAL_MS);
+    }, TICKER_INTERVAL_SECONDS * 1000);
 
     logger.info("market.ticker_started", {
-      tickIntervalMs: TICKER_INTERVAL_MS,
+      tickIntervalSeconds: TICKER_INTERVAL_SECONDS,
       nextEventAt: this.nextEventAt,
     });
 
@@ -311,8 +334,15 @@ class MarketSimulator {
       buyVolume: this.buyVolume,
       sellVolume: this.sellVolume,
       latestMarketEvent: this.latestEvent,
+      marketEvents: this.events,
       nextMarketEventAt: this.nextEventAt,
+    }).then(async () => {
+      if (this.synchronizationHandler) await this.synchronizationHandler();
     });
+  }
+
+  setSynchronizationHandler(handler) {
+    this.synchronizationHandler = typeof handler === "function" ? handler : null;
   }
 
   /**
@@ -532,7 +562,7 @@ class MarketSimulator {
    * O hash da chave de API e outros campos internos não são incluídos na resposta.
    *
    * @param {string} accountId - ID da conta.
-   * @returns {{ accountId: string, balance: number, assetBalance: number, history: object[] } | null}
+    * @returns {object | null}
    */
   getAccount(accountId) {
     const account = this.accounts.get(accountId);
@@ -550,10 +580,21 @@ class MarketSimulator {
       assetBalance: account.assetBalance,
       currentPrice,
       estimatedSaleValue: roundMoney(account.assetBalance * currentPrice),
-
-      // Copia os registros para evitar expor diretamente o array interno.
-      history: account.history.map((trade) => ({ ...trade })),
     };
+  }
+
+  /**
+    * Retorna o histórico de negociações de uma conta.
+   *
+   * @param {string} accountId - ID da conta.
+    * @returns {object[] | null}
+   */
+  getAccountHistory(accountId) {
+    const account = this.accounts.get(accountId);
+    if (!account) return null;
+
+    // Copia os registros para evitar expor diretamente o array interno.
+    return account.history.map((trade) => ({ ...trade }));
   }
 
   /**
@@ -705,6 +746,7 @@ class MarketSimulator {
         id: randomUUID(),
         timestamp,
         type: input.side,
+        side: input.side,
         price: current.price,
         amount,
         total,
@@ -788,11 +830,12 @@ class MarketSimulator {
         await this.persist();
       } catch (error) {
         // Restaura os dados anteriores se a persistência falhar.
-        Object.assign(account, accountBefore);
-        this.history = historyBefore;
-        this.recentTrades = tradesBefore;
-
-        [this.totalVolume, this.buyVolume, this.sellVolume] = volumesBefore;
+        if (!error.syncConflict) {
+          Object.assign(account, accountBefore);
+          this.history = historyBefore;
+          this.recentTrades = tradesBefore;
+          [this.totalVolume, this.buyVolume, this.sellVolume] = volumesBefore;
+        }
 
         throw error;
       }
@@ -1100,6 +1143,7 @@ class MarketSimulator {
    *   recentTrades: Array<object>,
    *   volume: { total: number, buys: number, sells: number },
    *   latestEvent: object | null,
+   *   events: Array<object>,
    *   nextEventAt: string | null
    * }}
    */
@@ -1123,10 +1167,22 @@ class MarketSimulator {
         sells: this.sellVolume,
       },
 
-      // Retorna uma cópia do último evento, quando disponível.
+      // Retorna uma cópia do último evento e de todos os eventos decorridos.
       latestEvent: this.latestEvent ? { ...this.latestEvent } : null,
+      events: this.events.map((event) => ({ ...event })),
       nextEventAt: this.nextEventAt,
     };
+  }
+
+  /**
+   * Retorna a lista de todos os eventos decorridos no mercado.
+   *
+   * @param {number} [limit=Infinity]
+   * @returns {Array<object>}
+   */
+  getEvents(limit = Infinity) {
+    const list = this.events.map((event) => ({ ...event }));
+    return Number.isFinite(limit) ? list.slice(0, limit) : list;
   }
 }
 

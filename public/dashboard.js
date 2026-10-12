@@ -10,10 +10,9 @@ const elements = {
   volumeTotal: document.querySelector('#volume-total'),
   volumeBuys: document.querySelector('#volume-buys'),
   volumeSells: document.querySelector('#volume-sells'),
-  eventTitle: document.querySelector('#event-title'),
-  eventCategory: document.querySelector('#event-category'),
-  eventDescription: document.querySelector('#event-description'),
   nextEvent: document.querySelector('#next-event'),
+  eventsCount: document.querySelector('#events-count'),
+  eventsList: document.querySelector('#events-list'),
   chart: document.querySelector('#price-chart'),
   trades: document.querySelector('#trades-body'),
 };
@@ -87,6 +86,72 @@ function renderTrades(trades) {
   }
 }
 
+function renderEvents(events = [], nextEventAt = null) {
+  if (elements.nextEvent) {
+    elements.nextEvent.textContent = formatTime(nextEventAt);
+  }
+  if (elements.eventsCount) {
+    elements.eventsCount.textContent = `${events.length} evento${events.length === 1 ? '' : 's'}`;
+  }
+
+  if (!elements.eventsList) return;
+
+  elements.eventsList.replaceChildren();
+
+  if (!events.length) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-cell';
+    empty.textContent = 'Nenhum evento decorrido até o momento.';
+    elements.eventsList.append(empty);
+    return;
+  }
+
+  for (const ev of events) {
+    const item = document.createElement('article');
+    item.className = 'event-item';
+
+    const top = document.createElement('div');
+    top.className = 'event-item-top';
+
+    const badgeGroup = document.createElement('div');
+    badgeGroup.className = 'event-badge-group';
+
+    if (ev.category) {
+      const category = document.createElement('span');
+      category.className = 'event-category-badge';
+      category.textContent = ev.category;
+      badgeGroup.append(category);
+    }
+
+    if (Number.isFinite(ev.impactPercent)) {
+      const impact = document.createElement('span');
+      const isPos = ev.impactPercent >= 0;
+      impact.className = `event-impact-badge ${isPos ? 'event-impact-positive' : 'event-impact-negative'}`;
+      impact.textContent = `${isPos ? '+' : ''}${ev.impactPercent.toFixed(2)}%`;
+      badgeGroup.append(impact);
+    }
+
+    top.append(badgeGroup);
+
+    if (ev.occurredAt) {
+      const time = document.createElement('time');
+      time.className = 'event-time';
+      time.dateTime = ev.occurredAt;
+      time.textContent = formatTime(ev.occurredAt);
+      top.append(time);
+    }
+
+    const title = document.createElement('h3');
+    title.textContent = ev.title || 'Evento de mercado';
+
+    const desc = document.createElement('p');
+    desc.textContent = ev.description || '';
+
+    item.append(top, title, desc);
+    elements.eventsList.append(item);
+  }
+}
+
 function renderMarket(market) {
   latestMarket = market;
   elements.price.textContent = money(market.currentPrice);
@@ -96,10 +161,12 @@ function renderMarket(market) {
   elements.volumeTotal.textContent = money(market.volume.total);
   elements.volumeBuys.textContent = money(market.volume.buys);
   elements.volumeSells.textContent = money(market.volume.sells);
-  elements.eventTitle.textContent = market.latestEvent?.title || 'Nenhum evento registrado';
-  elements.eventCategory.textContent = market.latestEvent?.category || '—';
-  elements.eventDescription.textContent = market.latestEvent?.description || 'Os eventos simulados aparecerão aqui.';
-  elements.nextEvent.textContent = formatTime(market.nextEventAt);
+
+  const events = Array.isArray(market.events)
+    ? market.events
+    : (market.latestEvent ? [market.latestEvent] : []);
+  renderEvents(events, market.nextEventAt);
+
   drawChart(market.history);
   renderTrades(market.recentTrades);
 }

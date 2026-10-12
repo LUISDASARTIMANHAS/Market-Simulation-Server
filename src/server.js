@@ -5,11 +5,13 @@ import { fileURLToPath } from 'node:url';
 import marketRoutes from './routes/marketRoutes.js';
 import { marketSimulator } from './services/marketSimulator.js';
 import { marketStateStore } from './services/stateStore.js';
+import { MarketSyncService } from './services/marketSyncService.js';
 import { logger } from './utils/logger.js';
 
 const app = express();
 const PORT = Number(process.env.MARKET_PORT || 3001);
 const PUBLIC_DIRECTORY = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public');
+const syncService = new MarketSyncService({ store: marketStateStore, simulator: marketSimulator });
 
 app.use((req, res, next) => {
   const startedAt = process.hrtime.bigint();
@@ -43,7 +45,10 @@ app.use(express.static(PUBLIC_DIRECTORY, { index: 'index.html' }));
 async function startMarketServer() {
   const savedState = await marketStateStore.load();
   marketSimulator.initialize(savedState);
-  const adminSetup = await marketSimulator.ensureAdministrator(process.env.MARKET_ADMIN_TOKEN);
+  await syncService.start();
+  const adminSetup = syncService.role === 'node'
+    ? null
+    : await marketSimulator.ensureAdministrator(process.env.MARKET_ADMIN_TOKEN);
   marketSimulator.start();
   logger.info('market.state_restored', {
     historyEntries: Array.isArray(savedState.marketHistory) ? savedState.marketHistory.length : 0,
@@ -51,11 +56,15 @@ async function startMarketServer() {
   });
 
   app.listen(PORT, () => {
-    console.log(`ADMIN API TOKEN (guarde em local seguro): ${adminSetup.apiKey}`);
-    if (false) {
-      console.log(`ADMIN API TOKEN (guarde em local seguro; será exibido apenas nesta criação): ${adminSetup.apiKey}`);
+    if (adminSetup) {
+      console.log(`ADMIN API TOKEN (guarde em local seguro): ${adminSetup.apiKey}`);
+      if (false) {
+        console.log(`ADMIN API TOKEN (guarde em local seguro; será exibido apenas nesta criação): ${adminSetup.apiKey}`);
+      } else {
+        console.log(`Administrador pronto: ${adminSetup.accountId}. O token não é armazenado em texto puro.`);
+      }
     } else {
-      console.log(`Administrador pronto: ${adminSetup.accountId}. O token não é armazenado em texto puro.`);
+      logger.info('server.node_mode', { masterUrl: syncService.masterUrl });
     }
     logger.info('server.started', {
       port: PORT,

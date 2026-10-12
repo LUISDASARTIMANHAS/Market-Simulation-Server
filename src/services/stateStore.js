@@ -20,12 +20,17 @@ const LEGACY_STATE_FILE = path.resolve(
  * garantindo compatibilidade com o formato agregado em memória e arquivos modulares em disco.
  */
 export class JsonStateStore {
-  constructor(filePath = process.env.MARKET_STATE_FILE || DEFAULT_STATE_FILE) {
+  constructor(filePath = process.env.MARKET_STATE_FILE || DEFAULT_STATE_FILE, options = {}) {
     this.filePath = filePath;
     this.dataDir = path.dirname(filePath);
     this.legacyFilePath = process.env.MARKET_STATE_FILE ? null : LEGACY_STATE_FILE;
     this.repository = new MarketRepository(this.dataDir);
     this.state = {};
+    this.role = options.role ?? null;
+  }
+
+  setRole(role) {
+    this.role = role;
   }
 
   /**
@@ -80,6 +85,7 @@ export class JsonStateStore {
       const portfoliosList = fullState.portfolios || [];
       const tradesList = fullState.trades || [];
       const historyList = fullState.marketHistory || [];
+      const eventsList = fullState.marketEvents || [];
       const marketState = fullState.marketState || {};
 
       // Combina contas com suas posições em portfolios e históricos de trades
@@ -141,6 +147,16 @@ export class JsonStateStore {
         sellVolume: marketState.sellVolume ?? 0,
         latestMarketEvent: marketState.latestMarketEvent ?? null,
         nextMarketEventAt: marketState.nextMarketEventAt ?? null,
+        marketEvents: eventsList.map((e) => ({
+          eventId: e.eventId,
+          assetId: e.assetId || DEFAULT_ASSET_ID,
+          category: e.category,
+          title: e.title,
+          description: e.description,
+          impactPercent: e.impactPercent,
+          occurredAt: e.occurredAt,
+        })),
+        syncRevision: Number.isInteger(marketState.syncRevision) ? marketState.syncRevision : 0,
       };
 
       this.state = aggregatedState;
@@ -159,6 +175,10 @@ export class JsonStateStore {
    */
   async save(updates) {
     this.state = { ...this.state, ...updates };
+    const effectiveRole = this.role ?? process.env.MARKET_SYNC_ROLE;
+    this.state.syncRevision = effectiveRole === 'master'
+      ? (Number.isInteger(this.state.syncRevision) ? this.state.syncRevision : 0) + 1
+      : (Number.isInteger(this.state.syncRevision) ? this.state.syncRevision : 0);
 
     const accounts = Array.isArray(this.state.accounts) ? this.state.accounts : [];
     const history = Array.isArray(this.state.marketHistory) ? this.state.marketHistory : [];
@@ -258,16 +278,37 @@ export class JsonStateStore {
     }));
 
     // 6. Prepara market-events.json
-    const existingEvents = await this.repository.getMarketEvents();
-    const eventsData = [...existingEvents];
+    const existingEvents = await this.repository.getMarketEvents(Infinity);
+    const eventsMap = new Map();
+
+    for (const e of existingEvents) {
+      const key = e.eventId || `${e.title}_${e.occurredAt}`;
+      eventsMap.set(key, e);
+    }
+
+    if (Array.isArray(this.state.marketEvents)) {
+      for (const e of this.state.marketEvents) {
+        const key = e.eventId || `${e.title}_${e.occurredAt}`;
+        if (!eventsMap.has(key)) {
+          eventsMap.set(key, {
+            eventId: e.eventId || `ev-${Date.now()}`,
+            assetId: DEFAULT_ASSET_ID,
+            category: e.category || 'Geral',
+            title: e.title,
+            description: e.description || '',
+            impactPercent: Number(Number(e.impactPercent || 0).toFixed(4)),
+            occurredAt: e.occurredAt || new Date().toISOString(),
+          });
+        }
+      }
+    }
+
     if (this.state.latestMarketEvent && typeof this.state.latestMarketEvent === 'object') {
       const latest = this.state.latestMarketEvent;
-      const alreadyHas = eventsData.some((e) =>
-        e.title === latest.title && e.occurredAt === latest.occurredAt
-      );
-      if (!alreadyHas) {
-        eventsData.unshift({
-          eventId: `ev-${Date.now()}`,
+      const key = latest.eventId || `${latest.title}_${latest.occurredAt}`;
+      if (!eventsMap.has(key)) {
+        eventsMap.set(key, {
+          eventId: latest.eventId || `ev-${Date.now()}`,
           assetId: DEFAULT_ASSET_ID,
           category: latest.category || 'Geral',
           title: latest.title,
@@ -277,6 +318,10 @@ export class JsonStateStore {
         });
       }
     }
+
+    const eventsData = [...eventsMap.values()].sort((a, b) =>
+      Date.parse(b.occurredAt) - Date.parse(a.occurredAt)
+    );
 
     // 7. Prepara market-state.json
     const marketStateData = {
@@ -288,6 +333,7 @@ export class JsonStateStore {
       sellVolume: roundMoney(this.state.sellVolume ?? 0),
       latestMarketEvent: this.state.latestMarketEvent || null,
       nextMarketEventAt: this.state.nextMarketEventAt || null,
+      syncRevision: this.state.syncRevision,
       updatedAt: currentUpdatedAt,
     };
 
