@@ -7,11 +7,13 @@ import { marketSimulator } from './services/marketSimulator.js';
 import { marketStateStore } from './services/stateStore.js';
 import { MarketSyncService } from './services/marketSyncService.js';
 import { logger } from './utils/logger.js';
+import { registerSyncService } from './services/clusterRegistry.js';
 
 const app = express();
 const PORT = Number(process.env.MARKET_PORT || 3001);
 const PUBLIC_DIRECTORY = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public');
 const syncService = new MarketSyncService({ store: marketStateStore, simulator: marketSimulator });
+registerSyncService(syncService);
 
 app.use((req, res, next) => {
   const startedAt = process.hrtime.bigint();
