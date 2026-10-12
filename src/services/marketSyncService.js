@@ -13,6 +13,9 @@ export class MarketSyncService {
     fetchImpl = fetch,
   }) {
     this.role = role;
+    if (this.store && typeof this.store.setRole === 'function') {
+      this.store.setRole(this.role);
+    }
     this.masterUrl = masterUrl.replace(/\/+$/, '');
     this.token = token;
     this.store = store;

@@ -147,6 +147,7 @@ class MarketSimulator {
 
     // Informações sobre o evento mais recente e a próxima ocorrência prevista.
     this.latestEvent = null;
+    this.events = [];
     this.nextEventAt = null;
   }
 
@@ -186,12 +187,25 @@ class MarketSimulator {
     this.buyVolume = Number.isFinite(state.buyVolume) ? state.buyVolume : 0;
     this.sellVolume = Number.isFinite(state.sellVolume) ? state.sellVolume : 0;
 
+    // Restaura o histórico de eventos decorridos do mercado.
+    this.events = Array.isArray(state.marketEvents)
+      ? state.marketEvents.map((event) => ({ ...event }))
+      : (Array.isArray(state.events) ? state.events.map((event) => ({ ...event })) : []);
+
     // Restaura o evento mais recente quando há um título válido.
     this.latestEvent =
       state.latestMarketEvent &&
       typeof state.latestMarketEvent.title === "string"
         ? state.latestMarketEvent
-        : null;
+        : (this.events[0] || null);
+
+    if (this.latestEvent && this.events.length === 0) {
+      this.events.push({
+        eventId: this.latestEvent.eventId || `ev-${Date.now()}`,
+        assetId: "SIM",
+        ...this.latestEvent,
+      });
+    }
 
     // Só aceita uma data de próximo evento que possa ser interpretada.
     this.nextEventAt =
@@ -224,7 +238,14 @@ class MarketSimulator {
 
       if (this.history.length > 50) this.history.shift();
 
-      this.latestEvent = event;
+      const eventRecord = {
+        eventId: randomUUID(),
+        assetId: "SIM",
+        ...event,
+      };
+
+      this.events.unshift(eventRecord);
+      this.latestEvent = eventRecord;
 
       this.scheduleNextEvent();
 
@@ -313,6 +334,7 @@ class MarketSimulator {
       buyVolume: this.buyVolume,
       sellVolume: this.sellVolume,
       latestMarketEvent: this.latestEvent,
+      marketEvents: this.events,
       nextMarketEventAt: this.nextEventAt,
     }).then(async () => {
       if (this.synchronizationHandler) await this.synchronizationHandler();
@@ -724,6 +746,7 @@ class MarketSimulator {
         id: randomUUID(),
         timestamp,
         type: input.side,
+        side: input.side,
         price: current.price,
         amount,
         total,
@@ -1143,10 +1166,22 @@ class MarketSimulator {
         sells: this.sellVolume,
       },
 
-      // Retorna uma cópia do último evento, quando disponível.
+      // Retorna uma cópia do último evento e de todos os eventos decorridos.
       latestEvent: this.latestEvent ? { ...this.latestEvent } : null,
+      events: this.events.map((event) => ({ ...event })),
       nextEventAt: this.nextEventAt,
     };
+  }
+
+  /**
+   * Retorna a lista de todos os eventos decorridos no mercado.
+   *
+   * @param {number} [limit=Infinity]
+   * @returns {Array<object>}
+   */
+  getEvents(limit = Infinity) {
+    const list = this.events.map((event) => ({ ...event }));
+    return Number.isFinite(limit) ? list.slice(0, limit) : list;
   }
 }
 

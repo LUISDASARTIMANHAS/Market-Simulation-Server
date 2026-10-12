@@ -227,7 +227,7 @@ describe('Suíte de Testes Obrigatórios — Reestruturação do Banco de Dados 
     const accountAfter = testSimulator.getAccount(created.account.accountId);
     // 5 ordens de 50 = total 250 debitado exatamente
     assert.equal(accountAfter.balance, initialBalance - 250);
-    assert.equal(accountAfter.history.length, 5);
+    assert.equal(testSimulator.getAccountHistory(created.account.accountId).length, 5);
   });
 
   test('9. Recuperação e rollback seguro após falha de gravação', async () => {

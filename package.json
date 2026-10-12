@@ -11,7 +11,7 @@
     "start": "npm run autoUpdate && nodemon src/server.js",
     "autoUpdate": "npm install && npm update",
     "dev": "node --watch src/server.js",
-    "test": "node --test test/*.test.js",
+    "test": "node --test --test-force-exit test/*.test.js",
     "migrate": "node src/scripts/migrateDatabase.js"
   },
   "dependencies": {

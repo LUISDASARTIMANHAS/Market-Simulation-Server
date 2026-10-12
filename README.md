@@ -134,9 +134,24 @@ Cada participante deve guardar sua chave e usar sua própria carteira. Não comp
 
 Uma compra pressiona o preço global para cima; uma venda, para baixo. O efeito é limitado a 2% por ordem, calculado sobre uma liquidez de referência de US$ 250, e o tamanho máximo é US$ 5.000 por ordem. Além das ordens de usuários e bots enviadas por essa API, eventos simulados de inflação, guerra, política, juros, tecnologia e emprego aplicam choques periódicos positivos ou negativos ao preço. O status público informa o último evento e a previsão do próximo. Esses cenários são aleatórios e não representam notícias ou dados do mundo real. O preço, os eventos, as contas, o volume e o histórico de ordens são persistidos neste servidor.
 
-O cadastro está limitado a 5 chamadas por IP por hora; ordens, a 60 por IP por minuto e 20 por conta por minuto; rotação, a 3 por IP por hora. O servidor deve rodar como uma única autoridade de mercado; várias instâncias com arquivos locais separados não compartilham preço nem saldos.
+O cadastro está limitado a 5 chamadas por IP por hora; ordens, a 60 por IP por minuto e 20 por conta por minuto; rotação, a 3 por IP por hora.
 
-Os limites usam armazenamento em memória e reiniciam quando o processo reinicia. Para alto volume ou múltiplas instâncias, migre contas, ordens, preço e limites para um banco compartilhado antes de escalar.
+### Sincronização entre Servidores (Master / Node)
+
+O servidor suporta sincronização distribuída entre múltiplos servidores com autoridade única (master) e nós replicados (nodes):
+
+- `MARKET_SYNC_ROLE`: define o papel da instância (`standalone` por padrão, `master` ou `node`).
+- `MARKET_SYNC_MASTER_URL`: endereço do servidor master (ex.: `http://master:3001`), obrigatório quando em modo `node`.
+- `MARKET_SYNC_TOKEN`: token secreto compartilhado para autenticação via cabeçalho `X-Market-Sync-Token`.
+- `MARKET_SYNC_INTERVAL_MS`: intervalo de reconciliação periódica em milissegundos (padrão `5000` ms).
+
+**Regras de Sincronização e Concorrência:**
+- O servidor master aceita snapshots enviados pelos nodes desde que o node não esteja desatualizado (baseado no controle de concorrência por revisão otimista).
+- O primeiro node a registrar uma ordem ou alteração envia seus dados ao master; o master aceita e incrementa a revisão do mercado.
+- Se dois nodes submeterem ordens ao mesmo tempo, o mais rápido a alcançar o master prevalece como vencedor. O node concorrente recebe conflito (`HTTP 409`), descarta a operação rejeitada e baixa o estado atualizado do master contendo a transação vencedora.
+- Caso um node fique atrasado por oscilações ou falhas de rede, baixa automaticamente o snapshot mais recente do master durante a reconciliação periódica ou ao detectar divergência de revisão.
+
+Os limites usam armazenamento em memória e reiniciam quando o processo reinicia.
 
 Clientes podem consultar essa rota sem conta ou chave. Se o servidor estiver em outra máquina, use a URL pública HTTPS e libere somente a porta necessária no firewall.
 Qualquer cliente pode usar essas rotas com sua própria conta e chave Bearer. Não embuta a chave em código público de navegador, URLs ou repositórios; aplicações web devem intermediar ordens por um backend protegido. A integração para o bot automatizar ordens fica para outra etapa. Ao publicar na internet, use HTTPS.
