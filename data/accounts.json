@@ -5,7 +5,7 @@
     "keyHash": "4b4b90d2b82df0d780281429f7003b951609940884fabe1b57d8d85bee54ca34",
     "isAdmin": true,
     "isSystemAdmin": false,
-    "balance": 0.77,
+    "balance": 195.81,
     "createdAt": "2026-10-08T02:26:18.999Z",
     "updatedAt": "2026-10-08T12:32:57.987Z"
   },
@@ -42,7 +42,7 @@
   {
     "accountId": "e0c2bd18-9e98-41ee-8513-a263a491f41e",
     "username": "system_admin",
-    "keyHash": "d3ab9a342d1528babf0fe5012f852e251be48233d62fb0a90b0c46680e11043a",
+    "keyHash": "31ed5ff8b85e5c5fcbe58acb4547adc09230b0017dabca1134dfd9543e2b6158",
     "isAdmin": true,
     "isSystemAdmin": true,
     "balance": 1000,
