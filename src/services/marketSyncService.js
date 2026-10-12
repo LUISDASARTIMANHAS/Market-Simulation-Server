@@ -4,6 +4,14 @@ import { sanitizeNodeId } from './clusterRegistry.js';
 
 const SYNC_TIMEOUT_MS = 10000;
 
+function getErrorDetails(error) {
+  return {
+    message: error.message,
+    name: error.name,
+    code: error.code,
+  };
+}
+
 export class MarketSyncService {
   constructor({
     role = process.env.MARKET_SYNC_ROLE || 'standalone',
@@ -39,20 +47,64 @@ export class MarketSyncService {
   }
 
   async start() {
+    logger.info('market_sync.starting', {
+      role: this.role,
+      nodeId: this.nodeId,
+      masterUrl: this.getMasterOrigin(),
+      intervalMs: this.intervalMs,
+      timeoutMs: SYNC_TIMEOUT_MS,
+    });
     if (!['standalone', 'master', 'node'].includes(this.role)) {
+      logger.error('market_sync.invalid_role', { role: this.role, nodeId: this.nodeId });
       throw new Error('MARKET_SYNC_ROLE deve ser standalone, master ou node.');
     }
-    if (this.role === 'standalone') return;
-    if (!this.token) throw new Error('MARKET_SYNC_TOKEN é obrigatório para sincronização.');
-    if (this.role === 'master') return;
-    if (!this.masterUrl) throw new Error('MARKET_SYNC_MASTER_URL é obrigatório no node.');
+    if (this.role === 'standalone') {
+      logger.info('market_sync.standalone_mode', { nodeId: this.nodeId });
+      return;
+    }
+    if (!this.token) {
+      logger.error('market_sync.missing_token', { role: this.role, nodeId: this.nodeId });
+      throw new Error('MARKET_SYNC_TOKEN é obrigatório para sincronização.');
+    }
+    if (this.role === 'master') {
+      logger.info('market_sync.master_ready', { nodeId: this.nodeId });
+      return;
+    }
+    if (!this.masterUrl) {
+      logger.error('market_sync.missing_master_url', { nodeId: this.nodeId });
+      throw new Error('MARKET_SYNC_MASTER_URL é obrigatório no node.');
+    }
 
-    await this.pullSnapshot();
+    logger.info('market_sync.node_initial_pull_started', {
+      nodeId: this.nodeId,
+      masterUrl: this.getMasterOrigin(),
+      localRevision: this.localRevision,
+    });
+    try {
+      await this.pullSnapshot();
+    } catch (error) {
+      logger.error('market_sync.node_initial_pull_failed', {
+        nodeId: this.nodeId,
+        masterUrl: this.getMasterOrigin(),
+        ...getErrorDetails(error),
+      });
+      throw error;
+    }
     this.simulator.setSynchronizationHandler(() => this.pushSnapshot());
+    logger.info('market_sync.node_ready', {
+      nodeId: this.nodeId,
+      masterUrl: this.getMasterOrigin(),
+      localRevision: this.localRevision,
+      intervalMs: this.intervalMs,
+    });
     this.interval = setInterval(() => {
       this.reconcile().catch((error) => {
         this.lastError = { message: error.message, at: new Date().toISOString() };
-        logger.warn('market_sync.reconcile_failed', { message: error.message });
+        logger.warn('market_sync.reconcile_failed', {
+          nodeId: this.nodeId,
+          localRevision: this.localRevision,
+          ...getErrorDetails(error),
+        });
       });
     }, this.intervalMs);
     this.interval.unref?.();
@@ -62,6 +114,7 @@ export class MarketSyncService {
     if (this.interval) clearInterval(this.interval);
     this.interval = null;
     this.simulator.setSynchronizationHandler(null);
+    logger.info('market_sync.stopped', { role: this.role, nodeId: this.nodeId });
   }
 
   /** @returns {number} Revisão local conhecida pelo node. */
@@ -70,43 +123,93 @@ export class MarketSyncService {
   }
 
   async request(path, options = {}) {
-    const response = await this.fetchImpl(new URL(path, `${this.masterUrl}/`), {
-      ...options,
-      signal: AbortSignal.timeout(SYNC_TIMEOUT_MS),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Market-Sync-Token': this.token,
-        'X-Market-Node-Id': this.nodeId,
-        'X-Market-Node-Revision': String(this.localRevision),
-        ...options.headers,
-      },
+    const url = new URL(path, `${this.masterUrl}/`);
+    const method = options.method || 'GET';
+    const startedAt = Date.now();
+    logger.info('market_sync.request_started', {
+      nodeId: this.nodeId,
+      method,
+      endpoint: `${url.origin}${url.pathname}`,
+      localRevision: this.localRevision,
+      timeoutMs: SYNC_TIMEOUT_MS,
     });
-    const body = await response.json().catch(() => ({}));
-    return { response, body };
+
+    try {
+      const response = await this.fetchImpl(url, {
+        ...options,
+        signal: AbortSignal.timeout(SYNC_TIMEOUT_MS),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Market-Sync-Token': this.token,
+          'X-Market-Node-Id': this.nodeId,
+          'X-Market-Node-Revision': String(this.localRevision),
+          ...options.headers,
+        },
+      });
+      const body = await response.json().catch(() => ({}));
+      logger.info('market_sync.request_completed', {
+        nodeId: this.nodeId,
+        method,
+        endpoint: `${url.origin}${url.pathname}`,
+        statusCode: response.status,
+        durationMs: Date.now() - startedAt,
+      });
+      return { response, body };
+    } catch (error) {
+      logger.error('market_sync.request_failed', {
+        nodeId: this.nodeId,
+        method,
+        endpoint: `${url.origin}${url.pathname}`,
+        durationMs: Date.now() - startedAt,
+        ...getErrorDetails(error),
+      });
+      throw error;
+    }
   }
 
   async pullSnapshot() {
+    logger.info('market_sync.snapshot_pull_started', {
+      nodeId: this.nodeId,
+      localRevision: this.localRevision,
+    });
     const { response, body } = await this.request('/api/sync/snapshot');
     if (!response.ok || !body.success || !body.data?.marketState) {
+      logger.error('market_sync.snapshot_pull_rejected', {
+        nodeId: this.nodeId,
+        statusCode: response.status,
+        message: body.message,
+      });
       throw new Error(body.message || `Falha ao baixar snapshot do master (${response.status}).`);
     }
     const revision = body.data.marketState.syncRevision;
     if (!Number.isInteger(revision) || revision < 0) {
+      logger.error('market_sync.snapshot_invalid_revision', { nodeId: this.nodeId, revision });
       throw new Error('Snapshot do master sem revisão válida.');
     }
 
+    logger.info('market_sync.snapshot_applying', { nodeId: this.nodeId, revision });
     await this.store.repository.replaceFullSnapshot(body.data);
     this.simulator.initialize(await this.store.load());
     this.dirty = false;
     this.masterRevision = revision;
     this.lastPullAt = new Date().toISOString();
-    logger.info('market_sync.snapshot_applied', { revision });
+    logger.info('market_sync.snapshot_applied', { nodeId: this.nodeId, revision });
     return revision;
   }
 
   async reconcile() {
+    logger.info('market_sync.reconcile_started', {
+      nodeId: this.nodeId,
+      localRevision: this.localRevision,
+      dirty: this.dirty,
+    });
     const { response, body } = await this.request('/api/sync/status');
     if (!response.ok || !Number.isInteger(body.data?.revision)) {
+      logger.error('market_sync.reconcile_status_invalid', {
+        nodeId: this.nodeId,
+        statusCode: response.status,
+        message: body.message,
+      });
       throw new Error(body.message || `Falha ao consultar revisão do master (${response.status}).`);
     }
 
@@ -115,13 +218,30 @@ export class MarketSyncService {
     this.lastError = null;
 
     if (body.data.revision !== this.localRevision) {
+      logger.info('market_sync.reconcile_pull_required', {
+        nodeId: this.nodeId,
+        localRevision: this.localRevision,
+        masterRevision: body.data.revision,
+      });
       await this.pullSnapshot();
       return;
     }
-    if (this.dirty) await this.pushSnapshot();
+    if (this.dirty) {
+      logger.info('market_sync.reconcile_push_required', {
+        nodeId: this.nodeId,
+        revision: this.localRevision,
+      });
+      await this.pushSnapshot();
+      return;
+    }
+    logger.info('market_sync.reconcile_up_to_date', {
+      nodeId: this.nodeId,
+      revision: this.localRevision,
+    });
   }
 
   pushSnapshot() {
+    logger.info('market_sync.push_queued', { nodeId: this.nodeId, localRevision: this.localRevision });
     const result = this.pushQueue.then(() => this.pushSnapshotNow());
     this.pushQueue = result.catch(() => {});
     return result;
@@ -129,14 +249,21 @@ export class MarketSyncService {
 
   async pushSnapshotNow() {
     const baseRevision = this.localRevision;
+    logger.info('market_sync.snapshot_push_started', { nodeId: this.nodeId, baseRevision });
     const snapshot = await this.simulator.getBackupSnapshot();
     this.dirty = true;
+    logger.info('market_sync.snapshot_push_ready', { nodeId: this.nodeId, baseRevision });
     const { response, body } = await this.request('/api/sync/snapshot', {
       method: 'PUT',
       body: JSON.stringify({ baseRevision, snapshot }),
     });
 
     if (response.status === 409) {
+      logger.warn('market_sync.snapshot_push_conflict', {
+        nodeId: this.nodeId,
+        baseRevision,
+        masterRevision: body.data?.revision,
+      });
       await this.pullSnapshot();
       throw Object.assign(
         new Error('O mercado foi atualizado por outro servidor; o estado do master foi aplicado.'),
@@ -146,9 +273,19 @@ export class MarketSyncService {
     if (!response.ok || !Number.isInteger(body.data?.revision)) {
       this.dirty = true;
       if (response.status >= 400 && response.status < 500) {
+        logger.error('market_sync.snapshot_push_rejected', {
+          nodeId: this.nodeId,
+          baseRevision,
+          statusCode: response.status,
+          message: body.message,
+        });
         throw new Error(body.message || `Master recusou a sincronização (${response.status}).`);
       }
-      logger.warn('market_sync.push_deferred', { statusCode: response.status });
+      logger.warn('market_sync.push_deferred', {
+        nodeId: this.nodeId,
+        baseRevision,
+        statusCode: response.status,
+      });
       return;
     }
 
@@ -160,7 +297,15 @@ export class MarketSyncService {
     this.dirty = false;
     this.masterRevision = body.data.revision;
     this.lastPushAt = new Date().toISOString();
-    logger.info('market_sync.snapshot_sent', { revision: body.data.revision });
+    logger.info('market_sync.snapshot_sent', { nodeId: this.nodeId, revision: body.data.revision });
+  }
+
+  getMasterOrigin() {
+    try {
+      return new URL(this.masterUrl).origin;
+    } catch {
+      return null;
+    }
   }
 
   /**

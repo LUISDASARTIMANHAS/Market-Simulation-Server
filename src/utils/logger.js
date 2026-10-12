@@ -22,6 +22,8 @@ function writeLog(level, event, details = {}) {
   };
   const output = JSON.stringify(entry);
 
+  if (level === 'ERROR') console.error(output);
+
   writeQueue = writeQueue.then(async () => {
     const logFile = path.join(
       LOG_DIRECTORY,
