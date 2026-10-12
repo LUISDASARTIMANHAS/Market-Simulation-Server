@@ -17,7 +17,7 @@ export const accountCreationLimit = rateLimit({
   limit: ACCOUNT_CREATION_RATE_LIMIT,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: 'Limite de criação de contas atingido. Tente novamente em  depois.' },
+  message: { success: false, message: `Limite de criação de contas atingido. Tente novamente em ${1000*ACCOUNT_CREATION_RATE_LIMIT_WINDOW_SECONDS} segundos depois.` },
 });
 
 export const orderLimit = rateLimit({
@@ -25,7 +25,7 @@ export const orderLimit = rateLimit({
   limit: ORDER_RATE_LIMIT,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: 'Limite de ordens atingido. Tente novamente depois.' },
+  message: { success: false, message: `Limite de ordens atingido. Tente novamente em ${1000*ORDER_RATE_LIMIT_WINDOW_SECONDS} segundos depois.` },
 });
 
 export const accountOrderLimit = rateLimit({
@@ -34,7 +34,7 @@ export const accountOrderLimit = rateLimit({
   keyGenerator: (req) => req.marketAccountId,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: 'Limite de ordens da conta atingido. Tente novamente depois.' },
+  message: { success: false, message: `Limite de ordens da conta atingido. Tente novamente em ${1000*ACCOUNT_ORDER_RATE_LIMIT_WINDOW_SECONDS} segundos depois.` },
 });
 
 export const keyRotationLimit = rateLimit({
@@ -42,7 +42,7 @@ export const keyRotationLimit = rateLimit({
   limit: KEY_ROTATION_RATE_LIMIT,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: 'Limite de rotação de chave atingido. Tente novamente depois.' },
+  message: { success: false, message: `Limite de rotação de chave atingido. Tente novamente em ${1000*KEY_ROTATION_RATE_LIMIT_WINDOW_SECONDS} segundos depois.` },
 });
 
 /** Autentica uma conta por chave API enviada no cabeçalho Bearer. */
