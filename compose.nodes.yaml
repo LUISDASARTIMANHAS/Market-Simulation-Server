@@ -1,0 +1,58 @@
+services:
+  node-1:
+    image: market-simulation-server:latest
+    container_name: market-simulation-server-node-1
+    restart: unless-stopped
+    network_mode: bridge
+    environment:
+      MARKET_PORT: ${MARKET_PORT:-3001}
+      MARKET_STATE_FILE: /app/data/market-state.json
+      MARKET_DATA_DIR: /app/data
+      MARKET_LOG_DIRECTORY: /app/data/logs
+      TRUST_PROXY: ${TRUST_PROXY:-}
+      MARKET_SYNC_ROLE: node
+      MARKET_SYNC_MASTER_URL: ${MARKET_SYNC_MASTER_URL:?Defina MARKET_SYNC_MASTER_URL para iniciar os nodes}
+      MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:?Defina MARKET_SYNC_TOKEN para iniciar os nodes}
+      MARKET_NODE_ID: node-1
+      MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
+    volumes:
+      - node-1-data:/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.20'
+          memory: 256M
+
+  node-2:
+    image: market-simulation-server:latest
+    container_name: market-simulation-server-node-2
+    restart: unless-stopped
+    network_mode: bridge
+    environment:
+      MARKET_PORT: ${MARKET_PORT:-3001}
+      MARKET_STATE_FILE: /app/data/market-state.json
+      MARKET_DATA_DIR: /app/data
+      MARKET_LOG_DIRECTORY: /app/data/logs
+      TRUST_PROXY: ${TRUST_PROXY:-}
+      MARKET_SYNC_ROLE: node
+      MARKET_SYNC_MASTER_URL: ${MARKET_SYNC_MASTER_URL:?Defina MARKET_SYNC_MASTER_URL para iniciar os nodes}
+      MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:?Defina MARKET_SYNC_TOKEN para iniciar os nodes}
+      MARKET_NODE_ID: node-2
+      MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
+    volumes:
+      - node-2-data:/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.20'
+          memory: 256M
+
+volumes:
+  node-1-data:
+  node-2-data:

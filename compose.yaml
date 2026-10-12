@@ -1,7 +1,9 @@
 services:
   market-simulation-server:
     image: market-simulation-server:latest
+    container_name: market-simulation-server-standalone
     restart: unless-stopped
+    network_mode: bridge
     ports:
       - "0:3001"
     environment:
@@ -18,3 +20,11 @@ services:
       MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
     volumes:
       - ./data:/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.20'
+          memory: 256M

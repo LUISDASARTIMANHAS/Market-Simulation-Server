@@ -2,6 +2,7 @@ services:
   master:
     image: market-simulation-server:latest
     restart: unless-stopped
+    network_mode: bridge
     ports:
       - "3001:3001"
     environment:
@@ -29,6 +30,7 @@ services:
   node-1:
     image: market-simulation-server:latest
     restart: unless-stopped
+    network_mode: bridge
     depends_on:
       master:
         condition: service_healthy
@@ -46,10 +48,19 @@ services:
       MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
     volumes:
       - node-1-data:/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.20'
+          memory: 256M
 
   node-2:
     image: market-simulation-server:latest
     restart: unless-stopped
+    network_mode: bridge
     depends_on:
       master:
         condition: service_healthy
@@ -67,6 +78,14 @@ services:
       MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
     volumes:
       - node-2-data:/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.20'
+          memory: 256M
 
 volumes:
   node-1-data:
