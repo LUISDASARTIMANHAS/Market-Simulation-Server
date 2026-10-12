@@ -61,9 +61,9 @@ Ao ser executado pela primeira vez ou a partir da estrutura antiga monolítica, 
 
 O servidor grava logs estruturados em JSON, um evento por linha, em arquivos diários dentro de `data/logs/` (`market-AAAA-MM-DD.log`). O diretório é ignorado pelo Git e, no Docker Compose, permanece disponível no volume `./data`. Configure `MARKET_LOG_DIRECTORY` para escolher outro diretório. Os registros incluem requisições HTTP, eventos de mercado, ordens e operações de persistência; query strings, corpos das requisições e cabeçalhos de autenticação não são registrados. Se ocorrer uma falha ao gravar os logs, o erro é informado uma única vez no console.
 
-## API
+`GET /api/market/status` é público. Retorna preço, sequência, histórico recente, volume, todos os eventos decorridos (`events`) e as ordens públicas recentes, sem expor dados de contas.
 
-`GET /api/market/status` é público. Retorna preço, sequência, histórico recente, volume e as ordens públicas recentes, sem expor dados de contas.
+`GET /api/market/events` é público. Retorna a lista completa de todos os eventos de mercado decorridos, do mais recente ao mais antigo. Aceita o parâmetro opcional `?limit=N` para limitar a quantidade retornada.
 
 `GET /api/backup` baixa um snapshot em JSON do estado atual do mercado, incluindo contas, saldo, histórico, trades públicos e os metadados de identificação (accountId e username). Use esse arquivo para auditoria, backup e recuperação do estado.
 
@@ -79,12 +79,24 @@ O arquivo inclui as oito coleções persistidas: contas, ativos, carteiras, orde
     "sequence": 42,
     "updatedAt": "2026-10-07T21:00:00.000Z",
     "latestEvent": {
+      "eventId": "a1b2c3d4-...",
       "category": "Inflação",
       "title": "Inflação desacelera",
       "description": "Alívio inflacionário melhora o apetite por risco.",
       "impactPercent": 0.52,
       "occurredAt": "2026-10-07T20:59:00.000Z"
     },
+    "events": [
+      {
+        "eventId": "a1b2c3d4-...",
+        "assetId": "SIM",
+        "category": "Inflação",
+        "title": "Inflação desacelera",
+        "description": "Alívio inflacionário melhora o apetite por risco.",
+        "impactPercent": 0.52,
+        "occurredAt": "2026-10-07T20:59:00.000Z"
+      }
+    ],
     "nextEventAt": "2026-10-07T21:00:30.000Z",
     "volume": { "total": 100, "buys": 100, "sells": 0 },
     "recentTrades": [],

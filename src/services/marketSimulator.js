@@ -1143,6 +1143,7 @@ class MarketSimulator {
    *   recentTrades: Array<object>,
    *   volume: { total: number, buys: number, sells: number },
    *   latestEvent: object | null,
+   *   events: Array<object>,
    *   nextEventAt: string | null
    * }}
    */

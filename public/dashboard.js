@@ -10,9 +10,6 @@ const elements = {
   volumeTotal: document.querySelector('#volume-total'),
   volumeBuys: document.querySelector('#volume-buys'),
   volumeSells: document.querySelector('#volume-sells'),
-  eventTitle: document.querySelector('#event-title'),
-  eventCategory: document.querySelector('#event-category'),
-  eventDescription: document.querySelector('#event-description'),
   nextEvent: document.querySelector('#next-event'),
   eventsCount: document.querySelector('#events-count'),
   eventsList: document.querySelector('#events-list'),
@@ -95,15 +92,6 @@ function renderEvents(events = [], nextEventAt = null) {
   }
   if (elements.eventsCount) {
     elements.eventsCount.textContent = `${events.length} evento${events.length === 1 ? '' : 's'}`;
-  }
-  if (elements.eventTitle) {
-    elements.eventTitle.textContent = events[0]?.title || 'Nenhum evento registrado';
-  }
-  if (elements.eventCategory) {
-    elements.eventCategory.textContent = events[0]?.category || '—';
-  }
-  if (elements.eventDescription) {
-    elements.eventDescription.textContent = events[0]?.description || 'Os eventos simulados aparecerão aqui.';
   }
 
   if (!elements.eventsList) return;
