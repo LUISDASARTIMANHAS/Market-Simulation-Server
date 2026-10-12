@@ -1,11 +1,21 @@
 services:
   market-simulation-server:
     build: .
+    image: market-simulation-server:latest
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "0:3001"
     environment:
-      MARKET_PORT: "3001"
-      MARKET_STATE_FILE: /app/data/market-state.json
+      MARKET_PORT: ${MARKET_PORT:-3001}
+      MARKET_STATE_FILE: ${MARKET_STATE_FILE:-/app/data/market-state.json}
+      MARKET_DATA_DIR: ${MARKET_DATA_DIR:-/app/data}
+      MARKET_LOG_DIRECTORY: ${MARKET_LOG_DIRECTORY:-/app/data/logs}
+      MARKET_ADMIN_TOKEN: ${MARKET_ADMIN_TOKEN:-}
+      TRUST_PROXY: ${TRUST_PROXY:-}
+      MARKET_SYNC_ROLE: ${MARKET_SYNC_ROLE:-standalone}
+      MARKET_SYNC_MASTER_URL: ${MARKET_SYNC_MASTER_URL:-}
+      MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:-}
+      MARKET_NODE_ID: ${MARKET_NODE_ID:-}
+      MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
     volumes:
       - ./data:/app/data

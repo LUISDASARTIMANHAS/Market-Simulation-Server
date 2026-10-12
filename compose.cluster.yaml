@@ -1,0 +1,76 @@
+services:
+  master:
+    build: .
+    image: market-simulation-server:latest
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      MARKET_PORT: "3001"
+      MARKET_STATE_FILE: /app/data/market-state.json
+      MARKET_DATA_DIR: /app/data
+      MARKET_LOG_DIRECTORY: /app/data/logs
+      MARKET_ADMIN_TOKEN: ${MARKET_ADMIN_TOKEN:-}
+      MARKET_SYNC_ROLE: master
+      MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:?Defina MARKET_SYNC_TOKEN para iniciar o cluster}
+      MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:3001/api/market/status').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  node-1:
+    build: .
+    image: market-simulation-server:latest
+    restart: unless-stopped
+    depends_on:
+      master:
+        condition: service_healthy
+    ports:
+      - "0:3001"
+    environment:
+      MARKET_PORT: "3001"
+      MARKET_STATE_FILE: /app/data/market-state.json
+      MARKET_DATA_DIR: /app/data
+      MARKET_LOG_DIRECTORY: /app/data/logs
+      MARKET_SYNC_ROLE: node
+      MARKET_SYNC_MASTER_URL: http://master:3001
+      MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:?Defina MARKET_SYNC_TOKEN para iniciar o cluster}
+      MARKET_NODE_ID: node-1
+      MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
+    volumes:
+      - node-1-data:/app/data
+
+  node-2:
+    build: .
+    image: market-simulation-server:latest
+    restart: unless-stopped
+    depends_on:
+      master:
+        condition: service_healthy
+    ports:
+      - "0:3001"
+    environment:
+      MARKET_PORT: "3001"
+      MARKET_STATE_FILE: /app/data/market-state.json
+      MARKET_DATA_DIR: /app/data
+      MARKET_LOG_DIRECTORY: /app/data/logs
+      MARKET_SYNC_ROLE: node
+      MARKET_SYNC_MASTER_URL: http://master:3001
+      MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:?Defina MARKET_SYNC_TOKEN para iniciar o cluster}
+      MARKET_NODE_ID: node-2
+      MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
+    volumes:
+      - node-2-data:/app/data
+
+volumes:
+  node-1-data:
+  node-2-data:
