@@ -1,6 +1,8 @@
 import {
 	MARKET_EVENT_MAX_INTERVAL_MS,
 	MARKET_EVENT_MIN_INTERVAL_MS,
+	MARKET_MEAN_REVERSION_RATE,
+	MARKET_REFERENCE_PRICE,
 } from "../config/constants.js";
 
 /**
@@ -27,7 +29,13 @@ export const scheduleNextMarketEvent = () => {
 export const calculateMarketEvent = (previous, events) => {
 	const template = events[Math.floor(Math.random() * events.length)];
 
-	const changePercent = randomBetween(template.minImpact, template.maxImpact);
+	const meanReversionPercent =
+		Math.log(MARKET_REFERENCE_PRICE / previous.price) *
+		MARKET_MEAN_REVERSION_RATE *
+		100;
+	const changePercent =
+		randomBetween(template.minImpact, template.maxImpact) +
+		meanReversionPercent;
 
 	const actualImpactPercent = (Math.exp(changePercent / 100) - 1) * 100;
 

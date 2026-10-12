@@ -141,6 +141,7 @@ export class JsonStateStore {
         sellVolume: marketState.sellVolume ?? 0,
         latestMarketEvent: marketState.latestMarketEvent ?? null,
         nextMarketEventAt: marketState.nextMarketEventAt ?? null,
+        syncRevision: Number.isInteger(marketState.syncRevision) ? marketState.syncRevision : 0,
       };
 
       this.state = aggregatedState;
@@ -159,6 +160,9 @@ export class JsonStateStore {
    */
   async save(updates) {
     this.state = { ...this.state, ...updates };
+    this.state.syncRevision = process.env.MARKET_SYNC_ROLE === 'master'
+      ? (Number.isInteger(this.state.syncRevision) ? this.state.syncRevision : 0) + 1
+      : (Number.isInteger(this.state.syncRevision) ? this.state.syncRevision : 0);
 
     const accounts = Array.isArray(this.state.accounts) ? this.state.accounts : [];
     const history = Array.isArray(this.state.marketHistory) ? this.state.marketHistory : [];
@@ -288,6 +292,7 @@ export class JsonStateStore {
       sellVolume: roundMoney(this.state.sellVolume ?? 0),
       latestMarketEvent: this.state.latestMarketEvent || null,
       nextMarketEventAt: this.state.nextMarketEventAt || null,
+      syncRevision: this.state.syncRevision,
       updatedAt: currentUpdatedAt,
     };
 

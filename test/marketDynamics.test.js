@@ -42,6 +42,28 @@ test("evento aplica retorno logarítmico e publica o impacto efetivo", async () 
   assert.equal(simulator.getStatus().latestEvent.impactPercent, -0.896);
 });
 
+test("eventos ajudam o preço a se recuperar após uma queda acentuada", async () => {
+  const simulator = new MarketSimulator({ save: async () => {} });
+  simulator.initialize({
+    marketHistory: [
+      { sequence: 10, price: 40, updatedAt: new Date().toISOString() },
+    ],
+    nextMarketEventAt: new Date(Date.now() - 1).toISOString(),
+  });
+  const originalRandom = Math.random;
+  const randomValues = [0, 0.5, 0.5];
+  Math.random = () => randomValues.shift() ?? 0.5;
+
+  try {
+    await simulator.tick();
+  } finally {
+    Math.random = originalRandom;
+  }
+
+  assert.ok(simulator.getStatus().currentPrice > 40);
+  assert.ok(simulator.getStatus().latestEvent.impactPercent > 0);
+});
+
 test("ordens de compra e venda movimentam o preço em proporção ao notional", async () => {
   const simulator = new MarketSimulator({ save: async () => {} });
   simulator.initialize({
@@ -55,8 +77,8 @@ test("ordens de compra e venda movimentam o preço em proporção ao notional", 
     side: "BUY",
     quoteAmount: 200,
   });
-  assert.equal(purchase.order.impactPercent, 0.4);
-  assert.equal(purchase.market.currentPrice, 100.4);
+  assert.equal(purchase.order.impactPercent, 1.6);
+  assert.equal(purchase.market.currentPrice, 101.6);
 
   const sale = await simulator.placeOrder(account.accountId, {
     side: "SELL",

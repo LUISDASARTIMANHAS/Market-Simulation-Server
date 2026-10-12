@@ -143,6 +143,8 @@ class MarketSimulator {
     // conflitantes nos saldos, no histórico e no estado persistido.
     this.operationQueue = Promise.resolve();
 
+    this.synchronizationHandler = null;
+
     // Informações sobre o evento mais recente e a próxima ocorrência prevista.
     this.latestEvent = null;
     this.nextEventAt = null;
@@ -312,7 +314,13 @@ class MarketSimulator {
       sellVolume: this.sellVolume,
       latestMarketEvent: this.latestEvent,
       nextMarketEventAt: this.nextEventAt,
+    }).then(async () => {
+      if (this.synchronizationHandler) await this.synchronizationHandler();
     });
+  }
+
+  setSynchronizationHandler(handler) {
+    this.synchronizationHandler = typeof handler === "function" ? handler : null;
   }
 
   /**
@@ -799,11 +807,12 @@ class MarketSimulator {
         await this.persist();
       } catch (error) {
         // Restaura os dados anteriores se a persistência falhar.
-        Object.assign(account, accountBefore);
-        this.history = historyBefore;
-        this.recentTrades = tradesBefore;
-
-        [this.totalVolume, this.buyVolume, this.sellVolume] = volumesBefore;
+        if (!error.syncConflict) {
+          Object.assign(account, accountBefore);
+          this.history = historyBefore;
+          this.recentTrades = tradesBefore;
+          [this.totalVolume, this.buyVolume, this.sellVolume] = volumesBefore;
+        }
 
         throw error;
       }
