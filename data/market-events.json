@@ -1,5 +1,41 @@
 [
   {
+    "eventId": "cae95157-a56e-4609-8171-cc0e17d75270",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 1.0569,
+    "occurredAt": "2026-10-12T20:03:25.386Z"
+  },
+  {
+    "eventId": "1adc0feb-a949-4792-bbdd-2f5f24d5fdef",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.0568,
+    "occurredAt": "2026-10-12T20:01:29.353Z"
+  },
+  {
+    "eventId": "57e51c5d-bbd5-4f1e-a27e-10b392f17840",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.1318,
+    "occurredAt": "2026-10-12T19:59:36.522Z"
+  },
+  {
+    "eventId": "f0587682-e471-40bb-a155-f0cf75412258",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": 0.0981,
+    "occurredAt": "2026-10-12T19:58:16.495Z"
+  },
+  {
     "eventId": "96d9e8a3-64e5-4c82-ac73-9a714c53f3a2",
     "assetId": "SIM",
     "category": "Emprego",

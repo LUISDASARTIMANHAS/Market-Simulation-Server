@@ -75,7 +75,7 @@ export function createMarketSyncRouter({
     ) {
       return res
         .status(400)
-        .json({ success: false, message: "Revisão ou snapshot inválido." });
+        .json({ success: false, message: "Downloads ou snapshot inválido." });
     }
 
     try {

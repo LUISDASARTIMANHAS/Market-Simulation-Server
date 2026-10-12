@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 87.72,
-  "sequence": 1099,
+  "currentPrice": 88.57,
+  "sequence": 1103,
   "totalVolume": 77611.1,
   "buyVolume": 40293.97,
   "sellVolume": 37317.13,
   "latestMarketEvent": {
-    "eventId": "96d9e8a3-64e5-4c82-ac73-9a714c53f3a2",
+    "eventId": "cae95157-a56e-4609-8171-cc0e17d75270",
     "assetId": "SIM",
-    "category": "Emprego",
-    "title": "Emprego cresce acima do esperado",
-    "description": "A criação de empregos reforça a confiança dos investidores.",
-    "impactPercent": 0.9314,
-    "occurredAt": "2026-10-12T19:56:50.468Z"
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 1.0569,
+    "occurredAt": "2026-10-12T20:03:25.386Z"
   },
-  "nextMarketEventAt": "2026-10-12T19:58:14.852Z",
-  "syncRevision": 8,
-  "updatedAt": "2026-10-12T19:56:50.468Z"
+  "nextMarketEventAt": "2026-10-12T20:05:16.210Z",
+  "syncRevision": 14,
+  "updatedAt": "2026-10-12T20:03:25.386Z"
 }

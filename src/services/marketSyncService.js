@@ -117,7 +117,7 @@ export class MarketSyncService {
     logger.info('market_sync.stopped', { role: this.role, nodeId: this.nodeId });
   }
 
-  /** @returns {number} Revisão local conhecida pelo node. */
+  /** @returns {number} Downloads local conhecida pelo node. */
   get localRevision() {
     return Number.isInteger(this.store.state.syncRevision) ? this.store.state.syncRevision : 0;
   }
@@ -184,7 +184,7 @@ export class MarketSyncService {
     const revision = body.data.marketState.syncRevision;
     if (!Number.isInteger(revision) || revision < 0) {
       logger.error('market_sync.snapshot_invalid_revision', { nodeId: this.nodeId, revision });
-      throw new Error('Snapshot do master sem revisão válida.');
+      throw new Error('Snapshot do master sem Downloads válida.');
     }
 
     logger.info('market_sync.snapshot_applying', { nodeId: this.nodeId, revision });
@@ -210,7 +210,7 @@ export class MarketSyncService {
         statusCode: response.status,
         message: body.message,
       });
-      throw new Error(body.message || `Falha ao consultar revisão do master (${response.status}).`);
+      throw new Error(body.message || `Falha ao consultar Downloads do master (${response.status}).`);
     }
 
     this.masterRevision = body.data.revision;

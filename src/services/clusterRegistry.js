@@ -67,7 +67,7 @@ export function recordNodeActivity(nodeId, action, reportedRevision = null) {
 
 /**
  * Lista os nodes conhecidos com estado calculado.
- * @param {number} masterRevision Revisão atual do master.
+ * @param {number} masterRevision Downloads atual do master.
  * @param {number} onlineWindowMs Janela para considerar o node online.
  * @returns {Array<object>}
  */

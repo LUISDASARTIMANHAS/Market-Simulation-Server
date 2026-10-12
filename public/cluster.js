@@ -68,7 +68,7 @@ function renderNodes(nodes = []) {
 					? "—"
 					: node.behindBy === 0
 						? "Em dia"
-						: `${node.behindBy} revisão(ões)`,
+						: `${node.behindBy} Downloads(ões)`,
 				node.behindBy > 0 ? "text-warning" : "",
 			),
 			cell(node.pushes),
@@ -101,7 +101,7 @@ function render(data) {
 			? "—"
 			: data.lag === 0
 				? "Em dia"
-				: `${data.lag} revisão(ões)`;
+				: `${data.lag} Downloads(ões)`;
 	$("#st-dirty").textContent =
 		data.role === "node" ? (data.dirty ? "Sim" : "Não") : "—";
 	$("#st-pull").textContent = formatTime(data.lastPullAt);
