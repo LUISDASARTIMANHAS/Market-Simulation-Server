@@ -59,7 +59,7 @@ Ao ser executado pela primeira vez ou a partir da estrutura antiga monolítica, 
 
 ## Logs
 
-O servidor escreve logs estruturados em JSON no console do processo, um evento por linha. Registra requisições HTTP com método, caminho, status e duração, além de eventos de mercado, ordens, ciclo de contas e operações de persistência. Erros são enviados ao `stderr`; os demais níveis vão para `stdout`. Query strings, corpos das requisições e cabeçalhos de autenticação não são registrados, portanto chaves de API não aparecem nos logs.
+O servidor grava logs estruturados em JSON, um evento por linha, em arquivos diários dentro de `data/logs/` (`market-AAAA-MM-DD.log`). O diretório é ignorado pelo Git e, no Docker Compose, permanece disponível no volume `./data`. Configure `MARKET_LOG_DIRECTORY` para escolher outro diretório. Os registros incluem requisições HTTP, eventos de mercado, ordens e operações de persistência; query strings, corpos das requisições e cabeçalhos de autenticação não são registrados. Se ocorrer uma falha ao gravar os logs, o erro é informado uma única vez no console.
 
 ## API
 
