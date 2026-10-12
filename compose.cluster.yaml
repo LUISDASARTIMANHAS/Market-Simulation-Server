@@ -1,6 +1,5 @@
 services:
   master:
-    build: .
     image: market-simulation-server:latest
     restart: unless-stopped
     ports:
@@ -28,7 +27,6 @@ services:
       start_period: 10s
 
   node-1:
-    build: .
     image: market-simulation-server:latest
     restart: unless-stopped
     depends_on:
@@ -50,7 +48,6 @@ services:
       - node-1-data:/app/data
 
   node-2:
-    build: .
     image: market-simulation-server:latest
     restart: unless-stopped
     depends_on:

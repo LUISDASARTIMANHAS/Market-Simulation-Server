@@ -1,6 +1,5 @@
 services:
   market-simulation-server:
-    build: .
     image: market-simulation-server:latest
     restart: unless-stopped
     ports:
