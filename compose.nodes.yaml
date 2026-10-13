@@ -4,6 +4,8 @@ services:
     container_name: market-simulation-server-node-1
     restart: unless-stopped
     network_mode: bridge
+    ports:
+      - "0:3001"
     environment:
       MARKET_PORT: ${MARKET_PORT:-3001}
       MARKET_STATE_FILE: /app/data/market-state.json
@@ -32,6 +34,8 @@ services:
     container_name: market-simulation-server-node-2
     restart: unless-stopped
     network_mode: bridge
+    ports:
+      - "0:3001"
     environment:
       MARKET_PORT: ${MARKET_PORT:-3001}
       MARKET_STATE_FILE: /app/data/market-state.json

@@ -1,5 +1,104 @@
 [
   {
+    "eventId": "2e4bc0ce-47fc-44b6-9f78-2e28a874a89b",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.6769,
+    "occurredAt": "2026-10-13T16:26:24.972Z"
+  },
+  {
+    "eventId": "0018e983-a97e-4683-838a-962ee358aa07",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.5434,
+    "occurredAt": "2026-10-13T16:24:34.930Z"
+  },
+  {
+    "eventId": "013c06ea-f8f2-4cfc-8c16-e2bcbc4dce51",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.9209,
+    "occurredAt": "2026-10-13T16:23:03.433Z"
+  },
+  {
+    "eventId": "34af4f3d-49fe-4aff-81b9-cad40fbdfbc3",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.04,
+    "occurredAt": "2026-10-13T16:21:32.871Z"
+  },
+  {
+    "eventId": "c17bfced-84c5-4566-b0ff-1fc8286d5675",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.093,
+    "occurredAt": "2026-10-13T16:19:50.841Z"
+  },
+  {
+    "eventId": "5da21178-c8b6-48e1-a013-44897f595fa8",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 1.0608,
+    "occurredAt": "2026-10-13T16:18:34.818Z"
+  },
+  {
+    "eventId": "bca5eef2-3b09-4f78-9592-f2a0feda1718",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "impactPercent": -0.2608,
+    "occurredAt": "2026-10-13T16:17:28.801Z"
+  },
+  {
+    "eventId": "a6a9d011-5c1c-4783-9b60-0230a7ea8214",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.3332,
+    "occurredAt": "2026-10-13T16:16:26.786Z"
+  },
+  {
+    "eventId": "2cda32ac-e79c-4ba5-8a3d-abb7a0b74247",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.6054,
+    "occurredAt": "2026-10-13T16:15:04.488Z"
+  },
+  {
+    "eventId": "c8d4c84c-44ef-4b41-8f4d-64dbe2de13dd",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 1.0085,
+    "occurredAt": "2026-10-13T16:13:54.458Z"
+  },
+  {
+    "eventId": "4d95769e-cfb2-416f-a153-7e519b56066b",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.7434,
+    "occurredAt": "2026-10-13T16:12:10.720Z"
+  },
+  {
     "eventId": "90f37c97-7206-47ad-bb08-607bb4f001ff",
     "assetId": "SIM",
     "category": "Inflação",
