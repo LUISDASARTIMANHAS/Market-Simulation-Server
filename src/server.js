@@ -8,6 +8,7 @@ import { marketStateStore } from './services/stateStore.js';
 import { MarketSyncService } from './services/marketSyncService.js';
 import { logger } from './utils/logger.js';
 import { registerSyncService } from './services/clusterRegistry.js';
+import { apiErrorHandler, apiNotFound, createApiResponseMiddleware } from './middleware/apiResponse.js';
 
 const app = express();
 const PORT = Number(process.env.MARKET_PORT || 3001);
@@ -35,9 +36,12 @@ app.use((req, res, next) => {
 });
 
 app.use(cors());
+app.use('/api', createApiResponseMiddleware({ getRole: () => syncService.role }));
 app.use(express.json({ limit: '25mb' }));
 if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY);
-app.use("/api",marketRoutes);
+app.use('/api', marketRoutes);
+app.use('/api', apiNotFound);
+app.use('/api', apiErrorHandler);
 app.use(express.static(PUBLIC_DIRECTORY, { index: 'index.html' }));
 
 /**

@@ -10,6 +10,7 @@ import marketRoutes from '../src/routes/marketRoutes.js';
 import { marketSimulator } from '../src/services/marketSimulator.js';
 import { marketStateStore } from '../src/services/stateStore.js';
 import { runMigration } from '../src/scripts/migrateDatabase.js';
+import { apiErrorHandler, apiNotFound, createApiResponseMiddleware } from '../src/middleware/apiResponse.js';
 
 describe('Testes de Integração HTTP da API', () => {
   let server;
@@ -23,8 +24,15 @@ describe('Testes de Integração HTTP da API', () => {
 
     const app = express();
     app.use(cors());
+    app.use('/api', createApiResponseMiddleware({
+      name: 'test-market',
+      version: '1.2.3',
+      getRole: () => 'master',
+    }));
     app.use(express.json());
     app.use('/api', marketRoutes);
+    app.use('/api', apiNotFound);
+    app.use('/api', apiErrorHandler);
 
     await new Promise((resolve) => {
       server = app.listen(0, () => {
@@ -51,12 +59,31 @@ describe('Testes de Integração HTTP da API', () => {
     const res = await fetch(`${baseUrl}/market/status`);
     assert.equal(res.status, 200);
     const body = await res.json();
+    assert.deepEqual(body.meta.server, { name: 'test-market', version: '1.2.3', role: 'master' });
     assert.equal(body.success, true);
     assert.ok(Number.isFinite(body.data.currentPrice));
     assert.ok(Number.isInteger(body.data.sequence));
     assert.ok(Array.isArray(body.data.history));
     assert.ok(Array.isArray(body.data.recentTrades));
     assert.ok(body.data.volume && typeof body.data.volume === 'object');
+  });
+
+  test('respostas de erro da API também incluem identidade do servidor', async () => {
+    const notFound = await fetch(`${baseUrl}/rota-inexistente`);
+    assert.equal(notFound.status, 404);
+    const notFoundBody = await notFound.json();
+    assert.equal(notFoundBody.success, false);
+    assert.deepEqual(notFoundBody.meta.server, { name: 'test-market', version: '1.2.3', role: 'master' });
+
+    const invalidJson = await fetch(`${baseUrl}/accounts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{',
+    });
+    assert.equal(invalidJson.status, 400);
+    const invalidJsonBody = await invalidJson.json();
+    assert.equal(invalidJsonBody.success, false);
+    assert.deepEqual(invalidJsonBody.meta.server, { name: 'test-market', version: '1.2.3', role: 'master' });
   });
 
   test('GET /api/backup retorna snapshot para download', async () => {
