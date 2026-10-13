@@ -1,5 +1,41 @@
 [
   {
+    "eventId": "d4fc6362-cbb6-4bf4-8160-613dda548871",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.6958,
+    "occurredAt": "2026-10-13T16:32:17.080Z"
+  },
+  {
+    "eventId": "6eec7b5d-a1ac-4040-af09-b69faa2ce6e7",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.685,
+    "occurredAt": "2026-10-13T16:30:47.058Z"
+  },
+  {
+    "eventId": "e3d797de-23fc-48bd-bec8-56b6a6d3da59",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.7566,
+    "occurredAt": "2026-10-13T16:29:41.041Z"
+  },
+  {
+    "eventId": "8376c6d2-b0c9-4215-8e0c-c44a8da0a38d",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.7337,
+    "occurredAt": "2026-10-13T16:27:59.010Z"
+  },
+  {
     "eventId": "2e4bc0ce-47fc-44b6-9f78-2e28a874a89b",
     "assetId": "SIM",
     "category": "Guerra",

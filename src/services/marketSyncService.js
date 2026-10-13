@@ -1,8 +1,11 @@
 import { hostname } from 'node:os';
+import { createRequire } from 'node:module';
 import { logger } from '../utils/logger.js';
 import { sanitizeNodeId } from './clusterRegistry.js';
 
 const SYNC_TIMEOUT_MS = 10000;
+const require = createRequire(import.meta.url);
+const packageInfo = require('../../package.json');
 
 function getErrorDetails(error) {
   return {
@@ -19,6 +22,9 @@ export class MarketSyncService {
     masterUrl = process.env.MARKET_SYNC_MASTER_URL || '',
     token = process.env.MARKET_SYNC_TOKEN || '',
     nodeId = process.env.MARKET_NODE_ID || hostname(),
+    nodeVersion = packageInfo.version,
+    nodePort = Number(process.env.MARKET_PORT || 3001),
+    nodePublicUrl = process.env.MARKET_NODE_PUBLIC_URL || '',
     store,
     simulator,
     intervalMs = Number(process.env.MARKET_SYNC_INTERVAL_SECONDS || 5) * 1000,
@@ -29,6 +35,9 @@ export class MarketSyncService {
     this.masterUrl = masterUrl.replace(/\/+$/, '');
     this.token = token;
     this.nodeId = sanitizeNodeId(nodeId, 'node');
+    this.nodeVersion = nodeVersion;
+    this.nodePort = nodePort;
+    this.nodePublicUrl = nodePublicUrl;
     this.store = store;
     this.simulator = simulator;
     this.intervalMs = intervalMs;
@@ -156,6 +165,9 @@ export class MarketSyncService {
           'X-Market-Sync-Token': this.token,
           'X-Market-Node-Id': this.nodeId,
           'X-Market-Node-Revision': String(this.localRevision),
+          'X-Market-Node-Version': String(this.nodeVersion),
+          'X-Market-Node-Port': String(this.nodePort),
+          'X-Market-Node-Url': this.nodePublicUrl,
           ...options.headers,
         },
       });

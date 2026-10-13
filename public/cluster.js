@@ -37,6 +37,24 @@ function cell(text, className = "") {
 	return td;
 }
 
+function accessCell(node) {
+	const td = document.createElement("td");
+	try {
+		const url = new URL(node.url);
+		if (!["http:", "https:"].includes(url.protocol)) throw new Error("URL inválida");
+		const link = document.createElement("a");
+		link.href = url.href;
+		link.target = "_blank";
+		link.rel = "noopener noreferrer";
+		link.textContent = "Abrir";
+		link.setAttribute("aria-label", `Abrir node ${node.nodeId}`);
+		td.append(link);
+	} catch {
+		td.textContent = "Não configurado";
+	}
+	return td;
+}
+
 /**
  * Renderiza a tabela de nodes (apenas no master).
  * @param {Array<object>} nodes
@@ -47,7 +65,7 @@ function renderNodes(nodes = []) {
 	if (!nodes.length) {
 		const row = document.createElement("tr");
 		const td = cell("Nenhum node registrado.", "text-center text-secondary");
-		td.colSpan = 7;
+		td.colSpan = 10;
 		row.append(td);
 		elements.nodesBody.append(row);
 		return;
@@ -61,6 +79,9 @@ function renderNodes(nodes = []) {
 		badge.append(span);
 		row.append(
 			cell(node.nodeId),
+			cell(node.version ?? "—"),
+			cell(Number.isInteger(node.port) ? String(node.port) : "—"),
+			accessCell(node),
 			badge,
 			cell(node.reportedRevision ?? "—"),
 			cell(

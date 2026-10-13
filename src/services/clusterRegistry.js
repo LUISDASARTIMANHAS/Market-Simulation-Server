@@ -5,6 +5,7 @@
 
 const MAX_NODES = 100;
 const NODE_ID_PATTERN = /^[A-Za-z0-9._-]{1,64}$/;
+const NODE_VERSION_PATTERN = /^[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}$/;
 
 /** @type {object | null} */
 let syncService = null;
@@ -38,6 +39,26 @@ export function sanitizeNodeId(raw, fallback = 'unknown') {
   return typeof raw === 'string' && NODE_ID_PATTERN.test(raw) ? raw : fallback;
 }
 
+export function sanitizeNodeVersion(raw) {
+  return typeof raw === 'string' && NODE_VERSION_PATTERN.test(raw) ? raw : null;
+}
+
+export function sanitizeNodePort(raw) {
+  const port = Number(raw);
+  return Number.isInteger(port) && port >= 1 && port <= 65535 ? port : null;
+}
+
+export function sanitizeNodeUrl(raw) {
+  if (typeof raw !== 'string' || raw.length > 512) return null;
+  try {
+    const url = new URL(raw);
+    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Registra a atividade de um node (usado pelo master).
  * @param {string} nodeId
@@ -45,7 +66,7 @@ export function sanitizeNodeId(raw, fallback = 'unknown') {
  * @param {number | null} [reportedRevision]
  * @returns {void}
  */
-export function recordNodeActivity(nodeId, action, reportedRevision = null) {
+export function recordNodeActivity(nodeId, action, reportedRevision = null, metadata = {}) {
   const now = Date.now();
   if (!nodes.has(nodeId) && nodes.size >= MAX_NODES) {
     const oldest = [...nodes.values()].sort((a, b) => a.lastSeenMs - b.lastSeenMs)[0];
@@ -54,6 +75,11 @@ export function recordNodeActivity(nodeId, action, reportedRevision = null) {
   const previous = nodes.get(nodeId);
   nodes.set(nodeId, {
     nodeId,
+    version: sanitizeNodeVersion(metadata.version) ?? previous?.version ?? null,
+    port: sanitizeNodePort(metadata.port) ?? previous?.port ?? null,
+    url: typeof metadata.url === 'string'
+      ? sanitizeNodeUrl(metadata.url)
+      : previous?.url ?? null,
     firstSeenMs: previous?.firstSeenMs ?? now,
     lastSeenMs: now,
     lastAction: action,
@@ -77,6 +103,9 @@ export function listNodes(masterRevision, onlineWindowMs) {
     .sort((a, b) => b.lastSeenMs - a.lastSeenMs)
     .map((node) => ({
       nodeId: node.nodeId,
+      version: node.version,
+      port: node.port,
+      url: node.url,
       online: now - node.lastSeenMs <= onlineWindowMs,
       firstSeenAt: new Date(node.firstSeenMs).toISOString(),
       lastSeenAt: new Date(node.lastSeenMs).toISOString(),

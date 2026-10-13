@@ -5,7 +5,10 @@ import { marketStateStore } from "../services/stateStore.js";
 import { logger } from "../utils/logger.js";
 import {
   recordNodeActivity,
+  sanitizeNodePort,
   sanitizeNodeId,
+  sanitizeNodeUrl,
+  sanitizeNodeVersion,
 } from "../services/clusterRegistry.js";
 import {
   httpBadRequest,
@@ -42,11 +45,16 @@ export function createMarketSyncRouter({
     );
     req.syncNodeRevision =
       Number.isInteger(reported) && reported >= 0 ? reported : null;
+    req.syncNodeMetadata = {
+      version: sanitizeNodeVersion(req.get("x-market-node-version")),
+      port: sanitizeNodePort(req.get("x-market-node-port")),
+      url: req.get("x-market-node-url") ?? undefined,
+    };
     return next();
   };
 
   router.get("/status", authenticateNode, async (req, res) => {
-    recordNodeActivity(req.syncNodeId, "status", req.syncNodeRevision);
+    recordNodeActivity(req.syncNodeId, "status", req.syncNodeRevision, req.syncNodeMetadata);
     const state = await store.repository.getMarketState();
     return res.status(200).json({
       success: true,
@@ -59,7 +67,7 @@ export function createMarketSyncRouter({
   });
 
   router.get("/snapshot", authenticateNode, async (req, res) => {
-    recordNodeActivity(req.syncNodeId, "pull", req.syncNodeRevision);
+    recordNodeActivity(req.syncNodeId, "pull", req.syncNodeRevision, req.syncNodeMetadata);
     const snapshot = await simulator.enqueue(() =>
       simulator.getBackupSnapshot(),
     );
@@ -88,6 +96,7 @@ export function createMarketSyncRouter({
             req.syncNodeId,
             "conflict",
             req.syncNodeRevision,
+            req.syncNodeMetadata,
           );
           return { conflict: true, revision: currentRevision };
         }
@@ -101,7 +110,7 @@ export function createMarketSyncRouter({
         });
         simulator.initialize(await store.load());
         const revision = currentRevision + 1;
-        recordNodeActivity(req.syncNodeId, "push", revision);
+        recordNodeActivity(req.syncNodeId, "push", revision, req.syncNodeMetadata);
         return { conflict: false, revision };
       });
 

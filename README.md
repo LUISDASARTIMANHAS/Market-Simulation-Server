@@ -155,6 +155,7 @@ O servidor suporta sincronização distribuída entre múltiplos servidores com 
 - Respostas JSON da API incluem `meta.server` com nome, versão e papel da instância. Mensagens de erro também embutem essa identificação no campo `message`, por exemplo: `market-node-1 - versão 1.0.0:node error: mensagem`. Configure `MARKET_SERVER_NAME` para definir um nome explícito; por padrão, usa `MARKET_NODE_ID` ou o hostname. A versão vem do `package.json` e o papel é `standalone`, `master` ou `node`.
 - `MARKET_SYNC_ROLE`: define o papel da instância (`standalone` por padrão, `master` ou `node`).
 - `MARKET_NODE_SYNC_MODE`: controla o sentido da sincronização de um node. Use `bidirectional` (padrão) para receber e enviar ou `receive-only` para receber snapshots sem enviar alterações locais ao master. No modo somente recebimento, alterações locais podem ser substituídas quando o master publicar uma nova revisão.
+- `MARKET_NODE_PUBLIC_URL`: URL HTTP(S) acessível para abrir o node pela tabela do master. Nos Compose com dois nodes, configure `MARKET_NODE_PUBLIC_URL_NODE_1` e `MARKET_NODE_PUBLIC_URL_NODE_2`; a porta exibida é a porta de escuta do processo e pode diferir da porta publicada pelo Docker.
 - `MARKET_SYNC_MASTER_URL`: endereço do servidor master (ex.: `http://master:3001`), obrigatório quando em modo `node`.
 - `MARKET_SYNC_TOKEN`: token secreto compartilhado para autenticação via cabeçalho `X-Market-Sync-Token`.
 - `MARKET_SYNC_INTERVAL_SECONDS`: intervalo de reconciliação periódica em segundos (padrão `5` segundos).
