@@ -15,6 +15,7 @@ function getErrorDetails(error) {
 export class MarketSyncService {
   constructor({
     role = process.env.MARKET_SYNC_ROLE || 'standalone',
+    syncMode = process.env.MARKET_NODE_SYNC_MODE || 'bidirectional',
     masterUrl = process.env.MARKET_SYNC_MASTER_URL || '',
     token = process.env.MARKET_SYNC_TOKEN || '',
     nodeId = process.env.MARKET_NODE_ID || hostname(),
@@ -24,6 +25,7 @@ export class MarketSyncService {
     fetchImpl = fetch,
   }) {
     this.role = role;
+    this.syncMode = syncMode;
     this.masterUrl = masterUrl.replace(/\/+$/, '');
     this.token = token;
     this.nodeId = sanitizeNodeId(nodeId, 'node');
@@ -49,6 +51,7 @@ export class MarketSyncService {
   async start() {
     logger.info('market_sync.starting', {
       role: this.role,
+      syncMode: this.role === 'node' ? this.syncMode : null,
       nodeId: this.nodeId,
       masterUrl: this.getMasterOrigin(),
       intervalMs: this.intervalMs,
@@ -61,6 +64,10 @@ export class MarketSyncService {
     if (this.role === 'standalone') {
       logger.info('market_sync.standalone_mode', { nodeId: this.nodeId });
       return;
+    }
+    if (this.role === 'node' && !['bidirectional', 'receive-only'].includes(this.syncMode)) {
+      logger.error('market_sync.invalid_mode', { nodeId: this.nodeId, syncMode: this.syncMode });
+      throw new Error('MARKET_NODE_SYNC_MODE deve ser bidirectional ou receive-only.');
     }
     if (!this.token) {
       logger.error('market_sync.missing_token', { role: this.role, nodeId: this.nodeId });
@@ -90,7 +97,9 @@ export class MarketSyncService {
       });
       throw error;
     }
-    this.simulator.setSynchronizationHandler(() => this.pushSnapshot());
+    this.simulator.setSynchronizationHandler(
+      this.canPush ? () => this.pushSnapshot() : null,
+    );
     logger.info('market_sync.node_ready', {
       nodeId: this.nodeId,
       masterUrl: this.getMasterOrigin(),
@@ -117,9 +126,13 @@ export class MarketSyncService {
     logger.info('market_sync.stopped', { role: this.role, nodeId: this.nodeId });
   }
 
-  /** @returns {number} Downloads local conhecida pelo node. */
+  /** @returns {number} Sincronizações local conhecida pelo node. */
   get localRevision() {
     return Number.isInteger(this.store.state.syncRevision) ? this.store.state.syncRevision : 0;
+  }
+
+  get canPush() {
+    return this.role === 'node' && this.syncMode === 'bidirectional';
   }
 
   async request(path, options = {}) {
@@ -184,7 +197,7 @@ export class MarketSyncService {
     const revision = body.data.marketState.syncRevision;
     if (!Number.isInteger(revision) || revision < 0) {
       logger.error('market_sync.snapshot_invalid_revision', { nodeId: this.nodeId, revision });
-      throw new Error('Snapshot do master sem Downloads válida.');
+      throw new Error('Snapshot do master sem Sincronizações válida.');
     }
 
     logger.info('market_sync.snapshot_applying', { nodeId: this.nodeId, revision });
@@ -210,7 +223,7 @@ export class MarketSyncService {
         statusCode: response.status,
         message: body.message,
       });
-      throw new Error(body.message || `Falha ao consultar Downloads do master (${response.status}).`);
+      throw new Error(body.message || `Falha ao consultar Sincronizações do master (${response.status}).`);
     }
 
     this.masterRevision = body.data.revision;
@@ -226,7 +239,7 @@ export class MarketSyncService {
       await this.pullSnapshot();
       return;
     }
-    if (this.dirty) {
+    if (this.canPush && this.dirty) {
       logger.info('market_sync.reconcile_push_required', {
         nodeId: this.nodeId,
         revision: this.localRevision,
@@ -241,6 +254,12 @@ export class MarketSyncService {
   }
 
   pushSnapshot() {
+    if (!this.canPush) {
+      return Promise.reject(Object.assign(
+        new Error('Este node está configurado para somente receber dados do master.'),
+        { statusCode: 403, syncPushDisabled: true },
+      ));
+    }
     logger.info('market_sync.push_queued', { nodeId: this.nodeId, localRevision: this.localRevision });
     const result = this.pushQueue.then(() => this.pushSnapshotNow());
     this.pushQueue = result.catch(() => {});
@@ -248,6 +267,12 @@ export class MarketSyncService {
   }
 
   async pushSnapshotNow() {
+    if (!this.canPush) {
+      throw Object.assign(
+        new Error('Este node está configurado para somente receber dados do master.'),
+        { statusCode: 403, syncPushDisabled: true },
+      );
+    }
     const baseRevision = this.localRevision;
     logger.info('market_sync.snapshot_push_started', { nodeId: this.nodeId, baseRevision });
     const snapshot = await this.simulator.getBackupSnapshot();
@@ -316,6 +341,8 @@ export class MarketSyncService {
     const status = {
       syncEnabled: this.role !== 'standalone',
       role: this.role,
+      syncMode: this.role === 'node' ? this.syncMode : null,
+      canPush: this.canPush,
       nodeId: this.nodeId,
       intervalMs: this.intervalMs,
       masterUrl: null,

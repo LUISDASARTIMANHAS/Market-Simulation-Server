@@ -56,7 +56,7 @@ test('restauração substitui todas as coleções e remove atividade posterior a
   }
 });
 
-test('Downloads de sincronização aumenta no master e permanece estável no node', async () => {
+test('Sincronizações de sincronização aumenta no master e permanece estável no node', async () => {
   const dataDir = await mkdtemp(path.join(tmpdir(), 'market-sync-revision-'));
   const previousRole = process.env.MARKET_SYNC_ROLE;
   try {

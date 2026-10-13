@@ -9,7 +9,7 @@ import { MarketSimulator } from '../src/services/marketSimulator.js';
 import { MarketSyncService } from '../src/services/marketSyncService.js';
 import { createMarketSyncRouter } from '../src/routes/sync.routes.js';
 
-test('master aceita a primeira Downloads e node atrasado aplica o snapshot vencedor', async () => {
+test('master aceita a primeira Sincronizações e node atrasado aplica o snapshot vencedor', async () => {
   const dataDir = await mkdtemp(path.join(tmpdir(), 'market-sync-flow-'));
   const previousRole = process.env.MARKET_SYNC_ROLE;
   let server;
@@ -119,7 +119,7 @@ test('duas ordens no mesmo tempo em nodes diferentes: o node mais rápido vence 
     });
     assert.equal(orderA.account.balance, 800);
 
-    // Node B tenta enviar uma compra baseada na Downloads anterior que agora é obsoleta
+    // Node B tenta enviar uma compra baseada na Sincronizações anterior que agora é obsoleta
     await assert.rejects(
       nodeB.simulator.placeOrder(joaozinho.account.accountId, {
         side: 'BUY',

@@ -74,7 +74,7 @@ export function createMarketSyncRouter({
       !snapshot ||
       typeof snapshot !== "object"
     ) {
-      return httpBadRequest(res, "Downloads ou snapshot inválido.");
+      return httpBadRequest(res, "Sincronizações ou snapshot inválido.");
     }
 
     try {

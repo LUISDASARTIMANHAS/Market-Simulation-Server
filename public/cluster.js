@@ -68,7 +68,7 @@ function renderNodes(nodes = []) {
 					? "—"
 					: node.behindBy === 0
 						? "Em dia"
-						: `${node.behindBy} Downloads(ões)`,
+						: `${node.behindBy} Sincronizações(ões)`,
 				node.behindBy > 0 ? "text-warning" : "",
 			),
 			cell(node.pushes),
@@ -90,7 +90,12 @@ function render(data) {
 		node: "Node",
 		standalone: "Independente",
 	};
+	const syncModeLabels = {
+		"bidirectional": "Envio e recebimento",
+		"receive-only": "Somente recebimento",
+	};
 	$("#st-role").textContent = roleLabels[data.role] ?? data.role;
+	$("#st-sync-mode").textContent = syncModeLabels[data.syncMode] ?? "—";
 	$("#st-node").textContent = data.nodeId ?? "—";
 	$("#st-local").textContent = data.syncEnabled ? data.localRevision : "—";
 	$("#st-master").textContent = Number.isInteger(data.masterRevision)
@@ -101,7 +106,7 @@ function render(data) {
 			? "—"
 			: data.lag === 0
 				? "Em dia"
-				: `${data.lag} Downloads(ões)`;
+				: `${data.lag} Sincronizações(ões)`;
 	$("#st-dirty").textContent =
 		data.role === "node" ? (data.dirty ? "Sim" : "Não") : "—";
 	$("#st-pull").textContent = formatTime(data.lastPullAt);
@@ -113,7 +118,7 @@ function render(data) {
 
 	const isNode = data.role === "node";
 	elements.pull.disabled = !isNode;
-	elements.push.disabled = !isNode;
+	elements.push.disabled = !data.canPush;
 	elements.nodesSection.hidden = data.role !== "master";
 	if (data.role === "master") renderNodes(data.nodes);
 	if (!data.syncEnabled)

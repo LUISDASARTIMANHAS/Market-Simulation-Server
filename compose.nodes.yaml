@@ -14,6 +14,7 @@ services:
       MARKET_SYNC_MASTER_URL: ${MARKET_SYNC_MASTER_URL:?Defina MARKET_SYNC_MASTER_URL para iniciar os nodes}
       MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:?Defina MARKET_SYNC_TOKEN para iniciar os nodes}
       MARKET_NODE_ID: node-1
+      MARKET_NODE_SYNC_MODE: ${MARKET_NODE_SYNC_MODE:-bidirectional}
       MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
     volumes:
       - node-1-data:/app/data
@@ -41,6 +42,7 @@ services:
       MARKET_SYNC_MASTER_URL: ${MARKET_SYNC_MASTER_URL:?Defina MARKET_SYNC_MASTER_URL para iniciar os nodes}
       MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:?Defina MARKET_SYNC_TOKEN para iniciar os nodes}
       MARKET_NODE_ID: node-2
+      MARKET_NODE_SYNC_MODE: ${MARKET_NODE_SYNC_MODE:-bidirectional}
       MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
     volumes:
       - node-2-data:/app/data

@@ -3,7 +3,7 @@ import { marketSimulator } from "../services/marketSimulator.js";
 import { getSyncService, listNodes } from "../services/clusterRegistry.js";
 import { logger } from "../utils/logger.js";
 import { requireAdministrator } from "./routeMiddleware.js";
-import { httpBadRequest, httpBadGateway, httpConflict, httpInternalServerError } from "../utils/httpErrors.js";
+import { httpBadRequest, httpBadGateway, httpConflict, httpForbidden, httpInternalServerError } from "../utils/httpErrors.js";
 
 const router = Router();
 
@@ -17,6 +17,9 @@ const manualSync = (action) => async (req, res) => {
   if (!service || service.role !== "node") {
     return httpBadRequest(res, "Ação disponível apenas em servidores node.");
   }
+  if (action === "push" && !service.canPush) {
+    return httpForbidden(res, "Este node está configurado para somente receber dados do master.");
+  }
   try {
     await marketSimulator.enqueue(() =>
       action === "pull" ? service.pullSnapshot() : service.pushSnapshot(),
@@ -29,6 +32,9 @@ const manualSync = (action) => async (req, res) => {
       .status(200)
       .json({ success: true, data: await service.getStatus() });
   } catch (error) {
+    if (error.syncPushDisabled) {
+      return httpForbidden(res, error.message);
+    }
     if (error.syncConflict) {
       return httpConflict(res, error.message);
     }
