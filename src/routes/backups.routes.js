@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { marketSimulator } from '../services/marketSimulator.js';
 import { logger } from '../utils/logger.js';
 import { requireAdministrator } from './routeMiddleware.js';
+import { httpBadRequest, httpError, httpInternalServerError } from '../utils/httpErrors.js';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.post('/restore', requireAdministrator, async (req, res) => {
   try {
     const backupData = req.body;
     if (!backupData || typeof backupData !== 'object' || Array.isArray(backupData)) {
-      return res.status(400).json({ success: false, message: 'O arquivo de backup deve ser um objeto JSON válido.' });
+      return httpBadRequest(res, 'O arquivo de backup deve ser um objeto JSON válido.');
     }
     const result = await marketSimulator.restoreFromBackup(backupData);
     return res.status(200).json({
@@ -30,7 +31,10 @@ router.post('/restore', requireAdministrator, async (req, res) => {
   } catch (error) {
     const statusCode = error.statusCode || 400;
     logger.error('backup.restore_failed', { message: error.message });
-    return res.status(statusCode).json({ success: false, message: error.message || 'Falha ao restaurar backup.' });
+    if (statusCode >= 500) {
+      return httpInternalServerError(res, error, 'Falha ao restaurar backup.');
+    }
+    return httpError(res, statusCode, error.message || 'Falha ao restaurar backup.');
   }
 });
 

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { marketSimulator } from '../services/marketSimulator.js';
 import { requireAdministrator } from './routeMiddleware.js';
+import { httpError, httpInternalServerError } from '../utils/httpErrors.js';
 
 const router = Router();
 
@@ -20,7 +21,10 @@ router.post('/', requireAdministrator, async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ success: false, message: error.statusCode ? error.message : 'Não foi possível criar a conta.' });
+    if (error.statusCode >= 500 || !error.statusCode) {
+      return httpInternalServerError(res, error, 'Não foi possível criar a conta.');
+    }
+    return httpError(res, error.statusCode, error.message);
   }
 });
 
@@ -29,7 +33,10 @@ router.patch('/:accountId', requireAdministrator, async (req, res) => {
     const account = await marketSimulator.updateAccountAsAdministrator(req.params.accountId, req.body || {}, req.marketAccountId);
     return res.status(200).json({ success: true, data: { account } });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ success: false, message: error.statusCode ? error.message : 'Não foi possível atualizar a conta.' });
+    if (error.statusCode >= 500 || !error.statusCode) {
+      return httpInternalServerError(res, error, 'Não foi possível atualizar a conta.');
+    }
+    return httpError(res, error.statusCode, error.message);
   }
 });
 
@@ -38,7 +45,10 @@ router.delete('/:accountId', requireAdministrator, async (req, res) => {
     await marketSimulator.deleteAccountAsAdministrator(req.params.accountId, req.marketAccountId);
     return res.status(200).json({ success: true, data: { accountId: req.params.accountId } });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ success: false, message: error.statusCode ? error.message : 'Não foi possível excluir a conta.' });
+    if (error.statusCode >= 500 || !error.statusCode) {
+      return httpInternalServerError(res, error, 'Não foi possível excluir a conta.');
+    }
+    return httpError(res, error.statusCode, error.message);
   }
 });
 

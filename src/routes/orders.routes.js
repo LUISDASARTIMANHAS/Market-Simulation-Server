@@ -7,6 +7,7 @@ import {
 	requireApiAccount,
 } from "./routeMiddleware.js";
 import { logger } from "../utils/logger.js";
+import { httpBadRequest, httpError, httpInternalServerError } from "../utils/httpErrors.js";
 
 const router = Router();
 
@@ -18,13 +19,7 @@ const createOrderHandler = (side) => async (req, res) => {
 		Array.isArray(input) ||
 		!("amount" in input)
 	) {
-		return res
-			.status(400)
-			.json({
-				success: false,
-				message: "Parâmetros inválidos para a ordem.",
-				input: input,
-			});
+		return httpBadRequest(res, "Parâmetros inválidos para a ordem.", { input });
 	}
 
 	try {
@@ -49,13 +44,10 @@ const createOrderHandler = (side) => async (req, res) => {
 				message: error.message,
 			});
 		}
-		return res.status(statusCode).json({
-			success: false,
-			message:
-				statusCode >= 500
-					? "Não foi possível executar a ordem."
-					: error.message,
-		});
+		if (statusCode >= 500) {
+			return httpInternalServerError(res, error, "Não foi possível executar a ordem.");
+		}
+		return httpError(res, statusCode, error.message);
 	}
 };
 

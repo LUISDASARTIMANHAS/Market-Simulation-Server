@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { marketSimulator } from '../services/marketSimulator.js';
 import { logger } from '../utils/logger.js';
 import { keyRotationLimit, requireApiAccount } from './routeMiddleware.js';
+import { httpInternalServerError } from '../utils/httpErrors.js';
 
 const router = Router();
 
@@ -21,7 +22,7 @@ router.post('/rotate-key', requireApiAccount, keyRotationLimit, async (req, res)
       accountId: req.marketAccountId,
       message: error.message,
     });
-    return res.status(500).json({ success: false, message: 'Não foi possível rotacionar a chave.' });
+    return httpInternalServerError(res, error, 'Não foi possível rotacionar a chave.');
   }
 });
 

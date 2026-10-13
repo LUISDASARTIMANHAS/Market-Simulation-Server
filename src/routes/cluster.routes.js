@@ -3,6 +3,7 @@ import { marketSimulator } from "../services/marketSimulator.js";
 import { getSyncService, listNodes } from "../services/clusterRegistry.js";
 import { logger } from "../utils/logger.js";
 import { requireAdministrator } from "./routeMiddleware.js";
+import { httpBadRequest, httpBadGateway, httpConflict, httpInternalServerError } from "../utils/httpErrors.js";
 
 const router = Router();
 
@@ -14,10 +15,7 @@ const router = Router();
 const manualSync = (action) => async (req, res) => {
   const service = getSyncService();
   if (!service || service.role !== "node") {
-    return res.status(400).json({
-      success: false,
-      message: "Ação disponível apenas em servidores node.",
-    });
+    return httpBadRequest(res, "Ação disponível apenas em servidores node.");
   }
   try {
     await marketSimulator.enqueue(() =>
@@ -32,16 +30,13 @@ const manualSync = (action) => async (req, res) => {
       .json({ success: true, data: await service.getStatus() });
   } catch (error) {
     if (error.syncConflict) {
-      return res.status(409).json({ success: false, message: error.message });
+      return httpConflict(res, error.message);
     }
     logger.error("cluster.manual_sync_failed", {
       action,
       message: error.message,
     });
-    return res.status(502).json({
-      success: false,
-      message: "Falha ao comunicar com o servidor master.",
-    });
+    return httpBadGateway(res, "Falha ao comunicar com o servidor master.");
   }
 };
 
@@ -64,10 +59,7 @@ router.get("/status", requireAdministrator, async (req, res) => {
     return res.status(200).json({ success: true, data });
   } catch (error) {
     logger.error("cluster.status_failed", { message: error.message });
-    return res.status(500).json({
-      success: false,
-      message: "Não foi possível obter o estado do cluster.",
-    });
+    return httpInternalServerError(res, error, "Não foi possível obter o estado do cluster.");
   }
 });
 

@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module';
 import { hostname } from 'node:os';
 import { logger } from '../utils/logger.js';
+import { httpError, httpNotFound } from '../utils/httpErrors.js';
 
 const require = createRequire(import.meta.url);
 const packageInfo = require('../../package.json');
@@ -11,27 +12,13 @@ export function createApiResponseMiddleware({
   getRole = () => process.env.MARKET_SYNC_ROLE || 'standalone',
 } = {}) {
   return (req, res, next) => {
-    const sendJson = res.json.bind(res);
-    res.json = (body) => {
-      const server = { name, version, role: getRole() };
-      const meta = body && typeof body === 'object' && !Array.isArray(body) && body.meta
-        ? body.meta
-        : {};
-      const response = body && typeof body === 'object' && !Array.isArray(body)
-        ? { ...body, meta: { ...meta, server } }
-        : { meta: { server }, data: body };
-
-      return sendJson(response);
-    };
+    res.locals.apiServer = { name, version, role: getRole() };
     next();
   };
 }
 
 export function apiNotFound(req, res) {
-  return res.status(404).json({
-    success: false,
-    message: 'Rota da API não encontrada.',
-  });
+  return httpNotFound(res, 'Rota da API não encontrada.');
 }
 
 export function apiErrorHandler(error, req, res, next) {
@@ -50,5 +37,5 @@ export function apiErrorHandler(error, req, res, next) {
     message: error.message,
   });
 
-  return res.status(status).json({ success: false, message });
+  return httpError(res, status, message);
 }
