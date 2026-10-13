@@ -33,7 +33,7 @@ export function httpForbidden(res, message) {
   return httpError(res, 403, message);
 }
 
-export function httpNotFound(res, message) {
+export function http404NotFound(res, message) {
   return httpError(res, 404, message);
 }
 

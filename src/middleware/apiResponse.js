@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { hostname } from 'node:os';
 import { logger } from '../utils/logger.js';
-import { httpError, httpNotFound } from '../utils/httpErrors.js';
+import { http404NotFound, httpError } from '../utils/httpErrors.js';
 
 const require = createRequire(import.meta.url);
 const packageInfo = require('../../package.json');
@@ -18,7 +18,7 @@ export function createApiResponseMiddleware({
 }
 
 export function apiNotFound(req, res) {
-  return httpNotFound(res, 'Rota da API não encontrada.');
+  return http404NotFound(res, 'Rota da API não encontrada.');
 }
 
 export function apiErrorHandler(error, req, res, next) {

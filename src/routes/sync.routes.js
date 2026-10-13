@@ -7,6 +7,12 @@ import {
   recordNodeActivity,
   sanitizeNodeId,
 } from "../services/clusterRegistry.js";
+import {
+  httpBadRequest,
+  httpConflict,
+  http404NotFound,
+  httpUnauthorized,
+} from "../utils/httpErrors.js";
 
 export function createMarketSyncRouter({
   role = process.env.MARKET_SYNC_ROLE || "standalone",
@@ -18,10 +24,7 @@ export function createMarketSyncRouter({
 
   const authenticateNode = (req, res, next) => {
     if (role !== "master") {
-      return res.status(404).json({
-        success: false,
-        message: "Sincronização master não habilitada.",
-      });
+      return http404NotFound(res, "Sincronização master não habilitada.");
     }
     const supplied = Buffer.from(req.get("x-market-sync-token") || "");
     const expected = Buffer.from(token);
@@ -30,9 +33,7 @@ export function createMarketSyncRouter({
       supplied.length !== expected.length ||
       !timingSafeEqual(supplied, expected)
     ) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Token de sincronização inválido." });
+      return httpUnauthorized(res, "Token de sincronização inválido.");
     }
     req.syncNodeId = sanitizeNodeId(req.get("x-market-node-id"));
     const reported = Number.parseInt(
@@ -73,9 +74,7 @@ export function createMarketSyncRouter({
       !snapshot ||
       typeof snapshot !== "object"
     ) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Downloads ou snapshot inválido." });
+      return httpBadRequest(res, "Downloads ou snapshot inválido.");
     }
 
     try {
@@ -107,18 +106,18 @@ export function createMarketSyncRouter({
       });
 
       if (result.conflict) {
-        return res.status(409).json({
-          success: false,
-          message: "O node está atrasado e deve baixar o snapshot do master.",
-          data: { revision: result.revision },
-        });
+        return httpConflict(
+          res,
+          "O node está atrasado e deve baixar o snapshot do master.",
+          { data: { revision: result.revision } },
+        );
       }
       return res
         .status(200)
         .json({ success: true, data: { revision: result.revision } });
     } catch (error) {
       logger.warn("market_sync.snapshot_rejected", { message: error.message });
-      return res.status(400).json({ success: false, message: error.message });
+      return httpBadRequest(res, error.message);
     }
   });
 
