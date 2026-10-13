@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 98.89,
-  "sequence": 1130,
+  "currentPrice": 99.54,
+  "sequence": 1143,
   "totalVolume": 77611.1,
   "buyVolume": 40293.97,
   "sellVolume": 37317.13,
   "latestMarketEvent": {
-    "eventId": "d4fc6362-cbb6-4bf4-8160-613dda548871",
+    "eventId": "3cfebd15-2ec5-493b-a775-8d9b70727d54",
     "assetId": "SIM",
-    "category": "Inflação",
-    "title": "Inflação desacelera",
-    "description": "Alívio inflacionário melhora o apetite por risco.",
-    "impactPercent": 0.6958,
-    "occurredAt": "2026-10-13T16:32:17.080Z"
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.5308,
+    "occurredAt": "2026-10-13T16:54:46.879Z"
   },
-  "nextMarketEventAt": "2026-10-13T16:34:14.950Z",
-  "syncRevision": 45,
-  "updatedAt": "2026-10-13T16:32:17.080Z"
+  "nextMarketEventAt": "2026-10-13T16:56:44.776Z",
+  "syncRevision": 60,
+  "updatedAt": "2026-10-13T16:54:46.879Z"
 }
