@@ -12,7 +12,15 @@ export function createApiResponseMiddleware({
   getRole = () => process.env.MARKET_SYNC_ROLE || 'standalone',
 } = {}) {
   return (req, res, next) => {
-    res.locals.apiServer = { name, version, role: getRole() };
+    const server = { name, version, role: getRole() };
+    res.locals.apiServer = server;
+    const sendJson = res.json.bind(res);
+    res.json = (body) => {
+      const response = body && typeof body === 'object' && !Array.isArray(body)
+        ? { ...body, meta: { ...body.meta, server } }
+        : { data: body, meta: { server } };
+      return sendJson(response);
+    };
     next();
   };
 }

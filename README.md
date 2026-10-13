@@ -152,7 +152,7 @@ O cadastro está limitado a 5 chamadas por IP por hora; ordens, a 60 por IP por 
 
 O servidor suporta sincronização distribuída entre múltiplos servidores com autoridade única (master) e nós replicados (nodes):
 
-- Mensagens de erro da API identificam a instância no campo `message`, por exemplo: `market-node-1 - versão 1.0.0:node error: mensagem`. Configure `MARKET_SERVER_NAME` para definir um nome explícito; por padrão, usa `MARKET_NODE_ID` ou o hostname. A versão vem do `package.json` e o papel é `standalone`, `master` ou `node`.
+- Respostas JSON da API incluem `meta.server` com nome, versão e papel da instância. Mensagens de erro também embutem essa identificação no campo `message`, por exemplo: `market-node-1 - versão 1.0.0:node error: mensagem`. Configure `MARKET_SERVER_NAME` para definir um nome explícito; por padrão, usa `MARKET_NODE_ID` ou o hostname. A versão vem do `package.json` e o papel é `standalone`, `master` ou `node`.
 - `MARKET_SYNC_ROLE`: define o papel da instância (`standalone` por padrão, `master` ou `node`).
 - `MARKET_SYNC_MASTER_URL`: endereço do servidor master (ex.: `http://master:3001`), obrigatório quando em modo `node`.
 - `MARKET_SYNC_TOKEN`: token secreto compartilhado para autenticação via cabeçalho `X-Market-Sync-Token`.

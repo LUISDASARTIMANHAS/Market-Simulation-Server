@@ -8,12 +8,10 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   const snapshot = await marketSimulator.getBackupSnapshot();
-  const fileContents = JSON.stringify(snapshot, null, 2);
   return res
     .status(200)
-    .set('Content-Type', 'application/json; charset=utf-8')
     .set('Content-Disposition', 'attachment; filename="market-backup.json"')
-    .send(fileContents);
+    .json(snapshot);
 });
 
 router.post('/restore', requireAdministrator, async (req, res) => {

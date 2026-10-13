@@ -1,5 +1,68 @@
 [
   {
+    "eventId": "ace45247-837a-40ff-8f76-50c92e2893a7",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.8043,
+    "occurredAt": "2026-10-13T15:59:42.760Z"
+  },
+  {
+    "eventId": "7c54ee72-34ca-486e-a814-1d43467bcf4a",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.7593,
+    "occurredAt": "2026-10-13T15:57:51.111Z"
+  },
+  {
+    "eventId": "41a4b0b7-7dc5-492d-b717-f9f767b743f7",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.8015,
+    "occurredAt": "2026-10-13T15:56:49.107Z"
+  },
+  {
+    "eventId": "05cc469e-2722-4295-87d0-036fcc7c2eb5",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 1.1305,
+    "occurredAt": "2026-10-13T15:55:40.460Z"
+  },
+  {
+    "eventId": "b9e9927b-8f70-46c9-bf42-c3d3283a3c83",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 1.1395,
+    "occurredAt": "2026-10-13T15:54:31.914Z"
+  },
+  {
+    "eventId": "9345154d-7c2b-4bd9-9828-2072c30fde17",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.986,
+    "occurredAt": "2026-10-13T15:52:48.383Z"
+  },
+  {
+    "eventId": "3b73c9c2-cb96-4f3c-a9bd-8917eb47dff7",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.7663,
+    "occurredAt": "2026-10-13T15:50:55.064Z"
+  },
+  {
     "eventId": "cae95157-a56e-4609-8171-cc0e17d75270",
     "assetId": "SIM",
     "category": "Juros",
