@@ -42,7 +42,7 @@
   {
     "accountId": "e0c2bd18-9e98-41ee-8513-a263a491f41e",
     "username": "system_admin",
-    "keyHash": "b5870a09b05c7f802158bf9da37af3f3532a92126c1f56565bd699116bc23202",
+    "keyHash": "43614d903a2290c802c3c932a35997e04b2af13d97bc5f0fbad90b5823dabbb9",
     "isAdmin": true,
     "isSystemAdmin": true,
     "balance": 1000,
@@ -58,5 +58,15 @@
     "balance": 550,
     "createdAt": "2026-10-09T14:57:21.683Z",
     "updatedAt": "2026-10-09T14:59:39.014Z"
+  },
+  {
+    "accountId": "d207e449-cec9-4828-939f-2ea267e5cb86",
+    "username": "PENTIUMSERVER",
+    "keyHash": "8c1291d042a29535cfe3c1a94b1c67b3306c0b87b463044feb50c71d20410d5d",
+    "isAdmin": true,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-10-15T16:53:10.775Z",
+    "updatedAt": "2026-10-15T16:54:00.585Z"
   }
 ]

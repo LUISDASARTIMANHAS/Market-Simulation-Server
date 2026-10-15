@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 102.43,
-  "sequence": 1265,
+  "currentPrice": 100.84,
+  "sequence": 1267,
   "totalVolume": 77611.1,
   "buyVolume": 40293.97,
   "sellVolume": 37317.13,
   "latestMarketEvent": {
-    "eventId": "f6424258-191e-47ab-a47c-bf4959c69a95",
+    "eventId": "f8448e9f-b9d7-4b48-8eb4-26e8d807ddfd",
     "assetId": "SIM",
-    "category": "Juros",
-    "title": "Corte de juros",
-    "description": "Juros menores favorecem ativos de risco.",
-    "impactPercent": 0.5796,
-    "occurredAt": "2026-10-15T16:52:56.968Z"
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.7641,
+    "occurredAt": "2026-10-15T16:57:46.069Z"
   },
-  "nextMarketEventAt": "2026-10-15T16:53:58.875Z",
-  "syncRevision": 181,
-  "updatedAt": "2026-10-15T16:52:56.968Z"
+  "nextMarketEventAt": "2026-10-15T16:58:46.868Z",
+  "syncRevision": 184,
+  "updatedAt": "2026-10-15T16:57:46.069Z"
 }

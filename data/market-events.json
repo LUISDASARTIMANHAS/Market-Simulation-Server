@@ -1,5 +1,23 @@
 [
   {
+    "eventId": "f8448e9f-b9d7-4b48-8eb4-26e8d807ddfd",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.7641,
+    "occurredAt": "2026-10-15T16:57:46.069Z"
+  },
+  {
+    "eventId": "fadf6c64-a2db-4cb8-b31f-af43215a3fb6",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.7927,
+    "occurredAt": "2026-10-15T16:54:00.585Z"
+  },
+  {
     "eventId": "f6424258-191e-47ab-a47c-bf4959c69a95",
     "assetId": "SIM",
     "category": "Juros",

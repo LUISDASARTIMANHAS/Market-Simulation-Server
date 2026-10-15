@@ -40,5 +40,12 @@
     "quantity": 10.66272385,
     "averagePrice": 42.2,
     "updatedAt": "2026-10-09T14:59:39.014Z"
+  },
+  {
+    "accountId": "d207e449-cec9-4828-939f-2ea267e5cb86",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "updatedAt": "2026-10-15T16:54:00.585Z"
   }
 ]
