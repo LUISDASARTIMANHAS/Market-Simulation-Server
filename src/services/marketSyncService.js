@@ -167,6 +167,7 @@ export class MarketSyncService {
           'X-Market-Node-Revision': String(this.localRevision),
           'X-Market-Node-Version': String(this.nodeVersion),
           'X-Market-Node-Port': String(this.nodePort),
+          'X-Market-Node-Sync-Interval-Ms': String(this.intervalMs),
           'X-Market-Node-Url': this.nodePublicUrl,
           ...options.headers,
         },

@@ -8,6 +8,7 @@ import { JsonStateStore } from '../src/services/stateStore.js';
 import { MarketSimulator } from '../src/services/marketSimulator.js';
 import { MarketSyncService } from '../src/services/marketSyncService.js';
 import { createMarketSyncRouter } from '../src/routes/sync.routes.js';
+import { listNodes } from '../src/services/clusterRegistry.js';
 
 test('master aceita a primeira Sincronizações e node atrasado aplica o snapshot vencedor', async () => {
   const dataDir = await mkdtemp(path.join(tmpdir(), 'market-sync-flow-'));
@@ -32,20 +33,28 @@ test('master aceita a primeira Sincronizações e node atrasado aplica o snapsho
     });
     const masterUrl = `http://127.0.0.1:${server.address().port}`;
 
-    const createNode = async (name) => {
+    const createNode = async (name, intervalMs) => {
       const store = new JsonStateStore(path.join(dataDir, name, 'market-state.json'), { role: 'node' });
       const simulator = new MarketSimulator(store);
       simulator.initialize(await store.load());
       const syncService = new MarketSyncService({
-        role: 'node', masterUrl, token: 'test-sync-token', store, simulator, intervalMs: 60000,
+        role: 'node', nodeId: name, masterUrl, token: 'test-sync-token', store, simulator, intervalMs,
       });
       syncServices.push(syncService);
       await syncService.start();
       return { store, simulator, syncService };
     };
 
-    const firstNode = await createNode('node-a');
-    const secondNode = await createNode('node-b');
+    const firstNode = await createNode('node-a', 60000);
+    const secondNode = await createNode('node-b', 7200000);
+    assert.equal(
+      listNodes(0, 120000).find((node) => node.nodeId === 'node-a').syncIntervalMs,
+      60000,
+    );
+    assert.equal(
+      listNodes(0, 120000).find((node) => node.nodeId === 'node-b').syncIntervalMs,
+      7200000,
+    );
     const winner = await firstNode.simulator.createAccount({ username: 'winner_node' });
     assert.ok(await masterStore.repository.getAccount(winner.account.accountId));
 

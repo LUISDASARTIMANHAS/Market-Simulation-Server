@@ -37,6 +37,14 @@ function cell(text, className = "") {
 	return td;
 }
 
+function formatSyncInterval(intervalMs) {
+	if (!Number.isSafeInteger(intervalMs) || intervalMs <= 0) return "—";
+	const seconds = intervalMs / 1000;
+	if (seconds % 3600 === 0) return `${seconds / 3600} h`;
+	if (seconds % 60 === 0) return `${seconds / 60} min`;
+	return `${seconds} s`;
+}
+
 function accessCell(node) {
 	const td = document.createElement("td");
 	try {
@@ -92,6 +100,7 @@ function renderNodes(nodes = []) {
 						: `${node.behindBy} Sincronizações(ões)`,
 				node.behindBy > 0 ? "text-warning" : "",
 			),
+			cell(formatSyncInterval(node.syncIntervalMs)),
 			cell(node.pushes),
 			cell(node.conflicts),
 			cell(formatTime(node.lastSeenAt)),
@@ -117,6 +126,9 @@ function render(data) {
 	};
 	$("#st-role").textContent = roleLabels[data.role] ?? data.role;
 	$("#st-sync-mode").textContent = syncModeLabels[data.syncMode] ?? "—";
+	$("#st-sync-interval").textContent = data.role === "node"
+		? `A cada ${formatSyncInterval(data.intervalMs)}`
+		: "—";
 	$("#st-node").textContent = data.nodeId ?? "—";
 	$("#st-local").textContent = data.syncEnabled ? data.localRevision : "—";
 	$("#st-master").textContent = Number.isInteger(data.masterRevision)

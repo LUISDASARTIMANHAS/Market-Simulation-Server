@@ -6,6 +6,7 @@ import { logger } from "../utils/logger.js";
 import {
   recordNodeActivity,
   sanitizeNodePort,
+  sanitizeNodeSyncInterval,
   sanitizeNodeId,
   sanitizeNodeUrl,
   sanitizeNodeVersion,
@@ -48,6 +49,9 @@ export function createMarketSyncRouter({
     req.syncNodeMetadata = {
       version: sanitizeNodeVersion(req.get("x-market-node-version")),
       port: sanitizeNodePort(req.get("x-market-node-port")),
+      syncIntervalMs: sanitizeNodeSyncInterval(
+        req.get("x-market-node-sync-interval-ms"),
+      ),
       url: req.get("x-market-node-url") ?? undefined,
     };
     return next();

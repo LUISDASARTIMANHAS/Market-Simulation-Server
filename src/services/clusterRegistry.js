@@ -48,6 +48,11 @@ export function sanitizeNodePort(raw) {
   return Number.isInteger(port) && port >= 1 && port <= 65535 ? port : null;
 }
 
+export function sanitizeNodeSyncInterval(raw) {
+  const intervalMs = Number(raw);
+  return Number.isSafeInteger(intervalMs) && intervalMs > 0 ? intervalMs : null;
+}
+
 export function sanitizeNodeUrl(raw) {
   if (typeof raw !== 'string' || raw.length > 512) return null;
   try {
@@ -77,6 +82,9 @@ export function recordNodeActivity(nodeId, action, reportedRevision = null, meta
     nodeId,
     version: sanitizeNodeVersion(metadata.version) ?? previous?.version ?? null,
     port: sanitizeNodePort(metadata.port) ?? previous?.port ?? null,
+    syncIntervalMs: sanitizeNodeSyncInterval(metadata.syncIntervalMs)
+      ?? previous?.syncIntervalMs
+      ?? null,
     url: typeof metadata.url === 'string'
       ? sanitizeNodeUrl(metadata.url)
       : previous?.url ?? null,
@@ -105,6 +113,7 @@ export function listNodes(masterRevision, onlineWindowMs) {
       nodeId: node.nodeId,
       version: node.version,
       port: node.port,
+      syncIntervalMs: node.syncIntervalMs,
       url: node.url,
       online: now - node.lastSeenMs <= onlineWindowMs,
       firstSeenAt: new Date(node.firstSeenMs).toISOString(),

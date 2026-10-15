@@ -49,7 +49,8 @@ services:
       MARKET_NODE_ID: node-2
       MARKET_NODE_PUBLIC_URL: ${MARKET_NODE_PUBLIC_URL_NODE_2:-}
       MARKET_NODE_SYNC_MODE: ${MARKET_NODE_SYNC_MODE_NODE_2:-receive-only}
-      MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
+      # a cada 60 segundos ele puxa o banco, pode ser usado para testes ou backup local de 60s, mantendo assim a consistencia do mercado master, sem enviar dados de teste.
+      MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-60}
     volumes:
       - node-2-data:/app/data
     deploy:

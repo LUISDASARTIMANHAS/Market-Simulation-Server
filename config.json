@@ -35,7 +35,14 @@
     "x-nonce",
     "x-signature",
     "x-timestamp",
-    "x-ip-info"
+    "x-ip-info",
+    "X-Market-Sync-Token",
+    "X-Market-Node-Id",
+    "X-Market-Node-Revision",
+    "X-Market-Node-Version",
+    "X-Market-Node-Port",
+    "X-Market-Node-Sync-Interval-Ms",
+    "X-Market-Node-Url"
   ],
   "ALLOWED_USER_AGENTS": [
     "Mozilla",
