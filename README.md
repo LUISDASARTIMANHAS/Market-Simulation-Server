@@ -1,177 +1,121 @@
 # Market Simulation Server
 
-Servidor Node.js independente que gera preços simulados e os disponibiliza por HTTP. Não importa código do projeto do bot e pode ser movido para outro diretório ou repositório.
+Servidor Node.js independente de alta performance para **paper trading**, geração de preços simulados dinâmicos e testes de bots ou algoritmos de negociação via API REST.
 
-## Instalação e execução
+O projeto é 100% autônomo, não se conecta a bolsas ou corretoras reais e persiste todos os dados localmente através de uma estrutura modular de arquivos JSON com escritas atômicas e controle de concorrência.
 
-Requer Node.js 20 ou superior.
+---
 
-```powershell
+## 🚀 Principais Recursos
+
+- **Simulação Realista de Mercado**: Formação contínua de preços com impacto proporcional ao volume das ordens de compra/venda, liquidez de referência e reversão à média (*mean reversion*).
+- **Eventos Macroeconômicos Dinâmicos**: Choques periódicos de volatilidade cobrindo inflação, juros, política, guerra, tecnologia e emprego.
+- **API REST Completa e Segura**: Autenticação via tokens Bearer, hashes SHA-256 (chaves nunca salvas em texto puro) e controle de taxa de requisições (*rate limiting*).
+- **Cluster Distribuído (Master / Node)**: Replicação em tempo real com controle de concorrência otimista baseado em revisões (`syncRevision`), detecção de conflitos (`HTTP 409`) e reconciliação automática.
+- **Persistência Atômica e Modular**: 8 arquivos JSON com serialização de gravações e proteção contra gravações parciais por renomeação temporária.
+- **Interface Web Integrada**:
+  - **Cliente do Trader** (`/`): Acompanhamento do mercado, carteira e envio de ordens.
+  - **Painel Administrativo** (`/admin.html`): Gestão de usuários, permissões e status do cluster.
+- **Observabilidade**: Logs estruturados em formato JSON Lines (`data/logs/`) com sanitização automática de credenciais.
+
+---
+
+## ⚡ Início Rápido
+
+### Pré-requisitos
+- [Node.js](https://nodejs.org/) versão 20 ou superior.
+
+### Instalação e Inicialização Local
+
+```bash
+# 1. Instalar as dependências
 npm install
-npm run start
+
+# 2. Iniciar o servidor em produção
+npm start
 ```
 
-Durante o desenvolvimento, `npm run dev` reinicia o servidor quando o código muda. No Windows, `start.cmd` inicia o processo.
+Durante o desenvolvimento, execute `npm run dev` para reiniciar automaticamente após alterações de código. No Windows, você pode utilizar o atalho `start.cmd`.
 
-Ao iniciar o servidor, acesse `http://localhost:3001/` para abrir o cliente web de teste. Ele acompanha o preço e as ordens públicas, permite criar/conectar uma carteira e enviar compras e vendas simuladas. A chave informada fica em `sessionStorage` e é removida ao encerrar a sessão do navegador ou desconectar a carteira.
+Após iniciar, abra no navegador:
+- **Painel do Trader**: [http://localhost:3001/](http://localhost:3001/)
+- **Painel do Administrador**: [http://localhost:3001/admin.html](http://localhost:3001/admin.html)
 
-Veja a [descrição dos arquivos JSON de dados](docs/arquivos-de-dados.md) para consultar a finalidade e o formato de armazenamento de cada coleção.
+---
 
-Use o cliente apenas em ambiente local ou confiável; não informe chaves em uma instalação pública. Em produção, não armazene chaves de API em aplicações web: use um backend próprio com controles de acesso adequados.
+## 🐳 Executando com Docker
 
-### Docker e persistência
-
-Para iniciar com Docker Compose:
-
-```powershell
+### Modo Standalone (Servidor Único)
+```bash
 docker compose up -d --build
 ```
+Os dados permanecem persistidos no host através do volume montado `./data:/app/data`.
 
-O Compose monta `./data` do host em `/app/data` no container e armazena os dados na estrutura modular em arquivos JSON (`data/accounts.json`, `data/assets.json`, `data/portfolios.json`, `data/orders.json`, `data/trades.json`, `data/market-history.json`, `data/market-events.json` e `data/market-state.json`). Esses arquivos contêm contas, posições de custódia, ordens, trades, preço atual, eventos e volumes, permanecendo disponíveis ao reiniciar ou recriar o container.
-
-Confira as contas persistidas no host com:
-
-```powershell
-node -e "const s = require('./data/accounts.json'); console.log(s.length)"
+### Modo Cluster (Master + 2 Nodes Replicados)
+```bash
+docker compose -f compose.cluster.yaml up -d --build
 ```
+- **Master**: Porta `3001`
+- **Node 1**: Porta `3002`
+- **Node 2**: Porta `3003`
 
-Para executar a suíte de testes de consistência financeira e concorrência:
+---
 
-```powershell
+## 📚 Mapa da Documentação
+
+A documentação detalhada do projeto está organizada no diretório [`docs/`](docs/):
+
+| Documento | Descrição |
+| --- | --- |
+| 📖 [**Documentação da API REST**](docs/api-docs.md) | Catálogo completo de endpoints, parâmetros, respostas JSON, erros, rate limits e exemplos com `curl`. |
+| 🛠️ [**Instalação e Configuração**](docs/instalacao-e-configuracao.md) | Pré-requisitos, variáveis de ambiente, Docker, configuração de proxy reverso e comandos. |
+| 📈 [**Mecânica do Mercado**](docs/mecanica-do-mercado.md) | Modelagem matemática de preços, cálculo de impacto por ordem, reversão à média e catálogo de eventos macroeconômicos. |
+| 🌐 [**Cluster e Sincronização**](docs/cluster-e-sincronizacao.md) | Topologia Master/Node, controle de concorrência por revisão (`syncRevision`), resolução de conflitos e orquestração. |
+| 💾 [**Arquivos de Dados JSON**](docs/arquivos-de-dados.md) | Estrutura modular dos 8 arquivos de persistência (`data/`), ciclo de escrita atômica e segurança. |
+| 📋 [**Logs, Auditoria e Backups**](docs/backups-e-logs.md) | Sistema de logs estruturados (JSON Lines), política de privacidade e exportação/restauração de snapshots. |
+
+---
+
+## 🔌 Resumo Rápido dos Endpoints da API
+
+Todas as rotas de API residem sob o prefixo `/api`:
+
+| Método | Endpoint | Autenticação | Descrição |
+| --- | --- | --- | --- |
+| `GET` | `/api/market/status` | Pública | Retorna preço atual, sequência, histórico e eventos recentes. |
+| `GET` | `/api/market/events` | Pública | Lista histórico de eventos macroeconômicos simulados. |
+| `POST` | `/api/accounts` | Pública | Cria carteira virtual com US$ 1.000 e gera a chave de API. |
+| `GET` | `/api/account` | `Bearer <KEY>` | Consulta saldo e custódia de ativos da conta autenticada. |
+| `GET` | `/api/account/history` | `Bearer <KEY>` | Histórico de ordens executadas da conta. |
+| `POST` | `/api/account/rotate-key` | `Bearer <KEY>` | Revoga a chave atual e gera uma nova credencial. |
+| `POST` | `/api/orders/buy` | `Bearer <KEY>` | Envia ordem de compra informando `{ "amount": quoteUSD }`. |
+| `POST` | `/api/orders/sell` | `Bearer <KEY>` | Envia ordem de venda informando `{ "amount": assetUnits }`. |
+| `GET` | `/api/admin/accounts` | Admin | Lista todas as contas de usuários e administradores. |
+| `POST` | `/api/admin/accounts` | Admin | Cria nova conta especificando status de administrador. |
+| `PATCH` | `/api/admin/accounts/:id` | Admin | Atualiza `username` ou status de admin de uma conta. |
+| `DELETE` | `/api/admin/accounts/:id` | Admin | Remove uma conta e suas negociações associadas. |
+| `GET` | `/api/backup` | Pública | Download de snapshot completo em arquivo JSON. |
+| `POST` | `/api/backup/restore` | Admin | Restaura todas as coleções a partir de snapshot JSON. |
+| `GET` | `/api/admin/cluster/status` | Admin | Exibe métricas de replicação, revisões e nós registrados. |
+| `POST` | `/api/admin/cluster/pull` | Admin | Força o nó a sincronizar com o master. |
+| `POST` | `/api/admin/cluster/push` | Admin | Força o nó a enviar seu estado ao master. |
+
+> Consulte o arquivo [docs/api-docs.md](docs/api-docs.md) para payloads completos e códigos de retorno.
+
+---
+
+## 🧪 Testes e Migração
+
+```bash
+# Executa a suíte de testes de consistência financeira e concorrência
 npm test
-```
 
-Para rodar ou verificar a migração de banco de dados modular:
-
-```powershell
+# Executa/valida a migração de banco de dados para o padrão modular
 npm run migrate
 ```
 
-A chave de API em texto puro não é salva no arquivo, então cada usuário precisa guardar a chave recebida ao criar a conta. Rode apenas uma instância do serviço usando esses arquivos; sincronizar ou compartilhar os mesmos arquivos entre instâncias ativas pode causar sobrescrita de estado.
+---
 
-Por padrão, a API escuta na porta `3001` e os dados ficam na pasta `data/`, dentro deste projeto. Configure `MARKET_PORT` para trocar a porta ou `MARKET_STATE_FILE` para apontar o arquivo de estado principal.
+## 🛡️ Aviso Legal (Disclaimer)
 
-Eventos simulados movimentam o preço em intervalos aleatórios de 60 a 120 segundos. Configure `MARKET_EVENT_MIN_INTERVAL_MS` e `MARKET_EVENT_MAX_INTERVAL_MS` para alterar os limites em milissegundos. Se o máximo for menor que o mínimo, o mínimo será usado como os dois limites. Os modelos, descrições e faixas de impacto são editáveis em `src/config/market-events.json`; cada categoria tem cenários positivos e negativos equilibrados. Os eventos também aplicam uma reversão gradual em direção ao preço de referência de US$ 100 para limitar tendências aleatórias prolongadas.
-
-Se estiver atrás de um reverse proxy confiável, configure `TRUST_PROXY` com o endereço ou faixa desse proxy, por exemplo `loopback` para um proxy local. Não use `true` indiscriminadamente: o endereço IP é usado nos limites de requisição.
-
-Ao ser executado pela primeira vez ou a partir da estrutura antiga monolítica, o servidor migra automaticamente o estado existente para a nova estrutura modular em 8 arquivos JSON, mantendo backups de segurança em `data/backups/`.
-
-## Logs
-
-O servidor grava logs estruturados em JSON, um evento por linha, em arquivos diários dentro de `data/logs/` (`market-AAAA-MM-DD.log`). O diretório é ignorado pelo Git e, no Docker Compose, permanece disponível no volume `./data`. Configure `MARKET_LOG_DIRECTORY` para escolher outro diretório. Os registros incluem requisições HTTP, eventos de mercado, ordens e operações de persistência; query strings, corpos das requisições e cabeçalhos de autenticação não são registrados. Se ocorrer uma falha ao gravar os logs, o erro é informado uma única vez no console.
-
-`GET /api/market/status` é público. Retorna preço, sequência, histórico recente, volume, todos os eventos decorridos (`events`) e as ordens públicas recentes, sem expor dados de contas.
-
-`GET /api/market/events` é público. Retorna a lista completa de todos os eventos de mercado decorridos, do mais recente ao mais antigo. Aceita o parâmetro opcional `?limit=N` para limitar a quantidade retornada.
-
-`GET /api/backup` baixa um snapshot em JSON do estado atual do mercado, incluindo contas, saldo, histórico, trades públicos e os metadados de identificação (accountId e username). Use esse arquivo para auditoria, backup e recuperação do estado.
-
-O arquivo inclui as oito coleções persistidas: contas, ativos, carteiras, ordens, negociações, histórico de preços, eventos e estado operacional. Ao restaurar, todas elas são substituídas pelo conteúdo do backup; nenhum registro posterior é mesclado ou preservado. A aplicação salva um backup de segurança antes da substituição.
-
-`POST /api/backup/restore` exige `Authorization: Bearer <token-administrador>`. Em cada inicialização, o servidor cria ou atualiza uma conta administrativa de sistema separada das contas admin pessoais, imprime um token válido no terminal e persiste somente seu hash. Sem `MARKET_ADMIN_TOKEN`, a chave dessa conta de sistema é rotacionada a cada início; defina essa variável no ambiente se precisar de uma chave estável entre reinicializações.
-
-```json
-{
-  "success": true,
-  "data": {
-    "currentPrice": 100.25,
-    "sequence": 42,
-    "updatedAt": "2026-10-07T21:00:00.000Z",
-    "latestEvent": {
-      "eventId": "a1b2c3d4-...",
-      "category": "Inflação",
-      "title": "Inflação desacelera",
-      "description": "Alívio inflacionário melhora o apetite por risco.",
-      "impactPercent": 0.52,
-      "occurredAt": "2026-10-07T20:59:00.000Z"
-    },
-    "events": [
-      {
-        "eventId": "a1b2c3d4-...",
-        "assetId": "SIM",
-        "category": "Inflação",
-        "title": "Inflação desacelera",
-        "description": "Alívio inflacionário melhora o apetite por risco.",
-        "impactPercent": 0.52,
-        "occurredAt": "2026-10-07T20:59:00.000Z"
-      }
-    ],
-    "nextEventAt": "2026-10-07T21:00:30.000Z",
-    "volume": { "total": 100, "buys": 100, "sells": 0 },
-    "recentTrades": [],
-    "history": [
-      { "sequence": 42, "price": 100.25, "updatedAt": "2026-10-07T21:00:00.000Z" }
-    ]
-  }
-}
-```
-
-### Contas e ordens
-
-`POST /api/accounts` cria uma carteira virtual com US$ 1.000 e retorna uma chave de API aleat?ria. A chave aparece apenas nessa resposta; o servidor guarda somente seu hash. Cada usu?rio deve criar e proteger sua pr?pria chave. O `username` ? obrigat?rio: use 3 a 24 caracteres, sem espa?os, apenas letras, n?meros, ponto, underline e h?fen.
-
-Exemplo de cria??o com identificador:
-
-```json
-{ "username": "alice_trader" }
-```
-
-`GET /api/account` e `GET /api/account/history` exigem `Authorization: Bearer <API_KEY>`. A resposta inclui `accountId` e `username` para auditoria; os itens de hist?rico e de trades p?blicos tamb?m exibem essa identifica??o.
-
-`POST /api/account/rotate-key` revoga a chave atual e devolve uma nova, exibida somente uma vez.
-
-### Administração de usuários
-
-Administradores autenticados podem gerenciar contas no painel em `/admin.html`. As rotas administrativas também aceitam `Authorization: Bearer <API_KEY>` de um administrador:
-
-- `GET /api/admin/accounts` lista as contas sem expor hashes ou chaves de API.
-- `POST /api/admin/accounts` cria uma conta com `{ "username": "novo_usuario", "isAdmin": true }`; a chave é retornada somente nessa resposta.
-- `PATCH /api/admin/accounts/:accountId` altera `username` e/ou `isAdmin`.
-- `DELETE /api/admin/accounts/:accountId` remove a conta e suas negociações.
-
-O painel impede que um administrador remova seu próprio acesso, que exclua a própria conta ou que deixe o sistema sem administradores.
-
-`POST /api/orders/buy` e `POST /api/orders/sell` também exigem essa autenticação. O path define o lado da operação, e o corpo contém apenas `amount`: em compras, o valor em dólares; em vendas, a quantidade de unidades do ativo.
-
-```json
-{ "amount": 100 }
-```
-
-```json
-{ "amount": 0.5 }
-```
-
-Cada participante deve guardar sua chave e usar sua própria carteira. Não compartilhe uma chave entre usuários.
-
-Uma compra pressiona o preço global para cima; uma venda, para baixo. O efeito é limitado a 2% por ordem, calculado sobre uma liquidez de referência de US$ 250, e o tamanho máximo é US$ 5.000 por ordem. Além das ordens de usuários e bots enviadas por essa API, eventos simulados de inflação, guerra, política, juros, tecnologia e emprego aplicam choques periódicos positivos ou negativos ao preço. O status público informa o último evento e a previsão do próximo. Esses cenários são aleatórios e não representam notícias ou dados do mundo real. O preço, os eventos, as contas, o volume e o histórico de ordens são persistidos neste servidor.
-
-O cadastro está limitado a 5 chamadas por IP por hora; ordens, a 60 por IP por minuto e 20 por conta por minuto; rotação, a 3 por IP por hora.
-
-### Sincronização entre Servidores (Master / Node)
-
-O servidor suporta sincronização distribuída entre múltiplos servidores com autoridade única (master) e nós replicados (nodes):
-
-- Respostas JSON da API incluem `meta.server` com nome, versão e papel da instância. Mensagens de erro também embutem essa identificação no campo `message`, por exemplo: `market-node-1 - versão 1.0.0:node error: mensagem`. Configure `MARKET_SERVER_NAME` para definir um nome explícito; por padrão, usa `MARKET_NODE_ID` ou o hostname. A versão vem do `package.json` e o papel é `standalone`, `master` ou `node`.
-- `MARKET_SYNC_ROLE`: define o papel da instância (`standalone` por padrão, `master` ou `node`).
-- `MARKET_NODE_SYNC_MODE`: controla o sentido da sincronização de um node. Use `bidirectional` (padrão) para receber e enviar ou `receive-only` para receber snapshots sem enviar alterações locais ao master. No modo somente recebimento, alterações locais podem ser substituídas quando o master publicar uma nova revisão.
-- `MARKET_NODE_PUBLIC_URL`: URL HTTP(S) acessível para abrir o node pela tabela do master. Nos Compose com dois nodes, configure `MARKET_NODE_PUBLIC_URL_NODE_1` e `MARKET_NODE_PUBLIC_URL_NODE_2`; a porta exibida é a porta de escuta do processo e pode diferir da porta publicada pelo Docker.
-- `MARKET_SYNC_MASTER_URL`: endereço do servidor master (ex.: `http://master:3001`), obrigatório quando em modo `node`.
-- `MARKET_SYNC_TOKEN`: token secreto compartilhado para autenticação via cabeçalho `X-Market-Sync-Token`.
-- `MARKET_SYNC_INTERVAL_SECONDS`: intervalo de reconciliação periódica em segundos (padrão `5` segundos).
-
-**Regras de Sincronização e Concorrência:**
-
-- O servidor master aceita snapshots enviados pelos nodes desde que o node não esteja desatualizado (baseado no controle de concorrência por revisão otimista).
-- O primeiro node a registrar uma ordem ou alteração envia seus dados ao master; o master aceita e incrementa a revisão do mercado.
-- Se dois nodes submeterem ordens ao mesmo tempo, o mais rápido a alcançar o master prevalece como vencedor. O node concorrente recebe conflito (`HTTP 409`), descarta a operação rejeitada e baixa o estado atualizado do master contendo a transação vencedora.
-- Caso um node fique atrasado por oscilações ou falhas de rede, baixa automaticamente o snapshot mais recente do master durante a reconciliação periódica ou ao detectar divergência de revisão.
-
-Os limites usam armazenamento em memória e reiniciam quando o processo reinicia.
-
-Clientes podem consultar essa rota sem conta ou chave. Se o servidor estiver em outra máquina, use a URL pública HTTPS e libere somente a porta necessária no firewall.
-Qualquer cliente pode usar essas rotas com sua própria conta e chave Bearer. Não embuta a chave em código público de navegador, URLs ou repositórios; aplicações web devem intermediar ordens por um backend protegido. A integração para o bot automatizar ordens fica para outra etapa. Ao publicar na internet, use HTTPS.
-
-Este serviço é paper trading; não se conecta a uma bolsa ou corretora real.
-
-Este serviço é um simulador aleatório para paper trading; não se conecta a uma bolsa ou corretora real.
+Este projeto foi desenvolvido com propósitos estritamente educacionais e de pesquisa em estratégias algorítmicas de negociação (**Paper Trading**). As informações, eventos e cotações geradas são puramente matemáticas e aleatórias, sem qualquer representação ou vínculo com ativos financeiros ou mercados do mundo real.

@@ -26,3 +26,13 @@ O diretório `data/backups/` guarda snapshots e cópias de segurança criadas an
 `users.bin`, caso esteja presente na pasta `data/`, não faz parte das oito coleções JSON descritas aqui. Os arquivos de backup também não são coleções ativas do simulador.
 
 > `accounts.json` contém dados de contas e hashes de chaves de API. Proteja a pasta `data/` e os backups como dados sensíveis; não publique esses arquivos em repositórios ou hospedagem pública.
+
+---
+
+## Documentação Relacionada
+
+- [Documentação da API REST](api-docs.md)
+- [Guia de Instalação e Configuração](instalacao-e-configuracao.md)
+- [Mecânica de Simulação do Mercado](mecanica-do-mercado.md)
+- [Arquitetura de Cluster e Sincronização](cluster-e-sincronizacao.md)
+- [Logs, Auditoria e Backups](backups-e-logs.md)
