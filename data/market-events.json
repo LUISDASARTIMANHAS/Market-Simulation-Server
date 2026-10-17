@@ -1,5 +1,14 @@
 [
   {
+    "eventId": "33ca32aa-7065-4b14-b612-d5d20301f123",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.5271,
+    "occurredAt": "2026-10-17T14:08:14.503Z"
+  },
+  {
     "eventId": "dc3a90bf-13f3-4efe-aa96-c5f182223621",
     "assetId": "SIM",
     "category": "Guerra",

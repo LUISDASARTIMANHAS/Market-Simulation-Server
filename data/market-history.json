@@ -1,12 +1,6 @@
 [
   {
     "assetId": "SIM",
-    "sequence": 1248,
-    "price": 97.49,
-    "updatedAt": "2026-10-15T16:25:45.335Z"
-  },
-  {
-    "assetId": "SIM",
     "sequence": 1249,
     "price": 97.01,
     "updatedAt": "2026-10-15T16:26:53.380Z"
@@ -298,5 +292,11 @@
     "sequence": 1297,
     "price": 99.31,
     "updatedAt": "2026-10-17T14:06:40.463Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1298,
+    "price": 98.79,
+    "updatedAt": "2026-10-17T14:08:14.503Z"
   }
 ]

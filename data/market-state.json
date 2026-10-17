@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 99.31,
-  "sequence": 1297,
+  "currentPrice": 98.79,
+  "sequence": 1298,
   "totalVolume": 77859.59,
   "buyVolume": 40293.97,
   "sellVolume": 37565.62,
   "latestMarketEvent": {
-    "eventId": "dc3a90bf-13f3-4efe-aa96-c5f182223621",
+    "eventId": "33ca32aa-7065-4b14-b612-d5d20301f123",
     "assetId": "SIM",
-    "category": "Guerra",
-    "title": "Acordo de cessar-fogo",
-    "description": "Redução da tensão geopolítica favorece os ativos.",
-    "impactPercent": 0.871,
-    "occurredAt": "2026-10-17T14:06:40.463Z"
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.5271,
+    "occurredAt": "2026-10-17T14:08:14.503Z"
   },
-  "nextMarketEventAt": "2026-10-17T14:08:12.853Z",
-  "syncRevision": 215,
-  "updatedAt": "2026-10-17T14:06:40.463Z"
+  "nextMarketEventAt": "2026-10-17T14:09:18.802Z",
+  "syncRevision": 216,
+  "updatedAt": "2026-10-17T14:08:14.503Z"
 }
