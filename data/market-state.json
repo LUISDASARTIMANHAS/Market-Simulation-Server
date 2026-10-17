@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 100.84,
-  "sequence": 1267,
+  "currentPrice": 99.57,
+  "sequence": 1277,
   "totalVolume": 77611.1,
   "buyVolume": 40293.97,
   "sellVolume": 37317.13,
   "latestMarketEvent": {
-    "eventId": "f8448e9f-b9d7-4b48-8eb4-26e8d807ddfd",
+    "eventId": "3a042a5f-6feb-4d6d-aed9-861156e3081e",
     "assetId": "SIM",
-    "category": "Inflação",
-    "title": "Inflação acima do esperado",
-    "description": "Pressão inflacionária reduz o apetite por risco.",
-    "impactPercent": -0.7641,
-    "occurredAt": "2026-10-15T16:57:46.069Z"
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.6802,
+    "occurredAt": "2026-10-17T13:37:05.852Z"
   },
-  "nextMarketEventAt": "2026-10-15T16:58:46.868Z",
-  "syncRevision": 184,
-  "updatedAt": "2026-10-15T16:57:46.069Z"
+  "nextMarketEventAt": "2026-10-17T13:38:36.961Z",
+  "syncRevision": 195,
+  "updatedAt": "2026-10-17T13:37:05.852Z"
 }

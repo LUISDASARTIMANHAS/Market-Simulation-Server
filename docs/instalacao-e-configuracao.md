@@ -50,7 +50,7 @@ npm install
 Após a inicialização do servidor, acesse no navegador:
 
 - **Painel do Trader / Cliente de Testes**: `http://localhost:3001/`  
-  Permite acompanhar cotações em tempo real, monitorar o livro de ordens e histórico público, criar e conectar carteiras de paper trading e enviar ordens de compra e venda simuladas. As chaves de API ficam salvas no `sessionStorage` do navegador e são descartadas ao encerrar a aba.
+  Permite acompanhar cotações em tempo real, monitorar o livro de ordens e histórico público, criar e conectar carteiras de paper trading e enviar ordens de compra e venda simuladas. As chaves de API ficam salvas no `localStorage` do navegador para manter a sessão conectada entre abas e reinicializações.
 
 - **Painel Administrativo**: `http://localhost:3001/admin.html`  
   Permite a administradores autenticados visualizar todas as contas cadastradas, criar contas com privilégios específicos, alterar nomes de usuário, promover/rebaixar permissões e excluir contas.

@@ -1,4 +1,4 @@
-﻿const API_BASE = '/api';
+const API_BASE = '/api';
 const API_KEY_STORAGE = 'market-test-client-api-key';
 
 const money = (value) => new Intl.NumberFormat('pt-BR', {
@@ -16,7 +16,7 @@ const formatTime = (value) => value
 
 async function request(path, options = {}) {
   const headers = new Headers(options.headers || {});
-  const apiKey = sessionStorage.getItem(API_KEY_STORAGE) || '';
+  const apiKey = getApiKey();
   if (apiKey) headers.set('Authorization', `Bearer ${apiKey}`);
   if (options.body && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
@@ -39,15 +39,38 @@ function showFeedback(message, isError = false) {
 }
 
 function saveApiKey(apiKey) {
-  sessionStorage.setItem(API_KEY_STORAGE, apiKey);
+  try {
+    localStorage.setItem(API_KEY_STORAGE, apiKey);
+    sessionStorage.removeItem(API_KEY_STORAGE);
+  } catch {
+    // Fallback caso localStorage esteja inacessível
+    sessionStorage.setItem(API_KEY_STORAGE, apiKey);
+  }
 }
 
 function clearApiKey() {
-  sessionStorage.removeItem(API_KEY_STORAGE);
+  try {
+    localStorage.removeItem(API_KEY_STORAGE);
+  } catch {}
+  try {
+    sessionStorage.removeItem(API_KEY_STORAGE);
+  } catch {}
 }
 
 function getApiKey() {
-  return sessionStorage.getItem(API_KEY_STORAGE) || '';
+  try {
+    const key = localStorage.getItem(API_KEY_STORAGE);
+    if (key) return key;
+    const sessionKey = sessionStorage.getItem(API_KEY_STORAGE);
+    if (sessionKey) {
+      localStorage.setItem(API_KEY_STORAGE, sessionKey);
+      sessionStorage.removeItem(API_KEY_STORAGE);
+      return sessionKey;
+    }
+  } catch {
+    return sessionStorage.getItem(API_KEY_STORAGE) || '';
+  }
+  return '';
 }
 
 function setConnectionState(isConnected, message = 'Mercado conectado') {
