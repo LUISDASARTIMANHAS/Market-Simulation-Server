@@ -1,5 +1,14 @@
 [
   {
+    "eventId": "d9b8a66c-0a44-468f-a640-9a4fd5812b78",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.7703,
+    "occurredAt": "2026-10-17T14:09:20.539Z"
+  },
+  {
     "eventId": "33ca32aa-7065-4b14-b612-d5d20301f123",
     "assetId": "SIM",
     "category": "Inflação",
