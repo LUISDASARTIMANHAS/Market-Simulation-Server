@@ -1,0 +1,21 @@
+/* Administração */
+.admin-backup-panel { margin-top: 18px; }
+.admin-users-panel { margin-top: 18px; }
+.admin-create-form { display: grid; grid-template-columns: minmax(190px, 1fr) auto auto; gap: 12px; align-items: end; margin: 18px 0; }
+.admin-create-form label { display: grid; gap: 7px; }
+.admin-role-label { display: inline-flex !important; align-items: center; gap: 7px; white-space: nowrap; }
+.admin-role-label input { width: auto; min-height: auto; accent-color: var(--accent); }
+.admin-table-scroll { margin-top: 8px; }
+.admin-table-scroll input.account-username { min-width: 150px; }
+.admin-actions { display: flex; gap: 7px; }
+.backup-description { margin-top: 12px; font-size: .85rem; line-height: 1.5; }
+.backup-file-name { margin-top: 10px; font-size: .78rem; }
+.backup-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+.backup-file-label { display: inline-flex; cursor: pointer; }
+.backup-file-label input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.backup-warning { margin: 14px 0 0; padding: 10px 14px; border: 1px solid #5a4a1a; border-radius: 8px; color: #e9c88c; background: #231e10; font-size: .8rem; line-height: 1.5; }
+
+@media (max-width: 760px) {
+  .admin-create-form { grid-template-columns: 1fr; align-items: stretch; }
+}
+

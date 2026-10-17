@@ -42,6 +42,9 @@ if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY);
 app.use('/api', marketRoutes);
 app.use('/api', apiNotFound);
 app.use('/api', apiErrorHandler);
+app.get(['/dashboard.html', '/wallet.html', '/login.html', '/admin.html', '/cluster.html'], (req, res) => {
+  res.redirect(301, req.path.replace(/\.html$/, ''));
+});
 app.use(express.static(PUBLIC_DIRECTORY, { index: 'index.html' }));
 
 /**

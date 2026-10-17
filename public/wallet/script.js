@@ -1,4 +1,14 @@
-import { money, number, formatTime, request, showFeedback, setConnectionState, clearApiKey, getApiKey, updateAuthNavigation } from './common.js';
+import {
+  money,
+  number,
+  formatTime,
+  request,
+  showFeedback,
+  setConnectionState,
+  clearApiKey,
+  getApiKey,
+  updateAuthNavigation,
+} from '/src/js/common.js';
 
 const elements = {
   feedback: document.querySelector('#feedback'),
@@ -346,3 +356,4 @@ elements.btnDisconnect.addEventListener('click', () => {
 // Inicialização
 refreshAll();
 window.setInterval(refreshAll, 3000);
+

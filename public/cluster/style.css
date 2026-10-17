@@ -1,0 +1,12 @@
+/* Estilos específicos da página de Cluster */
+.status-dot.bg-warning {
+  background-color: #e5ac59 !important;
+}
+.status-dot.online {
+  background-color: #61dfb2 !important;
+  box-shadow: 0 0 12px #61dfb277;
+}
+.status-dot.offline {
+  background-color: #ff8d93 !important;
+}
+

@@ -101,7 +101,7 @@ async function updateAuthNavigation() {
   if (!key) {
     authLinks.forEach((link) => {
       link.textContent = 'Entrar / Cadastro';
-      link.href = '/login.html';
+      link.href = '/login';
       link.classList.remove('logged-in');
     });
     return;
@@ -111,14 +111,14 @@ async function updateAuthNavigation() {
     if (data.account?.username) {
       authLinks.forEach((link) => {
         link.textContent = `@${data.account.username}`;
-        link.href = '/wallet.html';
+        link.href = '/wallet';
         link.classList.add('logged-in');
       });
     }
   } catch {
     authLinks.forEach((link) => {
       link.textContent = 'Entrar / Cadastro';
-      link.href = '/login.html';
+      link.href = '/login';
       link.classList.remove('logged-in');
     });
   }
@@ -142,3 +142,4 @@ export {
   updateAdminNavigation,
   updateAuthNavigation,
 };
+

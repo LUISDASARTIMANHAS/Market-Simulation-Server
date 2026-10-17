@@ -1,4 +1,12 @@
-import { request, showFeedback, saveApiKey, clearApiKey, getApiKey, setConnectionState, updateAuthNavigation } from './common.js';
+import {
+  request,
+  showFeedback,
+  saveApiKey,
+  clearApiKey,
+  getApiKey,
+  setConnectionState,
+  updateAuthNavigation,
+} from '/src/js/common.js';
 
 const elements = {
   feedback: document.querySelector('#feedback'),
@@ -69,7 +77,7 @@ elements.loginForm.addEventListener('submit', async (event) => {
     updateAuthNavigation();
     showFeedback(`Conectado como @${data.account?.username || 'usuário'}! Redirecionando para a carteira...`);
     window.setTimeout(() => {
-      window.location.href = '/wallet.html';
+      window.location.href = '/wallet';
     }, 700);
   } catch (error) {
     clearApiKey();

@@ -1,4 +1,4 @@
-import { request, formatTime, setConnectionState } from "./common.js";
+import { request, formatTime, setConnectionState } from "/src/js/common.js";
 
 const REFRESH_MS = 5000;
 const $ = (selector) => document.querySelector(selector);
@@ -58,123 +58,85 @@ function accessCell(node) {
 		link.setAttribute("aria-label", `Abrir node ${node.nodeId}`);
 		td.append(link);
 	} catch {
-		td.textContent = "Não configurado";
+		td.textContent = "—";
+		td.className = "text-secondary";
 	}
 	return td;
 }
 
-/**
- * Renderiza a tabela de nodes (apenas no master).
- * @param {Array<object>} nodes
- * @returns {void}
- */
-function renderNodes(nodes = []) {
+function renderSelf(status) {
+	$("#st-role").textContent = status.role ?? "—";
+	$("#st-sync-mode").textContent = status.syncMode ?? "—";
+	$("#st-sync-interval").textContent = formatSyncInterval(status.syncIntervalMs);
+	$("#st-node").textContent = status.nodeId ?? "—";
+	$("#st-local").textContent = status.localSequence ?? "—";
+	$("#st-master").textContent = status.masterSequence ?? "—";
+	$("#st-lag").textContent = status.sequenceLag ?? "—";
+	$("#st-dirty").textContent = status.isDirty ? "Sim" : "Não";
+	$("#st-pull").textContent = formatTime(status.lastPullAt);
+	$("#st-push").textContent = formatTime(status.lastPushAt);
+	$("#st-url").textContent = status.masterUrl ?? "—";
+	$("#st-error").textContent = status.lastSyncError ?? "nenhum";
+
+	const isNode = status.role === "node";
+	elements.pull.disabled = !isNode;
+	elements.push.disabled = !isNode;
+}
+
+function renderNodes(nodes) {
 	elements.nodesBody.replaceChildren();
 	if (!nodes.length) {
-		const row = document.createElement("tr");
+		const tr = document.createElement("tr");
 		const td = cell("Nenhum node registrado.", "text-center text-secondary");
-		td.colSpan = 10;
-		row.append(td);
-		elements.nodesBody.append(row);
+		td.colSpan = 11;
+		tr.append(td);
+		elements.nodesBody.append(tr);
 		return;
 	}
+
 	for (const node of nodes) {
-		const row = document.createElement("tr");
-		const badge = document.createElement("td");
-		const span = document.createElement("span");
-		span.className = `badge ${node.online ? "text-bg-success" : "text-bg-secondary"}`;
-		span.textContent = node.online ? "Online" : "Offline";
-		badge.append(span);
-		row.append(
-			cell(node.nodeId),
-			cell(node.version ?? "—"),
-			cell(Number.isInteger(node.port) ? String(node.port) : "—"),
+		const tr = document.createElement("tr");
+		tr.append(
+			cell(node.nodeId ?? "—", "text-break font-monospace small"),
+			cell(node.appVersion ?? "—"),
+			cell(String(node.port ?? "—")),
 			accessCell(node),
-			badge,
-			cell(node.reportedRevision ?? "—"),
 			cell(
-				node.behindBy === null
-					? "—"
-					: node.behindBy === 0
-						? "Em dia"
-						: `${node.behindBy} Sincronizações(ões)`,
-				node.behindBy > 0 ? "text-warning" : "",
+				node.status ?? "—",
+				node.status === "online" ? "text-success fw-semibold" : "text-danger",
 			),
+			cell(String(node.localSequence ?? "—")),
+			cell(String(node.sequenceLag ?? "—")),
 			cell(formatSyncInterval(node.syncIntervalMs)),
-			cell(node.pushes),
-			cell(node.conflicts),
+			cell(String(node.successfulPushes ?? 0)),
+			cell(String(node.rejectedPushes ?? 0)),
 			cell(formatTime(node.lastSeenAt)),
 		);
-		elements.nodesBody.append(row);
+		elements.nodesBody.append(tr);
 	}
 }
 
-/**
- * Atualiza o painel com o estado do cluster.
- * @param {object} data
- * @returns {void}
- */
 function render(data) {
-	const roleLabels = {
-		master: "Master",
-		node: "Node",
-		standalone: "Independente",
-	};
-	const syncModeLabels = {
-		"bidirectional": "Envio e recebimento",
-		"receive-only": "Somente recebimento",
-	};
-	$("#st-role").textContent = roleLabels[data.role] ?? data.role;
-	$("#st-sync-mode").textContent = syncModeLabels[data.syncMode] ?? "—";
-	$("#st-sync-interval").textContent = data.role === "node"
-		? `A cada ${formatSyncInterval(data.intervalMs)}`
-		: "—";
-	$("#st-node").textContent = data.nodeId ?? "—";
-	$("#st-local").textContent = data.syncEnabled ? data.localRevision : "—";
-	$("#st-master").textContent = Number.isInteger(data.masterRevision)
-		? data.masterRevision
-		: "—";
-	$("#st-lag").textContent =
-		data.lag === null || data.lag === undefined
-			? "—"
-			: data.lag === 0
-				? "Em dia"
-				: `${data.lag} Sincronizações(ões)`;
-	$("#st-dirty").textContent =
-		data.role === "node" ? (data.dirty ? "Sim" : "Não") : "—";
-	$("#st-pull").textContent = formatTime(data.lastPullAt);
-	$("#st-push").textContent = formatTime(data.lastPushAt);
-	$("#st-url").textContent = data.masterUrl ?? "—";
-	$("#st-error").textContent = data.lastError
-		? `${data.lastError.message} (${formatTime(data.lastError.at)})`
-		: "nenhum";
-
-	const isNode = data.role === "node";
-	elements.pull.disabled = !isNode;
-	elements.push.disabled = !data.canPush;
-	elements.nodesSection.hidden = data.role !== "master";
-	if (data.role === "master") renderNodes(data.nodes);
-	if (!data.syncEnabled)
-		notify(
-			"Este servidor está em modo independente (MARKET_SYNC_ROLE=standalone).",
-			false,
-		);
+	renderSelf(data.status);
+	const isMaster = data.status.role === "master";
+	elements.nodesSection.hidden = !isMaster;
+	if (isMaster && Array.isArray(data.nodes)) {
+		renderNodes(data.nodes);
+	}
 }
 
-/** @returns {Promise<void>} */
 async function load() {
 	try {
-		render(await request("/admin/cluster/status"));
-		setConnectionState(true, "Administrador conectado");
+		render(await request("/admin/cluster"));
+		setConnectionState(true, "Cluster acessível");
 	} catch (error) {
-		setConnectionState(false);
+		setConnectionState(false, "Falha ao consultar cluster");
 		notify(error.message, true);
 	}
 }
 
 /**
- * Executa uma ação manual com confirmação.
- * @param {'pull'|'push'} action
+ * @param {"pull" | "push"} action
  * @param {string} confirmation
  * @returns {Promise<void>}
  */
@@ -202,7 +164,7 @@ async function requireAdmin() {
 		if (!data.account?.isAdmin)
 			throw new Error("Acesso administrativo necessário.");
 	} catch {
-		window.location.replace("/wallet.html");
+		window.location.replace("/wallet");
 		return;
 	}
 	elements.content.hidden = false;
@@ -225,3 +187,4 @@ elements.push.addEventListener("click", () =>
 );
 
 requireAdmin();
+

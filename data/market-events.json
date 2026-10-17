@@ -1,5 +1,122 @@
 [
   {
+    "eventId": "dc3a90bf-13f3-4efe-aa96-c5f182223621",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.871,
+    "occurredAt": "2026-10-17T14:06:40.463Z"
+  },
+  {
+    "eventId": "9ae7d418-b8f3-4aa5-8f05-f5d1810df21f",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 1.1277,
+    "occurredAt": "2026-10-17T14:04:40.419Z"
+  },
+  {
+    "eventId": "ee4a2de5-fdfe-4ad5-bb49-21a278b32bc9",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.4808,
+    "occurredAt": "2026-10-17T14:02:46.376Z"
+  },
+  {
+    "eventId": "c9b6e448-f67d-40f4-9fc6-083582d5ec56",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.3597,
+    "occurredAt": "2026-10-17T14:01:34.349Z"
+  },
+  {
+    "eventId": "5ee07bb7-2b17-46a9-93ae-33ba33644118",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.6179,
+    "occurredAt": "2026-10-17T14:00:18.318Z"
+  },
+  {
+    "eventId": "47014b89-d578-4aff-87b0-8358834999d6",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.5123,
+    "occurredAt": "2026-10-17T13:58:56.283Z"
+  },
+  {
+    "eventId": "45c75dfd-351b-4fff-b5bf-2962b4adf53e",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 1.0876,
+    "occurredAt": "2026-10-17T13:57:20.248Z"
+  },
+  {
+    "eventId": "349039df-5442-4528-bbf7-5ce643bfed65",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Recuo tecnológico",
+    "description": "Um atraso relevante reduz as perspectivas do mercado.",
+    "impactPercent": -0.3846,
+    "occurredAt": "2026-10-17T13:56:14.218Z"
+  },
+  {
+    "eventId": "f4af565e-d951-4523-8dcc-909d423260ea",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.6725,
+    "occurredAt": "2026-10-17T13:55:04.192Z"
+  },
+  {
+    "eventId": "7519c01f-9bce-4929-a5df-6fdf2f35fe1f",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.4661,
+    "occurredAt": "2026-10-17T13:53:14.159Z"
+  },
+  {
+    "eventId": "936c4bf1-7321-4054-83e7-7d991feb8927",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.1414,
+    "occurredAt": "2026-10-17T13:51:32.846Z"
+  },
+  {
+    "eventId": "84a6ba12-c540-4002-bbfb-e0d8cda0e0e6",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.245,
+    "occurredAt": "2026-10-17T13:49:56.467Z"
+  },
+  {
+    "eventId": "1ddec6e6-847d-4188-b378-8bf506d8edda",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.638,
+    "occurredAt": "2026-10-17T13:48:18.128Z"
+  },
+  {
     "eventId": "b2c5e881-88f2-44be-b102-f29c1491f236",
     "assetId": "SIM",
     "category": "Juros",

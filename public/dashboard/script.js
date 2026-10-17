@@ -1,4 +1,4 @@
-import { money, number, formatTime, request, showFeedback, setConnectionState } from './common.js';
+import { money, number, formatTime, request, showFeedback, setConnectionState } from '/src/js/common.js';
 
 const elements = {
   connectionDot: document.querySelector('#connection-dot'),
@@ -247,11 +247,9 @@ importBtn?.addEventListener('click', async () => {
     showBackupFeedback(
       `✅ Restauração concluída! ${result.accountsCount} conta(s), ${result.historyTicksCount} ticks de histórico, preço atual: ${money(result.currentPrice)}.`
     );
-    // Reset file input after successful restore
     importFileInput.value = '';
     importFileName.hidden = true;
     importBtn.disabled = true;
-    // Refresh market data immediately
     refreshMarket();
   } catch (error) {
     showBackupFeedback(`❌ Erro na restauração: ${error.message}`, true);
@@ -260,3 +258,4 @@ importBtn?.addEventListener('click', async () => {
     importBtn.textContent = '↩ Restaurar banco';
   }
 });
+

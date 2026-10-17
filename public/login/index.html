@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mercado Simulado | Login e Cadastro</title>
-    <link rel="stylesheet" href="/styles.css">
-    <script type="module" src="/common.js"></script>
-    <script type="module" src="/login.js"></script>
+    <link rel="icon" type="image/svg+xml" href="/src/assets/logo.svg">
+    <link rel="stylesheet" href="/src/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="/src/js/common.js"></script>
+    <script type="module" src="./script.js"></script>
   </head>
   <body>
     <header class="topbar">
@@ -15,11 +17,11 @@
         <span>Mercado<span class="brand-muted"> Simulado</span></span>
       </a>
       <nav class="nav-tabs" aria-label="Navegação principal">
-        <a class="tab-link" href="/dashboard.html">Dashboard</a>
-        <a class="tab-link" href="/wallet.html">Carteira</a>
-        <a class="tab-link active" href="/login.html" data-auth-link>Entrar / Cadastro</a>
-        <a class="tab-link" href="/admin.html" data-admin-link hidden>Administração</a>
-        <a class="tab-link" href="/cluster.html" data-admin-link hidden>Cluster</a>
+        <a class="tab-link" href="/dashboard">Dashboard</a>
+        <a class="tab-link" href="/wallet">Carteira</a>
+        <a class="tab-link active" href="/login" data-auth-link>Entrar / Cadastro</a>
+        <a class="tab-link" href="/admin" data-admin-link hidden>Administração</a>
+        <a class="tab-link" href="/cluster" data-admin-link hidden>Cluster</a>
       </nav>
       <span class="connection"><span class="status-dot" id="connection-dot"></span><span id="connection-status">Conectando…</span></span>
     </header>
@@ -31,7 +33,7 @@
           <h1>Login e Cadastro</h1>
           <p class="intro-copy">Conecte sua carteira existente com sua chave de API ou crie uma nova conta em segundos.</p>
         </div>
-        <a class="button button-secondary" href="/dashboard.html">Ver mercado</a>
+        <a class="button button-secondary" href="/dashboard">Ver mercado</a>
       </section>
 
       <p class="notice" id="feedback" role="status" aria-live="polite" hidden></p>
@@ -41,7 +43,7 @@
         <h2>Você já está conectado!</h2>
         <p>Atualmente conectado como <strong id="logged-username" class="side-buy">—</strong>.</p>
         <div class="guest-actions">
-          <a class="button button-primary" href="/wallet.html">Acessar Minha Carteira</a>
+          <a class="button button-primary" href="/wallet">Acessar Minha Carteira</a>
           <button class="button button-secondary" id="btn-switch-account" type="button">Trocar de Conta / Desconectar</button>
         </div>
       </section>
@@ -58,54 +60,53 @@
           <div id="login-view">
             <h2>Conectar com Chave</h2>
             <p class="muted">Informe a chave de API da sua carteira para acessar saldo e enviar ordens.</p>
-            <form id="login-form" class="auth-form">
+            <form class="auth-form" id="login-form">
               <label for="login-api-key">
-                <span>Chave de API</span>
+                Chave de API
                 <div class="key-entry">
-                  <input id="login-api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Cole sua chave aqui" required>
+                  <input id="login-api-key" type="password" placeholder="mkt_live_..." required autocomplete="off">
                   <button class="button button-secondary" id="toggle-key" type="button">Mostrar</button>
                   <button class="button button-secondary" id="paste-key" type="button">Colar</button>
                 </div>
               </label>
-              <small>A chave fica salva com segurança no <code>localStorage</code> do seu navegador.</small>
               <button class="button button-primary" id="btn-submit-login" type="submit">Conectar Carteira</button>
             </form>
           </div>
 
-          <!-- Vista 2: Cadastro / Criar Carteira -->
+          <!-- Vista 2: Cadastro / Criar Nova Carteira -->
           <div id="register-view" hidden>
-            <h2>Criar Carteira Virtual</h2>
-            <p class="muted">Abra uma carteira de simulação instantaneamente com saldo inicial para paper trading.</p>
-            <form id="register-form" class="auth-form">
+            <h2>Criar Nova Carteira</h2>
+            <p class="muted">Escolha um nome de usuário exclusivo para gerar sua carteira com saldo inicial.</p>
+            <form class="auth-form" id="register-form">
               <label for="register-username">
-                <span>Nome de Usuário (Username)</span>
-                <input id="register-username" name="username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9._-]{3,24}" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Ex.: trader_br" required>
+                Nome de usuário
+                <input id="register-username" type="text" placeholder="Ex: satoshi, trader_br" required minlength="3" maxlength="24" autocomplete="username">
+                <small class="muted">Entre 3 e 24 caracteres (letras, números e sublinhados).</small>
               </label>
-              <small>Use 3 a 24 caracteres: letras, números, ponto, hífen ou sublinhado.</small>
-              <button class="button button-primary" id="btn-submit-register" type="submit">Criar Minha Carteira</button>
+              <button class="button button-primary" id="btn-submit-register" type="submit">Criar Carteira e Gerar Chave</button>
             </form>
 
-            <!-- Box exibido após criação da conta -->
-            <div id="new-key-box" class="new-key-box" hidden>
-              <h3 style="margin-top: 0; color: var(--accent);">Carteira Criada com Sucesso!</h3>
-              <div class="key-warning-box">
-                <strong>ATENÇÃO:</strong> Copie e salve sua chave de API agora. Por motivos de segurança, ela <strong>não será exibida novamente</strong>!
-              </div>
-              <label for="new-key-input">Sua Chave de API:</label>
+            <div class="new-key-box" id="new-key-box" hidden>
+              <p class="eyebrow">SUA CHAVE DE ACESSO</p>
+              <h3>Guarde sua chave com segurança!</h3>
+              <p class="muted">Esta chave não será exibida novamente. Se você a perder, perderá o acesso a esta carteira.</p>
               <div class="key-value-display">
-                <input id="new-key-input" type="text" readonly spellcheck="false">
+                <input id="new-key-input" type="text" readonly>
                 <button class="button button-secondary" id="btn-copy-new-key" type="button">Copiar Chave</button>
               </div>
-              <div style="margin-top: 16px;">
-                <a href="/wallet.html" class="button button-primary" style="display: block; text-align: center;">Ir para Minha Carteira</a>
+              <div class="key-warning-box">
+                <strong>Importante:</strong> Nós não armazenamos sua chave em texto puro. Ela foi salva nesta sessão para uso imediato.
               </div>
+              <a class="button button-primary" href="/wallet">Ir para a Minha Carteira &rarr;</a>
             </div>
           </div>
         </div>
       </div>
-
-      <footer><p>Simulador para paper trading. Não conectado a bolsas ou corretoras reais; preços e eventos são aleatórios.</p></footer>
     </main>
+
+    <footer>
+      <p>Mercado Simulado &middot; Cliente Web Autônomo</p>
+    </footer>
   </body>
 </html>
 

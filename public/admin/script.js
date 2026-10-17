@@ -1,4 +1,4 @@
-import { money, formatTime, request, setConnectionState } from './common.js';
+import { money, formatTime, request, setConnectionState } from '/src/js/common.js';
 
 const content = document.querySelector('#admin-content');
 const feedback = document.querySelector('#backup-feedback');
@@ -63,7 +63,7 @@ async function requireAdmin() {
     setConnectionState(true, 'Administrador conectado');
     await loadAccounts();
   } catch {
-    window.location.replace('/wallet.html');
+    window.location.replace('/wallet');
   }
 }
 
@@ -167,3 +167,4 @@ restoreButton.addEventListener('click', async () => {
 });
 
 requireAdmin();
+

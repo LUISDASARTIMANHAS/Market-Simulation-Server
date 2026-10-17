@@ -1,0 +1,26 @@
+/* Auth / Login & Cadastro */
+.auth-container { max-width: 540px; margin: 30px auto; }
+.auth-card { padding: 32px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.auth-nav { display: flex; gap: 8px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.auth-tab { flex: 1; min-height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); background: var(--surface-raised); font-size: .88rem; font-weight: 600; transition: all .15s ease; }
+.auth-tab:hover { color: #fff; border-color: #52657b; }
+.auth-tab.active { color: #071710; background: var(--accent); border-color: transparent; }
+.auth-form { display: grid; gap: 14px; }
+.auth-form label { display: grid; gap: 6px; }
+.key-entry { display: flex; gap: 8px; }
+.key-entry .button { padding-inline: 12px; }
+.new-key-box { margin-top: 20px; padding: 20px; border: 1px solid #285747; border-radius: 12px; background: #14342c22; }
+.key-value-display { display: flex; gap: 8px; margin: 12px 0; }
+.key-value-display input { font-family: monospace; font-size: .9rem; background: #080d14; border-color: #263344; }
+.key-warning-box { padding: 12px 14px; border: 1px solid #634b17; border-radius: 8px; background: #261f0d; color: #f5d18e; font-size: .8rem; line-height: 1.5; margin-bottom: 16px; }
+
+/* Guest State / Already Logged Card */
+.guest-card { text-align: center; padding: 48px 24px; max-width: 620px; margin: 30px auto; }
+.guest-card h2 { font-size: 1.5rem; margin-bottom: 12px; }
+.guest-card p { color: var(--muted); max-width: 480px; margin: 0 auto 24px; line-height: 1.6; }
+.guest-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 480px) {
+  .key-entry { align-items: stretch; flex-direction: column; }
+}
+

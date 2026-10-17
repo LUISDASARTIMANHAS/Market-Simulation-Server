@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mercado Simulado | Dashboard</title>
-    <link rel="stylesheet" href="/styles.css">
-    <script type="module" src="/common.js"></script>
-    <script type="module" src="/dashboard.js"></script>
+    <link rel="icon" type="image/svg+xml" href="/src/assets/logo.svg">
+    <link rel="stylesheet" href="/src/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="/src/js/common.js"></script>
+    <script type="module" src="./script.js"></script>
   </head>
   <body>
     <header class="topbar">
@@ -15,11 +17,11 @@
         <span>Mercado<span class="brand-muted"> Simulado</span></span>
       </a>
       <nav class="nav-tabs" aria-label="Navegação principal">
-        <a class="tab-link active" href="/dashboard.html">Dashboard</a>
-        <a class="tab-link" href="/wallet.html">Carteira</a>
-        <a class="tab-link" href="/login.html" data-auth-link>Entrar / Cadastro</a>
-        <a class="tab-link" href="/admin.html" data-admin-link hidden>Administração</a>
-        <a class="tab-link" href="/cluster.html" data-admin-link hidden>Cluster</a>
+        <a class="tab-link active" href="/dashboard">Dashboard</a>
+        <a class="tab-link" href="/wallet">Carteira</a>
+        <a class="tab-link" href="/login" data-auth-link>Entrar / Cadastro</a>
+        <a class="tab-link" href="/admin" data-admin-link hidden>Administração</a>
+        <a class="tab-link" href="/cluster" data-admin-link hidden>Cluster</a>
       </nav>
       <span class="connection"><span class="status-dot" id="connection-dot"></span><span id="connection-status">Conectando…</span></span>
     </header>
@@ -31,7 +33,7 @@
           <h1>Dashboard do mercado</h1>
           <p class="intro-copy">Acompanhe preço, eventos, volume e ordens públicas em tempo real.</p>
         </div>
-        <a class="button button-primary" href="/wallet.html">Abrir carteira</a>
+        <a class="button button-primary" href="/wallet">Abrir carteira</a>
       </section>
 
       <p class="notice" id="feedback" role="status" aria-live="polite" hidden></p>
@@ -104,3 +106,4 @@
     </main>
   </body>
 </html>
+
