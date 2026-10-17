@@ -94,7 +94,38 @@ async function updateAdminNavigation() {
   }
 }
 
+async function updateAuthNavigation() {
+  const authLinks = document.querySelectorAll('[data-auth-link]');
+  if (!authLinks.length) return;
+  const key = getApiKey();
+  if (!key) {
+    authLinks.forEach((link) => {
+      link.textContent = 'Entrar / Cadastro';
+      link.href = '/login.html';
+      link.classList.remove('logged-in');
+    });
+    return;
+  }
+  try {
+    const data = await request('/account');
+    if (data.account?.username) {
+      authLinks.forEach((link) => {
+        link.textContent = `@${data.account.username}`;
+        link.href = '/wallet.html';
+        link.classList.add('logged-in');
+      });
+    }
+  } catch {
+    authLinks.forEach((link) => {
+      link.textContent = 'Entrar / Cadastro';
+      link.href = '/login.html';
+      link.classList.remove('logged-in');
+    });
+  }
+}
+
 updateAdminNavigation();
+updateAuthNavigation();
 
 export {
   API_BASE,
@@ -108,4 +139,6 @@ export {
   clearApiKey,
   getApiKey,
   setConnectionState,
+  updateAdminNavigation,
+  updateAuthNavigation,
 };

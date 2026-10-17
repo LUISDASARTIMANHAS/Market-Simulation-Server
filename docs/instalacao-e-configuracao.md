@@ -49,8 +49,14 @@ npm install
 
 Após a inicialização do servidor, acesse no navegador:
 
-- **Painel do Trader / Cliente de Testes**: `http://localhost:3001/`  
-  Permite acompanhar cotações em tempo real, monitorar o livro de ordens e histórico público, criar e conectar carteiras de paper trading e enviar ordens de compra e venda simuladas. As chaves de API ficam salvas no `localStorage` do navegador para manter a sessão conectada entre abas e reinicializações.
+- **Dashboard do Mercado**: `http://localhost:3001/` (ou `/dashboard.html`)  
+  Acompanhamento de cotações em tempo real, gráfico de preços, eventos econômicos, volume e histórico público de negociações.
+
+- **Login e Cadastro**: `http://localhost:3001/login.html`  
+  Página dedicada para criar uma carteira virtual ou conectar-se via chave de API (salva de forma persistente no `localStorage`).
+
+- **Carteira & Operações**: `http://localhost:3001/wallet.html`  
+  Visualização detalhada do patrimônio líquido, painel dedicado para compra e venda de ativos (com prévia em tempo real e atalhos de saldo) e histórico completo de movimentações com filtros por tipo.
 
 - **Painel Administrativo**: `http://localhost:3001/admin.html`  
   Permite a administradores autenticados visualizar todas as contas cadastradas, criar contas com privilégios específicos, alterar nomes de usuário, promover/rebaixar permissões e excluir contas.

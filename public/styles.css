@@ -131,7 +131,75 @@ footer p { margin: 0; }
 :focus-visible { outline: 3px solid #8feccf; outline-offset: 3px; }
 [hidden] { display: none !important; }
 
+/* ── Auth / Login & Cadastro ─────────────────────────────────────────── */
+.auth-container { max-width: 540px; margin: 30px auto; }
+.auth-card { padding: 32px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.auth-nav { display: flex; gap: 8px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.auth-tab { flex: 1; min-height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); background: var(--surface-raised); font-size: .88rem; font-weight: 600; transition: all .15s ease; }
+.auth-tab:hover { color: #fff; border-color: #52657b; }
+.auth-tab.active { color: #071710; background: var(--accent); border-color: transparent; }
+.auth-form { display: grid; gap: 14px; }
+.auth-form label { display: grid; gap: 6px; }
+.new-key-box { margin-top: 20px; padding: 20px; border: 1px solid #285747; border-radius: 12px; background: #14342c22; }
+.key-value-display { display: flex; gap: 8px; margin: 12px 0; }
+.key-value-display input { font-family: monospace; font-size: .9rem; background: #080d14; border-color: #263344; }
+.key-warning-box { padding: 12px 14px; border: 1px solid #634b17; border-radius: 8px; background: #261f0d; color: #f5d18e; font-size: .8rem; line-height: 1.5; margin-bottom: 16px; }
+
+/* ── Guest State (Carteira Não Conectada) ─────────────────────────────── */
+.guest-card { text-align: center; padding: 48px 24px; max-width: 620px; margin: 30px auto; }
+.guest-card h2 { font-size: 1.5rem; margin-bottom: 12px; }
+.guest-card p { color: var(--muted); max-width: 480px; margin: 0 auto 24px; line-height: 1.6; }
+.guest-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+/* ── Portfolio Overview (Carteira Conectada) ─────────────────────────── */
+.portfolio-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.user-profile-badge { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; }
+.portfolio-actions { display: flex; align-items: center; gap: 8px; }
+.portfolio-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.portfolio-stat { padding: 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-raised); }
+.portfolio-stat .stat-label { display: block; font-size: .74rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.portfolio-stat .stat-value { font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.portfolio-stat.highlight { border-color: #285747; background: #14342c22; }
+.portfolio-stat.highlight .stat-value { color: var(--accent); }
+
+/* ── Trading Interface (Compra e Venda Separadas) ─────────────────────── */
+.trade-card { margin-top: 20px; }
+.trade-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.trade-price-pill { padding: 6px 14px; border-radius: 999px; background: var(--surface-raised); border: 1px solid var(--border); font-size: .85rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.trade-price-pill strong { color: var(--accent); }
+.trade-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+.trade-tab { flex: 1; min-height: 44px; font-size: .95rem; font-weight: 700; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-raised); color: var(--muted); transition: all .15s ease; }
+.trade-tab:hover { color: #fff; }
+.trade-tab.buy.active { background: var(--accent); color: #071710; border-color: transparent; }
+.trade-tab.sell.active { background: #ff8d93; color: #2e080b; border-color: transparent; }
+.trade-panel { display: grid; gap: 16px; }
+.balance-available-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; background: var(--surface-raised); border: 1px solid var(--border); font-size: .83rem; color: var(--muted); }
+.balance-available-bar strong { color: #edf2f7; font-variant-numeric: tabular-nums; }
+.quick-amounts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: -6px; }
+.chip-btn { min-height: 30px; padding: 0 10px; border-radius: 6px; font-size: .75rem; font-weight: 600; border: 1px solid var(--border); background: var(--surface-raised); color: var(--muted); }
+.chip-btn:hover { color: #fff; border-color: #52657b; }
+.trade-preview { padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-raised); display: grid; gap: 8px; }
+.trade-preview-row { display: flex; justify-content: space-between; font-size: .83rem; color: var(--muted); }
+.trade-preview-row strong { color: #edf2f7; font-variant-numeric: tabular-nums; }
+.trade-preview-row.estimate strong { color: var(--accent); font-size: .95rem; }
+.trade-preview-row.estimate-sell strong { color: #ff8d93; font-size: .95rem; }
+.button-sell { color: #2e080b; background: var(--danger); }
+.button-sell:hover:not(:disabled) { background: #ffa4aa; }
+
+/* ── History Panel & Filters ─────────────────────────────────────────── */
+.history-card { margin-top: 20px; }
+.history-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-group { display: flex; gap: 6px; }
+.filter-btn { min-height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-raised); color: var(--muted); font-size: .78rem; font-weight: 600; transition: all .15s ease; }
+.filter-btn:hover { color: #fff; }
+.filter-btn.active { color: #071710; background: var(--accent); border-color: transparent; }
+.badge-buy { display: inline-flex; padding: 2px 8px; border-radius: 999px; background: #143c34; color: var(--accent); font-weight: 700; font-size: .72rem; }
+.badge-sell { display: inline-flex; padding: 2px 8px; border-radius: 999px; background: #3c2028; color: var(--danger); font-weight: 700; font-size: .72rem; }
+.tab-link.logged-in { border-color: #285747; color: var(--accent); }
+
 @media (max-width: 760px) {
+  .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+
   .intro { align-items: flex-start; flex-direction: column; gap: 15px; padding-top: 32px; }
   .local-note { max-width: 100%; }
   .market-grid, .account-grid { grid-template-columns: 1fr; }

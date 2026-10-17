@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mercado Simulado | Login e Cadastro</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/common.js"></script>
+    <script type="module" src="/login.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Mercado Simulado, início">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>Mercado<span class="brand-muted"> Simulado</span></span>
+      </a>
+      <nav class="nav-tabs" aria-label="Navegação principal">
+        <a class="tab-link" href="/dashboard.html">Dashboard</a>
+        <a class="tab-link" href="/wallet.html">Carteira</a>
+        <a class="tab-link active" href="/login.html" data-auth-link>Entrar / Cadastro</a>
+        <a class="tab-link" href="/admin.html" data-admin-link hidden>Administração</a>
+        <a class="tab-link" href="/cluster.html" data-admin-link hidden>Cluster</a>
+      </nav>
+      <span class="connection"><span class="status-dot" id="connection-dot"></span><span id="connection-status">Conectando…</span></span>
+    </header>
+
+    <main class="container">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">ACESSO &amp; CONTA</p>
+          <h1>Login e Cadastro</h1>
+          <p class="intro-copy">Conecte sua carteira existente com sua chave de API ou crie uma nova conta em segundos.</p>
+        </div>
+        <a class="button button-secondary" href="/dashboard.html">Ver mercado</a>
+      </section>
+
+      <p class="notice" id="feedback" role="status" aria-live="polite" hidden></p>
+
+      <!-- Card exibido se o usuário já estiver logado -->
+      <section id="already-logged-card" class="panel guest-card" hidden>
+        <h2>Você já está conectado!</h2>
+        <p>Atualmente conectado como <strong id="logged-username" class="side-buy">—</strong>.</p>
+        <div class="guest-actions">
+          <a class="button button-primary" href="/wallet.html">Acessar Minha Carteira</a>
+          <button class="button button-secondary" id="btn-switch-account" type="button">Trocar de Conta / Desconectar</button>
+        </div>
+      </section>
+
+      <!-- Painel principal de Auth -->
+      <div class="auth-container" id="auth-container">
+        <div class="auth-card">
+          <nav class="auth-nav" aria-label="Alternar entre login e cadastro">
+            <button class="auth-tab active" id="tab-login" type="button">Conectar Carteira</button>
+            <button class="auth-tab" id="tab-register" type="button">Criar Nova Carteira</button>
+          </nav>
+
+          <!-- Vista 1: Login / Conectar Carteira -->
+          <div id="login-view">
+            <h2>Conectar com Chave</h2>
+            <p class="muted">Informe a chave de API da sua carteira para acessar saldo e enviar ordens.</p>
+            <form id="login-form" class="auth-form">
+              <label for="login-api-key">
+                <span>Chave de API</span>
+                <div class="key-entry">
+                  <input id="login-api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Cole sua chave aqui" required>
+                  <button class="button button-secondary" id="toggle-key" type="button">Mostrar</button>
+                  <button class="button button-secondary" id="paste-key" type="button">Colar</button>
+                </div>
+              </label>
+              <small>A chave fica salva com segurança no <code>localStorage</code> do seu navegador.</small>
+              <button class="button button-primary" id="btn-submit-login" type="submit">Conectar Carteira</button>
+            </form>
+          </div>
+
+          <!-- Vista 2: Cadastro / Criar Carteira -->
+          <div id="register-view" hidden>
+            <h2>Criar Carteira Virtual</h2>
+            <p class="muted">Abra uma carteira de simulação instantaneamente com saldo inicial para paper trading.</p>
+            <form id="register-form" class="auth-form">
+              <label for="register-username">
+                <span>Nome de Usuário (Username)</span>
+                <input id="register-username" name="username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9._-]{3,24}" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Ex.: trader_br" required>
+              </label>
+              <small>Use 3 a 24 caracteres: letras, números, ponto, hífen ou sublinhado.</small>
+              <button class="button button-primary" id="btn-submit-register" type="submit">Criar Minha Carteira</button>
+            </form>
+
+            <!-- Box exibido após criação da conta -->
+            <div id="new-key-box" class="new-key-box" hidden>
+              <h3 style="margin-top: 0; color: var(--accent);">Carteira Criada com Sucesso!</h3>
+              <div class="key-warning-box">
+                <strong>ATENÇÃO:</strong> Copie e salve sua chave de API agora. Por motivos de segurança, ela <strong>não será exibida novamente</strong>!
+              </div>
+              <label for="new-key-input">Sua Chave de API:</label>
+              <div class="key-value-display">
+                <input id="new-key-input" type="text" readonly spellcheck="false">
+                <button class="button button-secondary" id="btn-copy-new-key" type="button">Copiar Chave</button>
+              </div>
+              <div style="margin-top: 16px;">
+                <a href="/wallet.html" class="button button-primary" style="display: block; text-align: center;">Ir para Minha Carteira</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer><p>Simulador para paper trading. Não conectado a bolsas ou corretoras reais; preços e eventos são aleatórios.</p></footer>
+    </main>
+  </body>
+</html>
+

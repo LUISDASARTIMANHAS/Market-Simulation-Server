@@ -1,5 +1,59 @@
 [
   {
+    "eventId": "b2c5e881-88f2-44be-b102-f29c1491f236",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.4489,
+    "occurredAt": "2026-10-17T13:46:46.089Z"
+  },
+  {
+    "eventId": "6ba4d283-9ee0-4615-83e8-453bae134496",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.751,
+    "occurredAt": "2026-10-17T13:45:34.063Z"
+  },
+  {
+    "eventId": "28beb351-d91b-4fd5-b47d-6733e546f43b",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.9359,
+    "occurredAt": "2026-10-17T13:43:40.019Z"
+  },
+  {
+    "eventId": "ab926acf-33b4-4e49-b1cd-64c3fcbb00b3",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.5721,
+    "occurredAt": "2026-10-17T13:42:21.993Z"
+  },
+  {
+    "eventId": "b7ccce7d-948d-4ff5-a88e-8d588146cc9b",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.3906,
+    "occurredAt": "2026-10-17T13:40:31.946Z"
+  },
+  {
+    "eventId": "5f325876-1d91-4aa7-95c1-dee330d7a3f9",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.3916,
+    "occurredAt": "2026-10-17T13:38:37.902Z"
+  },
+  {
     "eventId": "3a042a5f-6feb-4d6d-aed9-861156e3081e",
     "assetId": "SIM",
     "category": "Tecnologia",

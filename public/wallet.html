@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mercado Simulado | Carteira</title>
+    <title>Mercado Simulado | Carteira &amp; Operações</title>
     <link rel="stylesheet" href="/styles.css">
     <script type="module" src="/common.js"></script>
     <script type="module" src="/wallet.js"></script>
@@ -17,6 +17,7 @@
       <nav class="nav-tabs" aria-label="Navegação principal">
         <a class="tab-link" href="/dashboard.html">Dashboard</a>
         <a class="tab-link active" href="/wallet.html">Carteira</a>
+        <a class="tab-link" href="/login.html" data-auth-link>Entrar / Cadastro</a>
         <a class="tab-link" href="/admin.html" data-admin-link hidden>Administração</a>
         <a class="tab-link" href="/cluster.html" data-admin-link hidden>Cluster</a>
       </nav>
@@ -26,79 +27,185 @@
     <main class="container">
       <section class="intro">
         <div>
-          <p class="eyebrow">SUA CARTEIRA</p>
-          <h1>Conta e operações</h1>
-          <p class="intro-copy">Crie uma carteira, conecte-se com sua chave e execute ordens privadas.</p>
+          <p class="eyebrow">SUA CARTEIRA &amp; OPERAÇÕES</p>
+          <h1>Painel da Carteira</h1>
+          <p class="intro-copy">Monitore seu saldo, negocie ativos e acompanhe seu histórico de transações.</p>
         </div>
         <a class="button button-secondary" href="/dashboard.html">Ver mercado</a>
       </section>
 
       <p class="notice" id="feedback" role="status" aria-live="polite" hidden></p>
 
-      <section class="account-grid" aria-label="Carteira e ordens">
-        <article class="panel account-panel">
-          <div class="panel-heading">
-            <div><p class="eyebrow">SUA CARTEIRA</p><h2>Conta de teste</h2></div>
-            <span class="account-badge" id="account-state">Sem conta</span>
-          </div>
-          <p class="muted">Crie uma carteira virtual ou informe a chave de API de uma conta existente.</p>
+      <!-- Estado: Não Conectado (Guest) -->
+      <section id="wallet-guest-state" class="panel guest-card" hidden>
+        <h2>Nenhuma carteira conectada</h2>
+        <p>Para visualizar seu saldo, executar ordens de compra e venda e consultar seu histórico, conecte-se com sua chave de API ou crie uma carteira de simulação em instantes.</p>
+        <div class="guest-actions">
+          <a class="button button-primary" href="/login.html">Entrar ou Criar Carteira</a>
+          <a class="button button-secondary" href="/dashboard.html">Explorar Mercado</a>
+        </div>
+      </section>
 
-          <form id="create-account-form" class="create-account-form">
-            <label for="username">Username</label>
-            <input id="username" name="username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9._-]{3,24}" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Ex.: alice_trader" aria-describedby="username-help" required>
-            <small id="username-help">Use 3 a 24 caracteres: letras, números, ponto, underscore ou hífen. Deve ser único.</small>
-            <button class="button button-primary" id="create-account" type="submit">Criar carteira de teste</button>
-          </form>
-
-          <form id="key-form" class="key-form">
-            <label for="api-key">Chave de API</label>
-            <div class="key-entry">
-              <input id="api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Cole sua chave de API" aria-describedby="key-help">
-              <button class="button button-secondary" id="toggle-key" type="button" aria-pressed="false">Mostrar</button>
-              <button class="button button-secondary" id="copy-key" type="button">Copiar</button>
-              <button class="button button-secondary" type="submit">Conectar</button>
+      <!-- Estado: Conectado (Auth) -->
+      <div id="wallet-auth-state" hidden>
+        <!-- 1. Visão Geral do Patrimônio -->
+        <section class="panel" id="portfolio-card" aria-label="Visão Geral do Patrimônio">
+          <div class="portfolio-header">
+            <div>
+              <p class="eyebrow">PATRIMÔNIO &amp; SALDO</p>
+              <div class="user-profile-badge">
+                <span>@<span id="account-username">—</span></span>
+                <span class="account-badge connected">Conectado</span>
+              </div>
             </div>
-            <small id="key-help">A chave fica somente nesta sessão do navegador.</small>
-          </form>
-
-          <div class="wallet-values">
-            <div><span class="muted">Saldo USD</span><strong id="account-cash">—</strong></div>
-            <div><span class="muted">Ativos</span><strong id="account-assets">—</strong></div>
-            <div><span class="muted">Venda estimada</span><strong id="account-estimated-value">—</strong></div>
+            <div class="portfolio-actions">
+              <button class="button button-secondary" id="btn-copy-key" type="button" title="Copiar chave de API da carteira">Copiar Chave</button>
+              <button class="button button-secondary button-danger" id="btn-disconnect" type="button">Desconectar</button>
+            </div>
           </div>
-          <button class="text-button" id="disconnect-account" type="button" hidden>Desconectar carteira deste navegador</button>
-        </article>
 
-        <article class="panel order-panel">
-          <p class="eyebrow">NOVA ORDEM</p>
-          <h2>Testar operação</h2>
-          <form id="order-form">
-            <label for="order-side">Tipo de ordem</label>
-            <select id="order-side" name="side">
-              <option value="BUY">Comprar — valor em USD</option>
-              <option value="SELL">Vender — quantidade de ativos</option>
-            </select>
-            <label for="order-amount" id="amount-label">Valor da compra (USD)</label>
-            <input id="order-amount" name="amount" type="number" min="0.000001" max="5000" step="any" placeholder="Ex.: 100" required>
-            <p class="form-hint" id="amount-hint">Máximo de US$ 5.000 por ordem. O saldo da carteira é validado pelo servidor.</p>
-            <button class="button button-primary order-submit" id="submit-order" type="submit" disabled>Conecte uma carteira para operar</button>
-          </form>
-        </article>
-      </section>
+          <div class="portfolio-grid">
+            <div class="portfolio-stat">
+              <span class="stat-label">Saldo em Caixa (USD)</span>
+              <strong class="stat-value" id="account-cash">—</strong>
+            </div>
+            <div class="portfolio-stat">
+              <span class="stat-label">Ativos em Carteira</span>
+              <strong class="stat-value" id="account-assets">—</strong>
+            </div>
+            <div class="portfolio-stat">
+              <span class="stat-label">Valor Estimado de Venda</span>
+              <strong class="stat-value" id="account-estimated-value">—</strong>
+            </div>
+            <div class="portfolio-stat highlight">
+              <span class="stat-label">Patrimônio Líquido Total</span>
+              <strong class="stat-value" id="account-total-equity">—</strong>
+            </div>
+          </div>
+        </section>
 
-      <section class="panel account-history-panel">
-        <div class="panel-heading">
-          <div><p class="eyebrow">HISTÓRICO</p><h2>Últimas movimentações da conta</h2></div>
-        </div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr><th scope="col">Tipo</th><th scope="col">Usuário</th><th scope="col">Preço</th><th scope="col">Quantidade</th><th scope="col">Total</th><th scope="col">Horário</th></tr>
-            </thead>
-            <tbody id="account-history"><tr><td colspan="6" class="empty-cell">Sem histórico disponível.</td></tr></tbody>
-          </table>
-        </div>
-      </section>
+        <!-- 2. Operações de Compra e Venda Separadas -->
+        <section class="panel trade-card" aria-label="Negociação">
+          <div class="trade-header">
+            <div>
+              <p class="eyebrow">OPERAÇÕES EM TEMPO REAL</p>
+              <h2>Comprar e Vender Ativos</h2>
+            </div>
+            <div class="trade-price-pill">
+              Cotação Atual: <strong id="trade-current-price">—</strong>
+            </div>
+          </div>
+
+          <div class="trade-tabs" role="tablist">
+            <button class="trade-tab buy active" id="tab-buy" type="button" role="tab" aria-selected="true">Comprar Ativos (com USD)</button>
+            <button class="trade-tab sell" id="tab-sell" type="button" role="tab" aria-selected="false">Vender Ativos (receber USD)</button>
+          </div>
+
+          <!-- Painel de COMPRA -->
+          <div id="buy-panel" class="trade-panel" role="tabpanel">
+            <div class="balance-available-bar">
+              <span>Saldo disponível para compras:</span>
+              <strong id="buy-available-cash">—</strong>
+            </div>
+
+            <form id="form-buy" class="trade-panel">
+              <label for="buy-amount">
+                <span>Valor a investir (USD)</span>
+                <input id="buy-amount" name="amount" type="number" min="0.000001" max="5000" step="any" placeholder="Ex.: 100" required>
+              </label>
+
+              <div class="quick-amounts" aria-label="Atalhos de valor para compra">
+                <button type="button" class="chip-btn" data-buy-val="50">+US$ 50</button>
+                <button type="button" class="chip-btn" data-buy-val="100">+US$ 100</button>
+                <button type="button" class="chip-btn" data-buy-val="500">+US$ 500</button>
+                <button type="button" class="chip-btn" data-buy-pct="0.25">25% do saldo</button>
+                <button type="button" class="chip-btn" data-buy-pct="0.50">50% do saldo</button>
+                <button type="button" class="chip-btn" data-buy-pct="1.00">100% (Máx)</button>
+              </div>
+
+              <div class="trade-preview">
+                <div class="trade-preview-row">
+                  <span>Preço estimado por ativo:</span>
+                  <strong id="buy-preview-price">—</strong>
+                </div>
+                <div class="trade-preview-row estimate">
+                  <span>Você receberá aproximadamente:</span>
+                  <strong id="buy-preview-qty">0,000000 ativos</strong>
+                </div>
+              </div>
+
+              <button class="button button-primary order-submit" id="btn-submit-buy" type="submit">Confirmar Compra</button>
+            </form>
+          </div>
+
+          <!-- Painel de VENDA -->
+          <div id="sell-panel" class="trade-panel" role="tabpanel" hidden>
+            <div class="balance-available-bar">
+              <span>Ativos disponíveis para venda:</span>
+              <strong id="sell-available-assets">—</strong>
+            </div>
+
+            <form id="form-sell" class="trade-panel">
+              <label for="sell-amount">
+                <span>Quantidade de ativos a vender</span>
+                <input id="sell-amount" name="amount" type="number" min="0.000001" step="any" placeholder="Ex.: 1.5" required>
+              </label>
+
+              <div class="quick-amounts" aria-label="Atalhos de quantidade para venda">
+                <button type="button" class="chip-btn" data-sell-pct="0.25">25% da carteira</button>
+                <button type="button" class="chip-btn" data-sell-pct="0.50">50% da carteira</button>
+                <button type="button" class="chip-btn" data-sell-pct="0.75">75% da carteira</button>
+                <button type="button" class="chip-btn" data-sell-pct="1.00">100% (Vender tudo)</button>
+              </div>
+
+              <div class="trade-preview">
+                <div class="trade-preview-row">
+                  <span>Preço estimado por ativo:</span>
+                  <strong id="sell-preview-price">—</strong>
+                </div>
+                <div class="trade-preview-row estimate-sell">
+                  <span>Você receberá aproximadamente:</span>
+                  <strong id="sell-preview-usd">$ 0,00 USD</strong>
+                </div>
+              </div>
+
+              <button class="button button-primary button-sell order-submit" id="btn-submit-sell" type="submit">Confirmar Venda</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- 3. Histórico da Conta Separado -->
+        <section class="panel history-card" id="history-card" aria-label="Histórico de Movimentações">
+          <div class="history-header">
+            <div>
+              <p class="eyebrow">REGISTRO DE OPERAÇÕES</p>
+              <h2>Histórico da Conta</h2>
+            </div>
+            <div class="filter-group" role="group" aria-label="Filtrar movimentações">
+              <button class="filter-btn active" id="filter-all" type="button" data-filter="ALL">Todas (<span id="count-all">0</span>)</button>
+              <button class="filter-btn" id="filter-buy" type="button" data-filter="BUY">Compras (<span id="count-buy">0</span>)</button>
+              <button class="filter-btn" id="filter-sell" type="button" data-filter="SELL">Vendas (<span id="count-sell">0</span>)</button>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Tipo</th>
+                  <th scope="col">Preço Unitário</th>
+                  <th scope="col">Quantidade</th>
+                  <th scope="col">Valor Total (USD)</th>
+                  <th scope="col">Data e Horário</th>
+                </tr>
+              </thead>
+              <tbody id="account-history">
+                <tr><td colspan="5" class="empty-cell">Carregando histórico…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
 
       <footer><p>Simulador para paper trading. Não conectado a bolsas ou corretoras reais; preços e eventos são aleatórios.</p></footer>
     </main>
