@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 98.03,
-  "sequence": 1299,
+  "currentPrice": 98.9,
+  "sequence": 1302,
   "totalVolume": 77859.59,
   "buyVolume": 40293.97,
   "sellVolume": 37565.62,
   "latestMarketEvent": {
-    "eventId": "d9b8a66c-0a44-468f-a640-9a4fd5812b78",
+    "eventId": "f40495d8-b516-4bbf-9dc9-de7849c64e89",
     "assetId": "SIM",
     "category": "Guerra",
     "title": "Escalada de conflito",
     "description": "Aumento da tensão geopolítica pressiona os ativos.",
-    "impactPercent": -0.7703,
-    "occurredAt": "2026-10-17T14:09:20.539Z"
+    "impactPercent": -0.4575,
+    "occurredAt": "2026-10-17T14:16:43.651Z"
   },
-  "nextMarketEventAt": "2026-10-17T14:10:55.243Z",
-  "syncRevision": 217,
-  "updatedAt": "2026-10-17T14:09:20.539Z"
+  "nextMarketEventAt": "2026-10-17T14:18:26.445Z",
+  "syncRevision": 222,
+  "updatedAt": "2026-10-17T14:16:43.651Z"
 }

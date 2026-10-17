@@ -702,32 +702,6 @@
     "createdAt": "2026-10-09T01:42:43.887Z"
   },
   {
-    "tradeId": "5e5740d0-8140-4f84-a2ce-03a5009ffc40",
-    "orderId": "5e5740d0-8140-4f84-a2ce-03a5009ffc40",
-    "accountId": "70d3d121-7efa-4bde-ae39-a184f0559551",
-    "username": "luisgomes_tese",
-    "assetId": "SIM",
-    "side": "SELL",
-    "quantity": 0.5,
-    "price": 54.69,
-    "total": 27.35,
-    "impactPercent": -0.0034,
-    "createdAt": "2026-10-09T01:33:45.416Z"
-  },
-  {
-    "tradeId": "7f725af0-a8d9-462a-9fb7-4a2cf3df5b7a",
-    "orderId": "7f725af0-a8d9-462a-9fb7-4a2cf3df5b7a",
-    "accountId": "70d3d121-7efa-4bde-ae39-a184f0559551",
-    "username": "luisgomes_tese",
-    "assetId": "SIM",
-    "side": "BUY",
-    "quantity": 9.14745701,
-    "price": 54.66,
-    "total": 500,
-    "impactPercent": 0.0625,
-    "createdAt": "2026-10-09T01:33:31.597Z"
-  },
-  {
     "tradeId": "d7a93912-765b-47af-abd6-075245e5121c",
     "orderId": "d7a93912-765b-47af-abd6-075245e5121c",
     "accountId": "3ddb7b99-64e7-40c3-b6bd-2c68eccc8c31",

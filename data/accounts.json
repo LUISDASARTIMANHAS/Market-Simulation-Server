@@ -30,19 +30,9 @@
     "updatedAt": "2026-10-08T12:45:17.983Z"
   },
   {
-    "accountId": "70d3d121-7efa-4bde-ae39-a184f0559551",
-    "username": "luisgomes_tese",
-    "keyHash": "9d92c8efc55302ef7e66c20cf95ec2901dbfce0047f6337216b7b0b098908c5f",
-    "isAdmin": false,
-    "isSystemAdmin": false,
-    "balance": 527.35,
-    "createdAt": "2026-10-09T01:33:18.556Z",
-    "updatedAt": "2026-10-09T01:37:50.992Z"
-  },
-  {
     "accountId": "e0c2bd18-9e98-41ee-8513-a263a491f41e",
     "username": "system_admin",
-    "keyHash": "b3f72c9367b7a87f94da6f2635f87c3dbd8a1cbd9b90de48e466b61b0e49fb3d",
+    "keyHash": "d54f0e29889779a98f34f61c143fcc8736359fd68d9f6b55439f7784970e7cd2",
     "isAdmin": true,
     "isSystemAdmin": true,
     "balance": 1000,
