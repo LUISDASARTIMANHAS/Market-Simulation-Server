@@ -65,18 +65,19 @@ function accessCell(node) {
 }
 
 function renderSelf(status) {
+	if (!status) return;
 	$("#st-role").textContent = status.role ?? "—";
-	$("#st-sync-mode").textContent = status.syncMode ?? "—";
-	$("#st-sync-interval").textContent = formatSyncInterval(status.syncIntervalMs);
+	$("#st-sync-mode").textContent = status.syncMode ?? (status.role === "master" ? "master" : "—");
+	$("#st-sync-interval").textContent = formatSyncInterval(status.intervalMs ?? status.syncIntervalMs);
 	$("#st-node").textContent = status.nodeId ?? "—";
-	$("#st-local").textContent = status.localSequence ?? "—";
-	$("#st-master").textContent = status.masterSequence ?? "—";
-	$("#st-lag").textContent = status.sequenceLag ?? "—";
-	$("#st-dirty").textContent = status.isDirty ? "Sim" : "Não";
+	$("#st-local").textContent = status.localRevision ?? status.localSequence ?? "—";
+	$("#st-master").textContent = status.masterRevision ?? status.masterSequence ?? "—";
+	$("#st-lag").textContent = status.lag ?? status.sequenceLag ?? "0";
+	$("#st-dirty").textContent = (status.dirty ?? status.isDirty) ? "Sim" : "Não";
 	$("#st-pull").textContent = formatTime(status.lastPullAt);
 	$("#st-push").textContent = formatTime(status.lastPushAt);
 	$("#st-url").textContent = status.masterUrl ?? "—";
-	$("#st-error").textContent = status.lastSyncError ?? "nenhum";
+	$("#st-error").textContent = status.lastError?.message ?? (typeof status.lastError === "string" ? status.lastError : null) ?? status.lastSyncError ?? "nenhum";
 
 	const isNode = status.role === "node";
 	elements.pull.disabled = !isNode;
@@ -96,20 +97,21 @@ function renderNodes(nodes) {
 
 	for (const node of nodes) {
 		const tr = document.createElement("tr");
+		const isOnline = Boolean(node.online ?? (node.status === "online"));
 		tr.append(
 			cell(node.nodeId ?? "—", "text-break font-monospace small"),
-			cell(node.appVersion ?? "—"),
+			cell(node.version ?? node.appVersion ?? "—"),
 			cell(String(node.port ?? "—")),
 			accessCell(node),
 			cell(
-				node.status ?? "—",
-				node.status === "online" ? "text-success fw-semibold" : "text-danger",
+				isOnline ? "online" : "offline",
+				isOnline ? "text-success fw-semibold" : "text-danger",
 			),
-			cell(String(node.localSequence ?? "—")),
-			cell(String(node.sequenceLag ?? "—")),
-			cell(formatSyncInterval(node.syncIntervalMs)),
-			cell(String(node.successfulPushes ?? 0)),
-			cell(String(node.rejectedPushes ?? 0)),
+			cell(String(node.reportedRevision ?? node.localRevision ?? node.localSequence ?? "—")),
+			cell(String(node.behindBy ?? node.lag ?? node.sequenceLag ?? "—")),
+			cell(formatSyncInterval(node.syncIntervalMs ?? node.intervalMs)),
+			cell(String(node.pushes ?? node.successfulPushes ?? 0)),
+			cell(String(node.conflicts ?? node.rejectedPushes ?? 0)),
 			cell(formatTime(node.lastSeenAt)),
 		);
 		elements.nodesBody.append(tr);
@@ -117,17 +119,20 @@ function renderNodes(nodes) {
 }
 
 function render(data) {
-	renderSelf(data.status);
-	const isMaster = data.status.role === "master";
+	if (!data) return;
+	const status = data.status || data;
+	renderSelf(status);
+	const isMaster = status.role === "master";
 	elements.nodesSection.hidden = !isMaster;
-	if (isMaster && Array.isArray(data.nodes)) {
-		renderNodes(data.nodes);
+	const nodes = data.nodes || status.nodes;
+	if (isMaster && Array.isArray(nodes)) {
+		renderNodes(nodes);
 	}
 }
 
 async function load() {
 	try {
-		render(await request("/admin/cluster"));
+		render(await request("/admin/cluster/status"));
 		setConnectionState(true, "Cluster acessível");
 	} catch (error) {
 		setConnectionState(false, "Falha ao consultar cluster");
@@ -187,4 +192,3 @@ elements.push.addEventListener("click", () =>
 );
 
 requireAdmin();
-
