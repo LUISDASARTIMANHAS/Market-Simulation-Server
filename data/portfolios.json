@@ -28,17 +28,17 @@
     "updatedAt": "2026-10-09T02:16:01.776Z"
   },
   {
-    "accountId": "01ca53be-df95-48bc-bd2b-24956046914c",
-    "assetId": "SIM",
-    "quantity": 10.66272385,
-    "averagePrice": 42.2,
-    "updatedAt": "2026-10-09T14:59:39.014Z"
-  },
-  {
     "accountId": "d207e449-cec9-4828-939f-2ea267e5cb86",
     "assetId": "SIM",
     "quantity": 0,
     "averagePrice": 0,
     "updatedAt": "2026-10-15T16:54:00.585Z"
+  },
+  {
+    "accountId": "95344d2a-ec64-4c09-86b3-734498cf06b6",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "updatedAt": "2026-10-20T19:15:49.374Z"
   }
 ]

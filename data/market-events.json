@@ -1,5 +1,95 @@
 [
   {
+    "eventId": "cef6faad-09cb-4315-b859-fff993aa4132",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.5994,
+    "occurredAt": "2026-10-20T19:21:59.826Z"
+  },
+  {
+    "eventId": "9aa9e90e-1627-4871-bf26-ad977e664dc3",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.8176,
+    "occurredAt": "2026-10-20T19:20:23.789Z"
+  },
+  {
+    "eventId": "e2c857d6-c888-49de-a08f-b0f59c109a7e",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.5455,
+    "occurredAt": "2026-10-20T19:19:13.765Z"
+  },
+  {
+    "eventId": "85842bd3-c77d-4a2a-b239-03046926c090",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.6655,
+    "occurredAt": "2026-10-20T19:18:11.740Z"
+  },
+  {
+    "eventId": "232de11b-f027-4b80-90e8-2a2a27b64e72",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.5998,
+    "occurredAt": "2026-10-20T19:16:21.695Z"
+  },
+  {
+    "eventId": "84f87929-9b12-41b0-bde1-4ed4ec84af62",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.3206,
+    "occurredAt": "2026-10-20T19:15:03.659Z"
+  },
+  {
+    "eventId": "9b1625f3-0f4e-4e4f-b7db-cefa64d38e56",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.8624,
+    "occurredAt": "2026-10-20T19:13:05.627Z"
+  },
+  {
+    "eventId": "078fe507-9fb7-4228-bc5b-97f3268f9af0",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.6844,
+    "occurredAt": "2026-10-20T19:11:37.601Z"
+  },
+  {
+    "eventId": "74680264-3ef5-46e4-9c11-c551f3de66d2",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.519,
+    "occurredAt": "2026-10-20T19:10:25.577Z"
+  },
+  {
+    "eventId": "7a9c2f5c-455d-4378-aba3-c8eefee59b2d",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.4157,
+    "occurredAt": "2026-10-20T19:08:49.539Z"
+  },
+  {
     "eventId": "f40495d8-b516-4bbf-9dc9-de7849c64e89",
     "assetId": "SIM",
     "category": "Guerra",

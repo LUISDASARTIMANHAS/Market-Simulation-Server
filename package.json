@@ -1,6 +1,6 @@
 {
   "name": "market-simulation-server",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "private": true,
   "type": "module",
   "description": "Servidor independente de simulação e publicação de preços de mercado.",
