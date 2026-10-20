@@ -43,6 +43,7 @@ export const keyRotationLimit = rateLimit({
   limit: KEY_ROTATION_RATE_LIMIT,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => Boolean(req.marketAccountId && marketSimulator.isAdministrator(req.marketAccountId)),
   handler: (req, res) => httpTooManyRequests(res, `Limite de rotação de chave atingido. Tente novamente em ${1000*KEY_ROTATION_RATE_LIMIT_WINDOW_SECONDS} segundos depois.`),
 });
 
@@ -63,7 +64,7 @@ export function requireAdministrator(req, res, next) {
   requireApiAccount(req, res, () => {
     if (!marketSimulator.isAdministrator(req.marketAccountId)) {
       logger.warn('admin.access_denied', { method: req.method, path: req.path, accountId: req.marketAccountId });
-      return httpForbidden(res, 'Apenas administradores podem restaurar backups.');
+      return httpForbidden(res, 'Acesso restrito a administradores.');
     }
     return next();
   });

@@ -40,6 +40,25 @@ router.patch('/:accountId', requireAdministrator, async (req, res) => {
   }
 });
 
+router.post('/:accountId/rotate-key', requireAdministrator, async (req, res) => {
+  try {
+    const result = await marketSimulator.rotateApiKey(req.params.accountId);
+    return res.status(200).json({
+      success: true,
+      data: {
+        account: result.account,
+        apiKey: result.apiKey,
+        warning: 'A chave anterior foi revogada. Guarde a nova chave; ela não será exibida novamente.',
+      },
+    });
+  } catch (error) {
+    if (error.statusCode >= 500 || !error.statusCode) {
+      return httpInternalServerError(res, error, 'Não foi possível rotacionar a chave.');
+    }
+    return httpError(res, error.statusCode, error.message);
+  }
+});
+
 router.delete('/:accountId', requireAdministrator, async (req, res) => {
   try {
     await marketSimulator.deleteAccountAsAdministrator(req.params.accountId, req.marketAccountId);

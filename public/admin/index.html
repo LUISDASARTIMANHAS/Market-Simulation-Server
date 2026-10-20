@@ -38,12 +38,28 @@
 
       <section class="panel admin-users-panel" aria-label="Gerenciamento de usuários">
         <div class="panel-heading"><div><p class="eyebrow">USUÁRIOS</p><h2>Contas cadastradas</h2></div></div>
-        <p class="muted backup-description">Crie contas, conceda acesso administrativo, altere nomes de usuário ou exclua contas.</p>
+        <p class="muted backup-description">Crie contas, conceda acesso administrativo, altere nomes de usuário, regenere chaves de API ou exclua contas.</p>
         <form id="create-user-form" class="admin-create-form">
           <label>Nome de usuário<input id="new-username" name="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9._-]+" required placeholder="novo_usuario" autocomplete="off"></label>
           <label class="admin-role-label"><input id="new-is-admin" name="isAdmin" type="checkbox"> Administrador</label>
           <button class="button button-primary" type="submit">Adicionar usuário</button>
         </form>
+        <div id="account-key-box" class="key-display-card" hidden>
+          <div class="key-card-header">
+            <div>
+              <span class="key-card-badge">Chave de Acesso</span>
+              <strong id="key-card-title">Chave de API</strong>
+            </div>
+            <button type="button" id="btn-close-key-box" class="text-button" style="margin-top:0;">Fechar</button>
+          </div>
+          <p class="muted key-card-warning" id="key-card-warning">
+            A chave anterior foi revogada. Guarde a nova chave agora; ela não será exibida novamente.
+          </p>
+          <div class="key-copy-group">
+            <input id="key-display-input" type="text" readonly aria-label="Nova chave de API">
+            <button class="button button-secondary" id="btn-copy-key" type="button">Copiar Chave</button>
+          </div>
+        </div>
         <p id="account-key" class="notice" role="status" aria-live="polite" hidden></p>
         <div class="table-scroll admin-table-scroll">
           <table>
@@ -73,4 +89,3 @@
     </main>
   </body>
 </html>
-

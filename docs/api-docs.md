@@ -97,7 +97,7 @@ Os limites são aplicados em memória e protegem o servidor contra abusos:
 | Criação de contas (`POST /api/accounts`) | 60 segundos | 7 requisições | Por IP |
 | Submissão global de ordens (`POST /api/orders/*`) | 60 segundos | 60 requisições | Por IP |
 | Submissão por conta (`POST /api/orders/*`) | 60 segundos | 20 requisições | Por Conta (`accountId`) |
-| Rotação de chaves (`POST /api/account/rotate-key`) | 3600 segundos (1h) | 3 requisições | Por IP |
+| Rotação de chaves (`POST /api/account/rotate-key`) | 3600 segundos (1h) | 3 requisições | Por IP (Administradores são isentos) |
 
 ---
 
@@ -317,12 +317,19 @@ Retorna o histórico das ordens executadas pela conta autenticada (limitado às 
 ---
 
 ### 5.4 Rotacionar Chave de API
-Revoga imediatamente a credencial atual da conta e gera uma nova chave de acesso.
+Revoga imediatamente a credencial atual da conta e gera uma nova chave de acesso. Quando executado por um administrador, permite informar `{ "accountId": "uuid" }` no corpo da requisição para regenerar a chave de qualquer usuário ou administrador cadastrado.
 
 - **Método**: `POST`
 - **Rota**: `/api/account/rotate-key`
-- **Autenticação**: `Bearer <API_KEY>` (a chave que se deseja substituir)
-- **Rate Limit**: 3 rotações por IP por hora
+- **Autenticação**: `Bearer <API_KEY>` (a chave que se deseja substituir ou chave de administrador)
+- **Rate Limit**: 3 rotações por IP por hora (administradores são isentos)
+
+#### Corpo da Requisição *(Opcional, somente para Administradores)* (`application/json`)
+```json
+{
+  "accountId": "8c353c89-fb4d-444a-99de-8386187b5a8e"
+}
+```
 
 #### Resposta de Sucesso (`200 OK`)
 ```json
@@ -566,7 +573,34 @@ Permite alterar o nome de usuário (`username`) e/ou o status de administrador (
 
 ---
 
-### 7.4 Excluir Conta
+### 7.4 Regenerar Chave de API de Conta
+Permite ao administrador revogar a chave de API de qualquer conta (usuário ou administrador) e gerar uma nova credencial segura.
+
+- **Método**: `POST`
+- **Rota**: `/api/admin/accounts/:accountId/rotate-key`
+- **Autenticação**: `Bearer <ADMIN_API_KEY>`
+
+#### Resposta de Sucesso (`200 OK`)
+```json
+{
+  "success": true,
+  "data": {
+    "account": {
+      "accountId": "user-uuid",
+      "username": "usuario_exemplo",
+      "isAdmin": false,
+      "balance": 1000.0,
+      "assetBalance": 0
+    },
+    "apiKey": "mkt_sec_nova_chave_gerada...",
+    "warning": "A chave anterior foi revogada. Guarde a nova chave; ela não será exibida novamente."
+  }
+}
+```
+
+---
+
+### 7.5 Excluir Conta
 Exclui a conta especificada e suas respectivas negociações e ordens.
 
 - **Método**: `DELETE`
@@ -704,4 +738,3 @@ Utilizadas internamente pelo protocolo de replicação entre as instâncias Node
 | `/api/sync/snapshot` | `PUT` | Envia o snapshot do node para o master. Exige `baseRevision`. Retorna `409 Conflict` se o node estiver atrasado. |
 
 Todas as rotas `/api/sync/*` exigem o cabeçalho `X-Market-Sync-Token` configurado no ambiente.
-

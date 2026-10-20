@@ -15,7 +15,7 @@ O projeto é 100% autônomo, não se conecta a bolsas ou corretoras reais e pers
 - **Persistência Atômica e Modular**: 8 arquivos JSON com serialização de gravações e proteção contra gravações parciais por renomeação temporária.
 - **Interface Web Integrada**:
   - **Cliente do Trader** (`/`): Acompanhamento do mercado, carteira e envio de ordens.
-  - **Painel Administrativo** (`/admin.html`): Gestão de usuários, permissões e status do cluster.
+  - **Painel Administrativo** (`/admin`): Gestão de usuários, permissões, regeneração de chaves e status do cluster.
 - **Observabilidade**: Logs estruturados em formato JSON Lines (`data/logs/`) com sanitização automática de credenciais.
 
 ---
@@ -39,7 +39,7 @@ Durante o desenvolvimento, execute `npm run dev` para reiniciar automaticamente 
 
 Após iniciar, abra no navegador:
 - **Painel do Trader**: [http://localhost:3001/](http://localhost:3001/)
-- **Painel do Administrador**: [http://localhost:3001/admin.html](http://localhost:3001/admin.html)
+- **Painel do Administrador**: [http://localhost:3001/admin](http://localhost:3001/admin)
 
 ---
 
@@ -87,12 +87,13 @@ Todas as rotas de API residem sob o prefixo `/api`:
 | `POST` | `/api/accounts` | Pública | Cria carteira virtual com US$ 1.000 e gera a chave de API. |
 | `GET` | `/api/account` | `Bearer <KEY>` | Consulta saldo e custódia de ativos da conta autenticada. |
 | `GET` | `/api/account/history` | `Bearer <KEY>` | Histórico de ordens executadas da conta. |
-| `POST` | `/api/account/rotate-key` | `Bearer <KEY>` | Revoga a chave atual e gera uma nova credencial. |
+| `POST` | `/api/account/rotate-key` | `Bearer <KEY>` | Revoga a chave atual e gera uma nova credencial (administradores podem especificar `accountId` no body). |
 | `POST` | `/api/orders/buy` | `Bearer <KEY>` | Envia ordem de compra informando `{ "amount": quoteUSD }`. |
 | `POST` | `/api/orders/sell` | `Bearer <KEY>` | Envia ordem de venda informando `{ "amount": assetUnits }`. |
 | `GET` | `/api/admin/accounts` | Admin | Lista todas as contas de usuários e administradores. |
 | `POST` | `/api/admin/accounts` | Admin | Cria nova conta especificando status de administrador. |
 | `PATCH` | `/api/admin/accounts/:id` | Admin | Atualiza `username` ou status de admin de uma conta. |
+| `POST` | `/api/admin/accounts/:id/rotate-key` | Admin | Regenera a chave de API da conta especificada (usuário ou administrador). |
 | `DELETE` | `/api/admin/accounts/:id` | Admin | Remove uma conta e suas negociações associadas. |
 | `GET` | `/api/backup` | Pública | Download de snapshot completo em arquivo JSON. |
 | `POST` | `/api/backup/restore` | Admin | Restaura todas as coleções a partir de snapshot JSON. |

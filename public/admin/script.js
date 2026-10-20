@@ -1,4 +1,4 @@
-import { money, formatTime, request, setConnectionState } from '/src/js/common.js';
+import { money, formatTime, request, setConnectionState, saveApiKey } from '/src/js/common.js';
 
 const content = document.querySelector('#admin-content');
 const feedback = document.querySelector('#backup-feedback');
@@ -8,7 +8,15 @@ const restoreButton = document.querySelector('#import-backup');
 const accountsBody = document.querySelector('#accounts-table-body');
 const accountsFeedback = document.querySelector('#accounts-feedback');
 const accountKey = document.querySelector('#account-key');
+const accountKeyBox = document.querySelector('#account-key-box');
+const keyCardTitle = document.querySelector('#key-card-title');
+const keyCardWarning = document.querySelector('#key-card-warning');
+const keyDisplayInput = document.querySelector('#key-display-input');
+const btnCopyKey = document.querySelector('#btn-copy-key');
+const btnCloseKeyBox = document.querySelector('#btn-close-key-box');
 const createUserForm = document.querySelector('#create-user-form');
+
+let currentAdminAccountId = null;
 
 function showAccountsFeedback(message, isError = false) {
   accountsFeedback.textContent = message;
@@ -17,9 +25,54 @@ function showAccountsFeedback(message, isError = false) {
 }
 
 function showAccountKey(message) {
-  accountKey.textContent = message;
-  accountKey.hidden = !message;
+  if (accountKey) {
+    accountKey.textContent = message;
+    accountKey.hidden = !message;
+  }
 }
+
+function displayKey(username, apiKey, warning, isSelf = false) {
+  if (keyDisplayInput) keyDisplayInput.value = apiKey;
+  if (keyCardTitle) {
+    keyCardTitle.textContent = isSelf
+      ? `Sua Nova Chave (@${username})`
+      : `Nova Chave de @${username}`;
+  }
+  if (keyCardWarning) {
+    keyCardWarning.textContent = warning || 'Guarde a chave agora. Ela não será exibida novamente.';
+  }
+  if (accountKeyBox) {
+    accountKeyBox.hidden = false;
+    accountKeyBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  showAccountKey(`Chave de API de ${username} (mostrada apenas agora): ${apiKey}`);
+}
+
+function hideKeyBox() {
+  if (accountKeyBox) accountKeyBox.hidden = true;
+  if (keyDisplayInput) keyDisplayInput.value = '';
+  showAccountKey('');
+}
+
+btnCopyKey?.addEventListener('click', async () => {
+  if (!keyDisplayInput?.value) return;
+  try {
+    await navigator.clipboard.writeText(keyDisplayInput.value);
+    const originalText = btnCopyKey.textContent;
+    btnCopyKey.textContent = 'Copiada!';
+    setTimeout(() => { btnCopyKey.textContent = originalText; }, 2000);
+  } catch {
+    keyDisplayInput.select();
+    document.execCommand('copy');
+    const originalText = btnCopyKey.textContent;
+    btnCopyKey.textContent = 'Copiada!';
+    setTimeout(() => { btnCopyKey.textContent = originalText; }, 2000);
+  }
+});
+
+btnCloseKeyBox?.addEventListener('click', () => {
+  hideKeyBox();
+});
 
 function roleLabel(isAdmin) {
   return isAdmin ? 'Administrador' : 'Usuário';
@@ -33,13 +86,20 @@ function renderAccounts(accounts) {
   accountsBody.replaceChildren(...accounts.map((account) => {
     const row = document.createElement('tr');
     row.dataset.accountId = account.accountId;
+    const isSelf = currentAdminAccountId && account.accountId === currentAdminAccountId;
     row.innerHTML = `
       <td><input class="account-username" value="${account.username.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" aria-label="Nome de usuário de ${account.username}"></td>
       <td><label class="admin-role-label"><input class="account-is-admin" type="checkbox" ${account.isAdmin ? 'checked' : ''}> ${roleLabel(account.isAdmin)}</label></td>
       <td>${money(account.balance)}</td>
       <td>${account.assetBalance}</td>
       <td>${formatTime(account.createdAt)}</td>
-      <td><div class="admin-actions"><button class="button button-secondary save-account" type="button">Salvar</button><button class="button button-danger delete-account" type="button">Excluir</button></div></td>`;
+      <td>
+        <div class="admin-actions">
+          <button class="button button-secondary save-account" type="button">Salvar</button>
+          <button class="button button-secondary rotate-account" type="button" title="Regenerar chave de API desta conta">Regenerar Chave</button>
+          <button class="button button-danger delete-account" type="button" ${isSelf ? 'disabled title="Você não pode excluir a sua própria conta."' : ''}>Excluir</button>
+        </div>
+      </td>`;
     return row;
   }));
 }
@@ -59,6 +119,7 @@ async function requireAdmin() {
   try {
     const data = await request('/account');
     if (!data.account?.isAdmin) throw new Error('Acesso administrativo necessário.');
+    currentAdminAccountId = data.account.accountId;
     content.hidden = false;
     setConnectionState(true, 'Administrador conectado');
     await loadAccounts();
@@ -74,12 +135,12 @@ createUserForm.addEventListener('submit', async (event) => {
   const isAdmin = document.querySelector('#new-is-admin').checked;
   submitButton.disabled = true;
   showAccountsFeedback('');
-  showAccountKey('');
+  hideKeyBox();
   try {
     const data = await request('/admin/accounts', { method: 'POST', body: JSON.stringify({ username, isAdmin }) });
     createUserForm.reset();
     showAccountsFeedback(`Conta ${data.account.username} criada com sucesso.`);
-    showAccountKey(`Chave de API de ${data.account.username} (mostrada apenas agora): ${data.apiKey}`);
+    displayKey(data.account.username, data.apiKey, data.warning, false);
     await loadAccounts();
   } catch (error) {
     showAccountsFeedback(error.message, true);
@@ -106,6 +167,42 @@ accountsBody.addEventListener('click', async (event) => {
       await loadAccounts();
     } catch (error) {
       showAccountsFeedback(error.message, true);
+      button.disabled = false;
+    }
+    return;
+  }
+
+  if (button.classList.contains('rotate-account')) {
+    const username = row.querySelector('.account-username').value;
+    const isSelf = currentAdminAccountId && accountId === currentAdminAccountId;
+    const confirmMessage = isSelf
+      ? `Atenção: Você está prestes a regenerar a sua própria chave de administrador ("${username}"). A chave anterior será revogada e sua sessão local será atualizada automaticamente com a nova chave. Deseja continuar?`
+      : `Regenerar a chave de API da conta "${username}"? A chave atual deixará de funcionar imediatamente.`;
+
+    if (!window.confirm(confirmMessage)) return;
+
+    button.disabled = true;
+    showAccountsFeedback('');
+    hideKeyBox();
+
+    try {
+      const data = await request('/account/rotate-key', {
+        method: 'POST',
+        body: JSON.stringify({ accountId }),
+      });
+
+      if (isSelf) {
+        saveApiKey(data.apiKey);
+        showAccountsFeedback(`Sua chave administrativa foi regenerada com sucesso e a sessão local foi atualizada.`);
+      } else {
+        showAccountsFeedback(`Chave de API da conta "${data.account?.username || username}" regenerada com sucesso.`);
+      }
+
+      displayKey(data.account?.username || username, data.apiKey, data.warning, isSelf);
+      await loadAccounts();
+    } catch (error) {
+      showAccountsFeedback(error.message, true);
+    } finally {
       button.disabled = false;
     }
     return;
@@ -167,4 +264,3 @@ restoreButton.addEventListener('click', async () => {
 });
 
 requireAdmin();
-
