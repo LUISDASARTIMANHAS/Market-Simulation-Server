@@ -15,11 +15,29 @@
 .portfolio-stat.highlight { border-color: #285747; background: #14342c22; }
 .portfolio-stat.highlight .stat-value { color: var(--accent); }
 
+/* Indicador de Alocação de Patrimônio */
+.portfolio-allocation-box { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+.allocation-header { display: flex; align-items: center; justify-content: space-between; font-size: .75rem; flex-wrap: wrap; gap: 8px; }
+.allocation-legend { display: flex; align-items: center; gap: 14px; font-size: .75rem; color: var(--muted); }
+.allocation-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.allocation-legend strong { color: #edf2f7; font-variant-numeric: tabular-nums; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.dot-cash { background: #38bdf8; }
+.dot-assets { background: var(--accent); }
+.allocation-bar { display: flex; height: 8px; width: 100%; border-radius: 99px; overflow: hidden; background: #263344; }
+.alloc-segment-cash { background: #38bdf8; transition: width .3s ease; }
+.alloc-segment-assets { background: var(--accent); transition: width .3s ease; }
+
 /* Trading Interface (Compra e Venda Separadas) */
 .trade-card { margin-top: 20px; }
 .trade-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
-.trade-price-pill { padding: 6px 14px; border-radius: 999px; background: var(--surface-raised); border: 1px solid var(--border); font-size: .85rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.trade-price-group { display: flex; align-items: center; gap: 10px; }
+.trade-price-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; background: var(--surface-raised); border: 1px solid var(--border); font-size: .85rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .trade-price-pill strong { color: var(--accent); }
+.trade-price-delta { font-size: .72rem; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-variant-numeric: tabular-nums; }
+.trade-price-delta.positive { color: var(--accent); background: #143c34; }
+.trade-price-delta.negative { color: var(--danger); background: #3c2028; }
+.wallet-sparkline { display: block; border-radius: 6px; background: #0c1119; border: 1px solid var(--border); }
 .trade-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
 .trade-tab { flex: 1; min-height: 44px; font-size: .95rem; font-weight: 700; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-raised); color: var(--muted); transition: all .15s ease; }
 .trade-tab:hover { color: #fff; }

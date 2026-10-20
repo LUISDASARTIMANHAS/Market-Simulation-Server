@@ -1,56 +1,155 @@
 import { money, number, formatTime, request, showFeedback, setConnectionState } from '/src/js/common.js';
+import { AdvancedMarketChart, calculateMarketStats } from '/src/js/chartEngine.js';
 
 const elements = {
   connectionDot: document.querySelector('#connection-dot'),
   connectionStatus: document.querySelector('#connection-status'),
   feedback: document.querySelector('#feedback'),
   price: document.querySelector('#current-price'),
+  priceChange: document.querySelector('#price-change'),
   sequence: document.querySelector('#sequence'),
   updatedAt: document.querySelector('#updated-at'),
+  statLow: document.querySelector('#stat-low'),
+  statHigh: document.querySelector('#stat-high'),
+  statVolatility: document.querySelector('#stat-volatility'),
+  statRsi: document.querySelector('#stat-rsi'),
+  statTrend: document.querySelector('#stat-trend'),
+  chartCanvas: document.querySelector('#price-chart'),
+  chartTooltip: document.querySelector('#chart-tooltip'),
+  legendSma9: document.querySelector('#legend-sma9'),
+  legendSma21: document.querySelector('#legend-sma21'),
+  legendBollinger: document.querySelector('#legend-bollinger'),
+  legendRsi: document.querySelector('#legend-rsi'),
   volumeTotal: document.querySelector('#volume-total'),
   volumeBuys: document.querySelector('#volume-buys'),
   volumeSells: document.querySelector('#volume-sells'),
+  pressureRatio: document.querySelector('#pressure-ratio'),
+  pressureBuysBar: document.querySelector('#pressure-buys-bar'),
+  pressureSellsBar: document.querySelector('#pressure-sells-bar'),
   nextEvent: document.querySelector('#next-event'),
   eventsCount: document.querySelector('#events-count'),
   eventsList: document.querySelector('#events-list'),
-  chart: document.querySelector('#price-chart'),
   trades: document.querySelector('#trades-body'),
 };
 
 let refreshInProgress = false;
 let latestMarket = null;
+let chartInstance = null;
 
-function drawChart(history) {
-  const canvas = elements.chart;
-  if (!canvas) return;
-  const bounds = canvas.getBoundingClientRect();
-  const pixelRatio = window.devicePixelRatio || 1;
-  const width = Math.max(bounds.width, 1);
-  const height = Math.max(bounds.height, 1);
-  canvas.width = Math.round(width * pixelRatio);
-  canvas.height = Math.round(height * pixelRatio);
-  const context = canvas.getContext('2d');
-  context.scale(pixelRatio, pixelRatio);
-  context.clearRect(0, 0, width, height);
+// Inicializa motor de gráfico
+if (elements.chartCanvas) {
+  chartInstance = new AdvancedMarketChart(elements.chartCanvas, elements.chartTooltip);
+}
 
-  if (!history.length) return;
-  const prices = history.map((tick) => tick.price);
-  const minimum = Math.min(...prices);
-  const maximum = Math.max(...prices);
-  const spread = maximum - minimum || Math.max(maximum * 0.001, 0.01);
-  const points = history.map((tick, index) => ({
-    x: history.length === 1 ? width / 2 : (index / (history.length - 1)) * width,
-    y: height - 12 - ((tick.price - minimum) / spread) * (height - 24),
-  }));
-
-  context.beginPath();
-  points.forEach((point, index) => {
-    if (index === 0) context.moveTo(point.x, point.y);
-    else context.lineTo(point.x, point.y);
+// Configura eventos da Toolbar
+function setupToolbarEvents() {
+  // Timeframe buttons
+  document.querySelectorAll('#timeframe-buttons .btn-tool').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#timeframe-buttons .btn-tool').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tf = btn.getAttribute('data-tf');
+      if (chartInstance) {
+        chartInstance.setTimeframe(tf);
+        updateMarketStats();
+      }
+    });
   });
-  context.strokeStyle = '#61dfb2';
-  context.lineWidth = 2;
-  context.stroke();
+
+  // Chart type buttons
+  document.querySelectorAll('#chart-type-buttons .btn-tool').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#chart-type-buttons .btn-tool').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const type = btn.getAttribute('data-type');
+      if (chartInstance) {
+        chartInstance.setChartType(type);
+      }
+    });
+  });
+
+  // Indicator buttons
+  document.querySelectorAll('#indicator-buttons .btn-tool').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const ind = btn.getAttribute('data-indicator');
+      btn.classList.toggle('active');
+      if (chartInstance) {
+        chartInstance.toggleIndicator(ind);
+        updateLegendVisibility();
+      }
+    });
+  });
+}
+
+function updateLegendVisibility() {
+  if (!chartInstance) return;
+  const ind = chartInstance.indicators;
+  if (elements.legendSma9) elements.legendSma9.hidden = !ind.sma;
+  if (elements.legendSma21) elements.legendSma21.hidden = !ind.sma;
+  if (elements.legendBollinger) elements.legendBollinger.hidden = !ind.bollinger;
+  if (elements.legendRsi) elements.legendRsi.hidden = !ind.rsi;
+}
+
+function updateMarketStats() {
+  if (!chartInstance || !latestMarket) return;
+  const visibleTicks = chartInstance.getFilteredHistory();
+  if (!visibleTicks.length) return;
+
+  const stats = calculateMarketStats(visibleTicks);
+
+  // Variação de Preço
+  if (elements.priceChange) {
+    const isUp = stats.change >= 0;
+    elements.priceChange.className = `price-change-pill ${isUp ? 'positive' : 'negative'}`;
+    elements.priceChange.textContent = `${isUp ? '▲ +' : '▼ '}${money(stats.change)} (${isUp ? '+' : ''}${stats.changePercent.toFixed(2)}%)`;
+  }
+
+  // KPIs
+  if (elements.statLow) elements.statLow.textContent = money(stats.low);
+  if (elements.statHigh) elements.statHigh.textContent = money(stats.high);
+  if (elements.statVolatility) elements.statVolatility.textContent = `${stats.volatility.toFixed(2)}%`;
+
+  if (elements.statRsi) {
+    if (stats.rsi !== null) {
+      const rsiVal = stats.rsi.toFixed(1);
+      let rsiStatus = 'Neutro';
+      if (stats.rsi >= 70) rsiStatus = 'Sobrecomprado';
+      else if (stats.rsi <= 30) rsiStatus = 'Sobrevendido';
+      elements.statRsi.textContent = `${rsiVal} (${rsiStatus})`;
+    } else {
+      elements.statRsi.textContent = '—';
+    }
+  }
+
+  if (elements.statTrend) {
+    elements.statTrend.textContent = stats.trend;
+    elements.statTrend.className = `stat-pill-val ${stats.trendClass}`;
+  }
+}
+
+function updateVolumePressure(volume) {
+  if (!volume) return;
+  const buys = volume.buys || 0;
+  const sells = volume.sells || 0;
+  const total = buys + sells;
+
+  if (total > 0) {
+    const buysPct = Math.round((buys / total) * 100);
+    const sellsPct = 100 - buysPct;
+    if (elements.pressureRatio) {
+      elements.pressureRatio.textContent = `${buysPct}% Compras · ${sellsPct}% Vendas`;
+    }
+    if (elements.pressureBuysBar) {
+      elements.pressureBuysBar.style.width = `${buysPct}%`;
+    }
+    if (elements.pressureSellsBar) {
+      elements.pressureSellsBar.style.width = `${sellsPct}%`;
+    }
+  } else {
+    if (elements.pressureRatio) elements.pressureRatio.textContent = '50% Compras · 50% Vendas';
+    if (elements.pressureBuysBar) elements.pressureBuysBar.style.width = '50%';
+    if (elements.pressureSellsBar) elements.pressureSellsBar.style.width = '50%';
+  }
 }
 
 function renderTrades(trades) {
@@ -162,12 +261,20 @@ function renderMarket(market) {
   elements.volumeBuys.textContent = money(market.volume.buys);
   elements.volumeSells.textContent = money(market.volume.sells);
 
+  // Pressão de Compras x Vendas
+  updateVolumePressure(market.volume);
+
   const events = Array.isArray(market.events)
     ? market.events
     : (market.latestEvent ? [market.latestEvent] : []);
   renderEvents(events, market.nextEventAt);
 
-  drawChart(market.history);
+  // Atualiza gráfico e estatísticas
+  if (chartInstance) {
+    chartInstance.setHistory(market.history);
+    updateMarketStats();
+  }
+
   renderTrades(market.recentTrades);
 }
 
@@ -187,75 +294,12 @@ async function refreshMarket() {
 }
 
 window.addEventListener('resize', () => {
-  if (latestMarket) drawChart(latestMarket.history);
+  if (chartInstance) {
+    chartInstance.render();
+  }
 });
 
+setupToolbarEvents();
+updateLegendVisibility();
 refreshMarket();
 window.setInterval(refreshMarket, 3000);
-
-// ── Backup & Restore ───────────────────────────────────────────────────────────
-const backupFeedback = document.querySelector('#backup-feedback');
-const importFileInput = document.querySelector('#import-file');
-const importFileName = document.querySelector('#import-file-name');
-const importBtn = document.querySelector('#import-backup');
-
-function showBackupFeedback(message, isError = false) {
-  if (!backupFeedback) return;
-  backupFeedback.textContent = message;
-  backupFeedback.classList.toggle('error', isError);
-  backupFeedback.hidden = !message;
-}
-
-document.querySelector('#export-backup')?.addEventListener('click', () => {
-  window.location.href = '/api/backup';
-});
-
-importFileInput?.addEventListener('change', () => {
-  const file = importFileInput.files[0];
-  if (file) {
-    importFileName.textContent = `Arquivo selecionado: ${file.name}`;
-    importFileName.hidden = false;
-    importBtn.disabled = false;
-    showBackupFeedback('');
-  } else {
-    importFileName.hidden = true;
-    importBtn.disabled = true;
-  }
-});
-
-importBtn?.addEventListener('click', async () => {
-  const file = importFileInput.files[0];
-  if (!file) {
-    showBackupFeedback('Selecione um arquivo de backup .json primeiro.', true);
-    return;
-  }
-  importBtn.disabled = true;
-  importBtn.textContent = 'Restaurando…';
-  showBackupFeedback('');
-  try {
-    const text = await file.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      throw new Error('Arquivo inválido: não é um JSON válido.');
-    }
-    const result = await request('/backup/restore', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    showBackupFeedback(
-      `✅ Restauração concluída! ${result.accountsCount} conta(s), ${result.historyTicksCount} ticks de histórico, preço atual: ${money(result.currentPrice)}.`
-    );
-    importFileInput.value = '';
-    importFileName.hidden = true;
-    importBtn.disabled = true;
-    refreshMarket();
-  } catch (error) {
-    showBackupFeedback(`❌ Erro na restauração: ${error.message}`, true);
-    importBtn.disabled = false;
-  } finally {
-    importBtn.textContent = '↩ Restaurar banco';
-  }
-});
-

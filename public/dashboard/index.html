@@ -31,7 +31,7 @@
         <div>
           <p class="eyebrow">AMBIENTE DE TESTE · PAPER TRADING</p>
           <h1>Dashboard do mercado</h1>
-          <p class="intro-copy">Acompanhe preço, eventos, volume e ordens públicas em tempo real.</p>
+          <p class="intro-copy">Acompanhe preço, gráficos avançados, indicadores técnicos e ordens em tempo real.</p>
         </div>
         <a class="button button-primary" href="/wallet">Abrir carteira</a>
       </section>
@@ -40,16 +40,111 @@
 
       <section class="market-grid" aria-label="Resumo do mercado">
         <article class="panel price-panel">
-          <div class="panel-heading"><div><p class="eyebrow">PREÇO ATUAL</p><h2>Ativo simulado</h2></div><span class="sequence" id="sequence">—</span></div>
-          <p class="price" id="current-price" aria-live="polite">Carregando…</p>
-          <p class="muted">Atualizado <time id="updated-at">—</time></p>
-          <div class="chart-wrap">
-            <canvas id="price-chart" role="img" aria-label="Gráfico de histórico recente do preço">Gráfico de histórico recente do preço do mercado simulado.</canvas>
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">PREÇO ATUAL</p>
+              <h2>Ativo simulado (SIM)</h2>
+            </div>
+            <span class="sequence" id="sequence">—</span>
           </div>
-          <div class="volume-row">
-            <div><span class="muted">Volume total</span><strong id="volume-total">—</strong></div>
-            <div><span class="muted">Compras</span><strong id="volume-buys">—</strong></div>
-            <div><span class="muted">Vendas</span><strong id="volume-sells">—</strong></div>
+
+          <div class="price-header-row">
+            <div class="price-value-box">
+              <span class="price" id="current-price" aria-live="polite">Carregando…</span>
+              <span class="price-change-pill" id="price-change" title="Variação na janela exibida">—</span>
+            </div>
+            <p class="muted update-time">Atualizado <time id="updated-at">—</time></p>
+          </div>
+
+          <!-- Indicadores rápidos de mercado -->
+          <div class="market-stats-strip" aria-label="Indicadores da Janela">
+            <div class="stat-pill">
+              <span class="stat-pill-label">Mínima (Low)</span>
+              <strong class="stat-pill-val" id="stat-low">—</strong>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">Máxima (High)</span>
+              <strong class="stat-pill-val" id="stat-high">—</strong>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">Volatilidade</span>
+              <strong class="stat-pill-val" id="stat-volatility">—</strong>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">RSI (14)</span>
+              <strong class="stat-pill-val" id="stat-rsi">—</strong>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">Tendência</span>
+              <strong class="stat-pill-val" id="stat-trend">—</strong>
+            </div>
+          </div>
+
+          <!-- Barra de Ferramentas do Gráfico -->
+          <div class="chart-toolbar" role="toolbar" aria-label="Controles do Gráfico">
+            <div class="toolbar-group">
+              <span class="toolbar-label">Amostra:</span>
+              <div class="button-group" id="timeframe-buttons">
+                <button type="button" class="btn-tool" data-tf="15">15</button>
+                <button type="button" class="btn-tool active" data-tf="30">30</button>
+                <button type="button" class="btn-tool" data-tf="50">50</button>
+                <button type="button" class="btn-tool" data-tf="ALL">Tudo</button>
+              </div>
+            </div>
+
+            <div class="toolbar-group">
+              <span class="toolbar-label">Tipo:</span>
+              <div class="button-group" id="chart-type-buttons">
+                <button type="button" class="btn-tool active" data-type="area" title="Gráfico de Área contínuo">Área</button>
+                <button type="button" class="btn-tool" data-type="candles" title="Velas japonesas">Velas</button>
+              </div>
+            </div>
+
+            <div class="toolbar-group">
+              <span class="toolbar-label">Indicadores:</span>
+              <div class="button-group" id="indicator-buttons">
+                <button type="button" class="btn-tool active" data-indicator="sma" title="Médias Móveis Simples (SMA 9 e SMA 21)">SMA</button>
+                <button type="button" class="btn-tool" data-indicator="bollinger" title="Bandas de Bollinger">Bollinger</button>
+                <button type="button" class="btn-tool" data-indicator="rsi" title="Índice de Força Relativa (RSI)">RSI</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Área do Gráfico Interativo com Tooltip -->
+          <div class="chart-container">
+            <div class="chart-wrap" id="chart-wrap">
+              <canvas id="price-chart" role="img" aria-label="Gráfico interativo de histórico do preço">Gráfico de histórico recente do preço do mercado simulado.</canvas>
+              <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+            </div>
+
+            <!-- Legenda dos Indicadores Ativos -->
+            <div class="chart-legend" id="chart-legend">
+              <span class="legend-item"><span class="legend-dot dot-price"></span> Preço</span>
+              <span class="legend-item" id="legend-sma9"><span class="legend-dot dot-sma9"></span> SMA 9</span>
+              <span class="legend-item" id="legend-sma21"><span class="legend-dot dot-sma21"></span> SMA 21</span>
+              <span class="legend-item" id="legend-bollinger" hidden><span class="legend-dot dot-bollinger"></span> Bandas de Bollinger</span>
+              <span class="legend-item" id="legend-rsi" hidden><span class="legend-dot dot-rsi"></span> RSI (14)</span>
+            </div>
+          </div>
+
+          <!-- Volume e Pressão de Negociação -->
+          <div class="volume-section">
+            <div class="volume-row">
+              <div><span class="muted">Volume total</span><strong id="volume-total">—</strong></div>
+              <div><span class="muted">Compras acumuladas</span><strong id="volume-buys">—</strong></div>
+              <div><span class="muted">Vendas acumuladas</span><strong id="volume-sells">—</strong></div>
+            </div>
+
+            <div class="pressure-box">
+              <div class="pressure-header">
+                <span class="muted">Pressão do Livro de Ordens (Compras vs Vendas)</span>
+                <span class="pressure-numbers" id="pressure-ratio">—</span>
+              </div>
+              <div class="pressure-bar" aria-label="Barra de proporção de compras e vendas">
+                <div class="pressure-buys" id="pressure-buys-bar" style="width: 50%;"></div>
+                <div class="pressure-sells" id="pressure-sells-bar" style="width: 50%;"></div>
+              </div>
+            </div>
           </div>
         </article>
 
@@ -88,4 +183,3 @@
     </main>
   </body>
 </html>
-

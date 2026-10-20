@@ -9,6 +9,7 @@ import {
   getApiKey,
   updateAuthNavigation,
 } from '/src/js/common.js';
+import { renderSparkline } from '/src/js/chartEngine.js';
 
 const elements = {
   feedback: document.querySelector('#feedback'),
@@ -21,7 +22,13 @@ const elements = {
   accountAssets: document.querySelector('#account-assets'),
   accountEstimatedValue: document.querySelector('#account-estimated-value'),
   accountTotalEquity: document.querySelector('#account-total-equity'),
+  allocCashPct: document.querySelector('#alloc-cash-pct'),
+  allocAssetsPct: document.querySelector('#alloc-assets-pct'),
+  allocCashBar: document.querySelector('#alloc-cash-bar'),
+  allocAssetsBar: document.querySelector('#alloc-assets-bar'),
   tradeCurrentPrice: document.querySelector('#trade-current-price'),
+  tradePriceDelta: document.querySelector('#trade-price-delta'),
+  walletSparkline: document.querySelector('#wallet-sparkline'),
   tabBuy: document.querySelector('#tab-buy'),
   tabSell: document.querySelector('#tab-sell'),
   buyPanel: document.querySelector('#buy-panel'),
@@ -148,8 +155,25 @@ function renderAccount(account) {
   elements.accountAssets.textContent = number(account.assetBalance);
   elements.accountEstimatedValue.textContent = money(account.estimatedSaleValue);
 
-  const totalEquity = (Number(account.balance) || 0) + (Number(account.estimatedSaleValue) || 0);
+  const cash = Number(account.balance) || 0;
+  const assetsVal = Number(account.estimatedSaleValue) || 0;
+  const totalEquity = cash + assetsVal;
   elements.accountTotalEquity.textContent = money(totalEquity);
+
+  // Alocação de Patrimônio
+  if (totalEquity > 0) {
+    const cashPct = Math.round((cash / totalEquity) * 100);
+    const assetsPct = 100 - cashPct;
+    if (elements.allocCashPct) elements.allocCashPct.textContent = `${cashPct}% (${money(cash)})`;
+    if (elements.allocAssetsPct) elements.allocAssetsPct.textContent = `${assetsPct}% (${money(assetsVal)})`;
+    if (elements.allocCashBar) elements.allocCashBar.style.width = `${cashPct}%`;
+    if (elements.allocAssetsBar) elements.allocAssetsBar.style.width = `${assetsPct}%`;
+  } else {
+    if (elements.allocCashPct) elements.allocCashPct.textContent = '100%';
+    if (elements.allocAssetsPct) elements.allocAssetsPct.textContent = '0%';
+    if (elements.allocCashBar) elements.allocCashBar.style.width = '100%';
+    if (elements.allocAssetsBar) elements.allocAssetsBar.style.width = '0%';
+  }
 
   elements.buyAvailableCash.textContent = money(account.balance);
   elements.sellAvailableAssets.textContent = `${number(account.assetBalance)} ativos`;
@@ -244,6 +268,25 @@ async function loadMarketPrice() {
     if (market?.currentPrice) {
       currentPrice = market.currentPrice;
       elements.tradeCurrentPrice.textContent = money(currentPrice);
+
+      // Sparkline e Delta de Preço recente
+      if (Array.isArray(market.history) && market.history.length >= 2) {
+        const prices = market.history.slice(-20).map((t) => t.price);
+        const first = prices[0];
+        const last = prices[prices.length - 1];
+        const diffPct = first > 0 ? ((last - first) / first) * 100 : 0;
+        const isUp = diffPct >= 0;
+
+        if (elements.tradePriceDelta) {
+          elements.tradePriceDelta.textContent = `${isUp ? '+' : ''}${diffPct.toFixed(2)}%`;
+          elements.tradePriceDelta.className = `trade-price-delta ${isUp ? 'positive' : 'negative'}`;
+        }
+
+        if (elements.walletSparkline) {
+          renderSparkline(elements.walletSparkline, prices, isUp);
+        }
+      }
+
       updateBuyPreview();
       updateSellPreview();
     }

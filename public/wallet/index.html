@@ -84,6 +84,21 @@
               <strong class="stat-value" id="account-total-equity">—</strong>
             </div>
           </div>
+
+          <!-- Indicador de Alocação de Ativos -->
+          <div class="portfolio-allocation-box">
+            <div class="allocation-header">
+              <span class="stat-label">Composição do Patrimônio</span>
+              <div class="allocation-legend">
+                <span><span class="legend-dot dot-cash"></span> Caixa: <strong id="alloc-cash-pct">—</strong></span>
+                <span><span class="legend-dot dot-assets"></span> Ativos: <strong id="alloc-assets-pct">—</strong></span>
+              </div>
+            </div>
+            <div class="allocation-bar" role="progressbar" aria-label="Alocação entre Caixa e Ativos">
+              <div class="alloc-segment-cash" id="alloc-cash-bar" style="width: 50%;" title="Caixa em Dólar"></div>
+              <div class="alloc-segment-assets" id="alloc-assets-bar" style="width: 50%;" title="Ativos em Carteira"></div>
+            </div>
+          </div>
         </section>
 
         <!-- 2. Operações de Compra e Venda Separadas -->
@@ -93,8 +108,12 @@
               <p class="eyebrow">OPERAÇÕES EM TEMPO REAL</p>
               <h2>Comprar e Vender Ativos</h2>
             </div>
-            <div class="trade-price-pill">
-              Cotação Atual: <strong id="trade-current-price">—</strong>
+            <div class="trade-price-group">
+              <div class="trade-price-pill">
+                Cotação Atual: <strong id="trade-current-price">—</strong>
+                <span class="trade-price-delta" id="trade-price-delta"></span>
+              </div>
+              <canvas id="wallet-sparkline" width="90" height="28" class="wallet-sparkline" title="Tendência recente de preço"></canvas>
             </div>
           </div>
 

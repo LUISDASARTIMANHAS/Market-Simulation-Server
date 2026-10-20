@@ -124,8 +124,10 @@ async function updateAuthNavigation() {
   }
 }
 
-updateAdminNavigation();
-updateAuthNavigation();
+if (typeof document !== 'undefined') {
+  updateAdminNavigation();
+  updateAuthNavigation();
+}
 
 export {
   API_BASE,

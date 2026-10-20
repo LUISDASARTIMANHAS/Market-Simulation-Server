@@ -1,150 +1,6 @@
 [
   {
     "assetId": "SIM",
-    "sequence": 1275,
-    "price": 99.34,
-    "updatedAt": "2026-10-17T13:33:43.741Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1276,
-    "price": 98.9,
-    "updatedAt": "2026-10-17T13:35:07.782Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1277,
-    "price": 99.57,
-    "updatedAt": "2026-10-17T13:37:05.852Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1278,
-    "price": 99.18,
-    "updatedAt": "2026-10-17T13:38:37.902Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1279,
-    "price": 99.57,
-    "updatedAt": "2026-10-17T13:40:31.946Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1280,
-    "price": 99,
-    "updatedAt": "2026-10-17T13:42:21.993Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1281,
-    "price": 99.93,
-    "updatedAt": "2026-10-17T13:43:40.019Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1282,
-    "price": 99.18,
-    "updatedAt": "2026-10-17T13:45:34.063Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1283,
-    "price": 97.21,
-    "updatedAt": "2026-10-17T13:45:44.698Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1284,
-    "price": 96.77,
-    "updatedAt": "2026-10-17T13:46:46.089Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1285,
-    "price": 97.39,
-    "updatedAt": "2026-10-17T13:48:18.128Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1286,
-    "price": 97.63,
-    "updatedAt": "2026-10-17T13:49:56.467Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1287,
-    "price": 97.49,
-    "updatedAt": "2026-10-17T13:51:32.846Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1288,
-    "price": 97.94,
-    "updatedAt": "2026-10-17T13:53:14.159Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1289,
-    "price": 98.6,
-    "updatedAt": "2026-10-17T13:55:04.192Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1290,
-    "price": 98.22,
-    "updatedAt": "2026-10-17T13:56:14.218Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1291,
-    "price": 99.29,
-    "updatedAt": "2026-10-17T13:57:20.248Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1292,
-    "price": 98.78,
-    "updatedAt": "2026-10-17T13:58:56.283Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1293,
-    "price": 98.17,
-    "updatedAt": "2026-10-17T14:00:18.318Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1294,
-    "price": 97.82,
-    "updatedAt": "2026-10-17T14:01:34.349Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1295,
-    "price": 97.35,
-    "updatedAt": "2026-10-17T14:02:46.376Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1296,
-    "price": 98.45,
-    "updatedAt": "2026-10-17T14:04:40.419Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1297,
-    "price": 99.31,
-    "updatedAt": "2026-10-17T14:06:40.463Z"
-  },
-  {
-    "assetId": "SIM",
-    "sequence": 1298,
-    "price": 98.79,
-    "updatedAt": "2026-10-17T14:08:14.503Z"
-  },
-  {
-    "assetId": "SIM",
     "sequence": 1299,
     "price": 98.03,
     "updatedAt": "2026-10-17T14:09:20.539Z"
@@ -298,5 +154,149 @@
     "sequence": 1324,
     "price": 101.65,
     "updatedAt": "2026-10-20T19:40:27.532Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1325,
+    "price": 101.91,
+    "updatedAt": "2026-10-20T20:12:08.396Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1326,
+    "price": 100.82,
+    "updatedAt": "2026-10-20T20:13:16.418Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1327,
+    "price": 99.88,
+    "updatedAt": "2026-10-20T20:14:20.442Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1328,
+    "price": 99.57,
+    "updatedAt": "2026-10-20T20:15:30.472Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1329,
+    "price": 100.01,
+    "updatedAt": "2026-10-20T20:17:04.518Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1330,
+    "price": 100.5,
+    "updatedAt": "2026-10-20T20:18:52.555Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1331,
+    "price": 99.52,
+    "updatedAt": "2026-10-20T20:19:56.570Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1332,
+    "price": 99.22,
+    "updatedAt": "2026-10-20T20:21:56.644Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1333,
+    "price": 99.7,
+    "updatedAt": "2026-10-20T20:23:32.665Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1334,
+    "price": 99.41,
+    "updatedAt": "2026-10-20T20:24:36.677Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1335,
+    "price": 99.84,
+    "updatedAt": "2026-10-20T20:26:20.708Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1336,
+    "price": 100.11,
+    "updatedAt": "2026-10-20T20:27:58.741Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1337,
+    "price": 100.83,
+    "updatedAt": "2026-10-20T20:29:40.790Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1338,
+    "price": 100.41,
+    "updatedAt": "2026-10-20T20:31:20.836Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1339,
+    "price": 100.9,
+    "updatedAt": "2026-10-20T20:32:50.885Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1340,
+    "price": 101.36,
+    "updatedAt": "2026-10-20T20:34:14.944Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1341,
+    "price": 100.6,
+    "updatedAt": "2026-10-20T20:35:59.011Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1342,
+    "price": 101.31,
+    "updatedAt": "2026-10-20T20:37:31.058Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1343,
+    "price": 101.57,
+    "updatedAt": "2026-10-20T20:39:29.117Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1344,
+    "price": 101.74,
+    "updatedAt": "2026-10-20T20:41:29.168Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1345,
+    "price": 102.29,
+    "updatedAt": "2026-10-20T20:42:39.185Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1346,
+    "price": 101.39,
+    "updatedAt": "2026-10-20T20:44:13.199Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1347,
+    "price": 100.56,
+    "updatedAt": "2026-10-20T20:46:13.224Z"
+  },
+  {
+    "assetId": "SIM",
+    "sequence": 1348,
+    "price": 100.83,
+    "updatedAt": "2026-10-20T20:47:53.240Z"
   }
 ]

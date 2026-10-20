@@ -1,13 +1,73 @@
 /* Dashboard / Resumo do Mercado */
-.market-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(260px, .8fr); gap: 18px; }
-.price { margin: 17px 0 4px; font-size: clamp(2.3rem, 6vw, 3.45rem); font-weight: 700; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
-.price-panel > .muted { margin-bottom: 12px; font-size: .8rem; }
-.chart-wrap { height: 175px; }
+.market-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, .85fr); gap: 20px; }
+
+/* Preço e Variação */
+.price-header-row { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin: 12px 0 10px; }
+.price-value-box { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.price { margin: 0; font-size: clamp(2.3rem, 5.5vw, 3.4rem); font-weight: 700; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.price-change-pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.price-change-pill.positive { background: #143c34; color: var(--accent); border: 1px solid #235c4f; }
+.price-change-pill.negative { background: #3c2028; color: var(--danger); border: 1px solid #6b333e; }
+.price-header-row .update-time { margin: 0; font-size: .78rem; }
+
+/* Tira de Indicadores Rápidos (KPIs) */
+.market-stats-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 16px; padding: 10px; background: var(--surface-raised); border: 1px solid var(--border); border-radius: 10px; }
+.stat-pill { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.stat-pill-label { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+.stat-pill-val { font-size: .88rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.trend-bullish { color: var(--accent); }
+.trend-bearish { color: var(--danger); }
+.trend-neutral { color: #facc15; }
+
+/* Barra de Ferramentas do Gráfico */
+.chart-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 8px 12px; background: #0e1520; border: 1px solid var(--border); border-radius: 10px 10px 0 0; }
+.toolbar-group { display: flex; align-items: center; gap: 6px; }
+.toolbar-label { font-size: .72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+.button-group { display: inline-flex; background: #16202c; border: 1px solid var(--border); border-radius: 6px; padding: 2px; gap: 2px; }
+.btn-tool { background: transparent; border: 0; color: var(--muted); font-size: .75rem; font-weight: 600; padding: 3px 9px; border-radius: 4px; transition: all .15s ease; cursor: pointer; }
+.btn-tool:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+.btn-tool.active { background: #26384d; color: #fff; }
+.btn-tool[data-indicator="sma"].active { background: #3b3524; color: #f59e0b; border: 1px solid #78350f; }
+.btn-tool[data-indicator="bollinger"].active { background: #1c3246; color: #38bdf8; border: 1px solid #0369a1; }
+.btn-tool[data-indicator="rsi"].active { background: #2d1e44; color: #c084fc; border: 1px solid #6b21a8; }
+
+/* Gráfico Interativo */
+.chart-container { position: relative; background: #0c1119; border: 1px solid var(--border); border-top: 0; border-radius: 0 0 10px 10px; margin-bottom: 16px; overflow: hidden; }
+.chart-wrap { position: relative; height: 260px; width: 100%; cursor: crosshair; }
 #price-chart { display: block; width: 100%; height: 100%; }
-.volume-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 16px; border-top: 1px solid var(--border); }
-.volume-row div { display: grid; gap: 5px; min-width: 0; }
-.volume-row span { font-size: .75rem; }
-.volume-row strong { overflow-wrap: anywhere; font-size: .9rem; font-variant-numeric: tabular-nums; }
+
+/* Tooltip do Gráfico */
+.chart-tooltip { position: absolute; pointer-events: none; z-index: 20; background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(8px); border: 1px solid #334155; border-radius: 8px; padding: 8px 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); font-size: .75rem; min-width: 130px; transition: opacity .1s ease; }
+.tooltip-time { color: var(--muted); font-size: .7rem; margin-bottom: 2px; }
+.tooltip-seq { color: #64748b; font-weight: 600; }
+.tooltip-price { font-size: .95rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tooltip-diff { font-size: .72rem; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.tooltip-diff.positive { color: var(--accent); }
+.tooltip-diff.negative { color: var(--danger); }
+
+/* Legenda dos Indicadores */
+.chart-legend { display: flex; align-items: center; gap: 14px; padding: 6px 14px 10px; font-size: .73rem; color: var(--muted); border-top: 1px dashed #1e293b; flex-wrap: wrap; }
+.legend-item { display: inline-flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot-price { background: var(--accent); }
+.dot-sma9 { background: #e5ac59; }
+.dot-sma21 { background: #5bc0de; }
+.dot-bollinger { background: #38bdf8; }
+.dot-rsi { background: #b388ff; }
+
+/* Seção de Volume e Pressão de Negociação */
+.volume-section { display: flex; flex-direction: column; gap: 14px; padding-top: 16px; border-top: 1px solid var(--border); }
+.volume-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.volume-row div { display: grid; gap: 4px; min-width: 0; }
+.volume-row span { font-size: .72rem; }
+.volume-row strong { overflow-wrap: anywhere; font-size: .88rem; font-variant-numeric: tabular-nums; }
+
+.pressure-box { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; background: var(--surface-raised); border: 1px solid var(--border); border-radius: 8px; }
+.pressure-header { display: flex; justify-content: space-between; align-items: center; font-size: .74rem; flex-wrap: wrap; gap: 6px; }
+.pressure-numbers { font-weight: 700; font-variant-numeric: tabular-nums; }
+.pressure-bar { display: flex; height: 7px; width: 100%; border-radius: 99px; overflow: hidden; background: #263344; }
+.pressure-buys { background: var(--accent); transition: width .3s ease; }
+.pressure-sells { background: var(--danger); transition: width .3s ease; }
 
 /* Eventos de Mercado */
 .event-panel { display: flex; flex-direction: column; min-height: 320px; }
@@ -15,7 +75,7 @@
 .event-status-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0 12px; padding: 10px 12px; border-radius: 8px; background: var(--surface-raised); border: 1px solid var(--border); }
 .event-status-bar .muted { font-size: .77rem; }
 .event-status-bar strong { font-size: .85rem; font-variant-numeric: tabular-nums; }
-.events-scroll { flex: 1; overflow-y: auto; max-height: 340px; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+.events-scroll { flex: 1; overflow-y: auto; max-height: 480px; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
 .events-scroll::-webkit-scrollbar { width: 4px; }
 .events-scroll::-webkit-scrollbar-track { background: transparent; }
 .events-scroll::-webkit-scrollbar-thumb { border-radius: 99px; background: var(--border); }
@@ -31,19 +91,20 @@
 .event-time { color: var(--muted); font-size: .72rem; white-space: nowrap; flex-shrink: 0; }
 
 /* Trades / Ordens */
-.trades-panel { margin-top: 18px; }
+.trades-panel { margin-top: 20px; }
 .trades-panel .panel-heading { margin-bottom: 20px; }
 .trades-panel .panel-heading > .muted { font-size: .78rem; }
 
 /* Responsivo */
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .market-grid { grid-template-columns: 1fr; }
+  .chart-wrap { height: 230px; }
   .event-panel { min-height: 260px; }
-  .events-scroll { max-height: 240px; }
+  .events-scroll { max-height: 280px; }
 }
 @media (max-width: 480px) {
-  .volume-row { gap: 8px; }
-  .volume-row span { font-size: .68rem; }
-  .volume-row strong { font-size: .78rem; }
+  .chart-toolbar { flex-direction: column; align-items: flex-start; }
+  .volume-row { grid-template-columns: 1fr; gap: 8px; }
+  .market-stats-strip { grid-template-columns: repeat(2, 1fr); }
+  .chart-wrap { height: 200px; }
 }
-
