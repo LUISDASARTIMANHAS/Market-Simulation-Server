@@ -269,20 +269,19 @@ async function loadMarketPrice() {
       currentPrice = market.currentPrice;
       elements.tradeCurrentPrice.textContent = money(currentPrice);
 
-      // Sparkline e Delta de Preço recente
-      if (Array.isArray(market.history) && market.history.length >= 2) {
-        const prices = market.history.slice(-20).map((t) => t.price);
-        const first = prices[0];
-        const last = prices[prices.length - 1];
-        const diffPct = first > 0 ? ((last - first) / first) * 100 : 0;
-        const isUp = diffPct >= 0;
+      // Indicadores pré-processados do servidor
+      const ind = market.indicators;
+      if (ind) {
+        const isUp = ind.changePercent >= 0;
 
         if (elements.tradePriceDelta) {
-          elements.tradePriceDelta.textContent = `${isUp ? '+' : ''}${diffPct.toFixed(2)}%`;
+          elements.tradePriceDelta.textContent = `${isUp ? '+' : ''}${ind.changePercent}%`;
           elements.tradePriceDelta.className = `trade-price-delta ${isUp ? 'positive' : 'negative'}`;
         }
 
-        if (elements.walletSparkline) {
+        // Sparkline usando dados crus do histórico para renderização visual
+        if (elements.walletSparkline && Array.isArray(market.history) && market.history.length >= 2) {
+          const prices = market.history.slice(-20).map((t) => t.price);
           renderSparkline(elements.walletSparkline, prices, isUp);
         }
       }

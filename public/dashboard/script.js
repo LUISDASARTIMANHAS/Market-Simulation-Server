@@ -1,5 +1,5 @@
 import { money, number, formatTime, request, showFeedback, setConnectionState } from '/src/js/common.js';
-import { AdvancedMarketChart, calculateMarketStats } from '/src/js/chartEngine.js';
+import { AdvancedMarketChart } from '/src/js/chartEngine.js';
 
 const elements = {
   connectionDot: document.querySelector('#connection-dot'),
@@ -36,39 +36,31 @@ let refreshInProgress = false;
 let latestMarket = null;
 let chartInstance = null;
 
-// Inicializa motor de gráfico
+// Inicializa motor de gráfico (apenas renderização visual, sem cálculo de indicadores)
 if (elements.chartCanvas) {
   chartInstance = new AdvancedMarketChart(elements.chartCanvas, elements.chartTooltip);
 }
 
-// Configura eventos da Toolbar
+// ── Toolbar Events ──────────────────────────────────────────────────────────────
 function setupToolbarEvents() {
-  // Timeframe buttons
   document.querySelectorAll('#timeframe-buttons .btn-tool').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#timeframe-buttons .btn-tool').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       const tf = btn.getAttribute('data-tf');
-      if (chartInstance) {
-        chartInstance.setTimeframe(tf);
-        updateMarketStats();
-      }
+      if (chartInstance) chartInstance.setTimeframe(tf);
     });
   });
 
-  // Chart type buttons
   document.querySelectorAll('#chart-type-buttons .btn-tool').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#chart-type-buttons .btn-tool').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       const type = btn.getAttribute('data-type');
-      if (chartInstance) {
-        chartInstance.setChartType(type);
-      }
+      if (chartInstance) chartInstance.setChartType(type);
     });
   });
 
-  // Indicator buttons
   document.querySelectorAll('#indicator-buttons .btn-tool').forEach((btn) => {
     btn.addEventListener('click', () => {
       const ind = btn.getAttribute('data-indicator');
@@ -90,68 +82,52 @@ function updateLegendVisibility() {
   if (elements.legendRsi) elements.legendRsi.hidden = !ind.rsi;
 }
 
-function updateMarketStats() {
-  if (!chartInstance || !latestMarket) return;
-  const visibleTicks = chartInstance.getFilteredHistory();
-  if (!visibleTicks.length) return;
-
-  const stats = calculateMarketStats(visibleTicks);
+// ── Renderizar indicadores vindos do servidor ───────────────────────────────────
+function renderServerIndicators(indicators) {
+  if (!indicators) return;
 
   // Variação de Preço
   if (elements.priceChange) {
-    const isUp = stats.change >= 0;
+    const isUp = indicators.change >= 0;
     elements.priceChange.className = `price-change-pill ${isUp ? 'positive' : 'negative'}`;
-    elements.priceChange.textContent = `${isUp ? '▲ +' : '▼ '}${money(stats.change)} (${isUp ? '+' : ''}${stats.changePercent.toFixed(2)}%)`;
+    elements.priceChange.textContent = `${isUp ? '▲ +' : '▼ '}${money(indicators.change)} (${isUp ? '+' : ''}${indicators.changePercent}%)`;
   }
 
   // KPIs
-  if (elements.statLow) elements.statLow.textContent = money(stats.low);
-  if (elements.statHigh) elements.statHigh.textContent = money(stats.high);
-  if (elements.statVolatility) elements.statVolatility.textContent = `${stats.volatility.toFixed(2)}%`;
+  if (elements.statLow) elements.statLow.textContent = money(indicators.low);
+  if (elements.statHigh) elements.statHigh.textContent = money(indicators.high);
+  if (elements.statVolatility) elements.statVolatility.textContent = `${indicators.volatility}%`;
 
+  // RSI
   if (elements.statRsi) {
-    if (stats.rsi !== null) {
-      const rsiVal = stats.rsi.toFixed(1);
-      let rsiStatus = 'Neutro';
-      if (stats.rsi >= 70) rsiStatus = 'Sobrecomprado';
-      else if (stats.rsi <= 30) rsiStatus = 'Sobrevendido';
-      elements.statRsi.textContent = `${rsiVal} (${rsiStatus})`;
+    const rsi = indicators.rsi;
+    if (rsi && rsi.value !== null) {
+      elements.statRsi.textContent = `${rsi.value} (${rsi.status})`;
     } else {
       elements.statRsi.textContent = '—';
     }
   }
 
+  // Tendência
   if (elements.statTrend) {
-    elements.statTrend.textContent = stats.trend;
-    elements.statTrend.className = `stat-pill-val ${stats.trendClass}`;
+    const trend = indicators.trend;
+    if (trend) {
+      elements.statTrend.textContent = trend.label;
+      const classMap = { bullish: 'trend-bullish', bearish: 'trend-bearish', neutral: 'trend-neutral' };
+      elements.statTrend.className = `stat-pill-val ${classMap[trend.sentiment] || 'trend-neutral'}`;
+    }
+  }
+
+  // Pressão de Ordens
+  if (indicators.orderPressure) {
+    const op = indicators.orderPressure;
+    if (elements.pressureRatio) elements.pressureRatio.textContent = op.ratioText;
+    if (elements.pressureBuysBar) elements.pressureBuysBar.style.width = `${op.buyPercent}%`;
+    if (elements.pressureSellsBar) elements.pressureSellsBar.style.width = `${op.sellPercent}%`;
   }
 }
 
-function updateVolumePressure(volume) {
-  if (!volume) return;
-  const buys = volume.buys || 0;
-  const sells = volume.sells || 0;
-  const total = buys + sells;
-
-  if (total > 0) {
-    const buysPct = Math.round((buys / total) * 100);
-    const sellsPct = 100 - buysPct;
-    if (elements.pressureRatio) {
-      elements.pressureRatio.textContent = `${buysPct}% Compras · ${sellsPct}% Vendas`;
-    }
-    if (elements.pressureBuysBar) {
-      elements.pressureBuysBar.style.width = `${buysPct}%`;
-    }
-    if (elements.pressureSellsBar) {
-      elements.pressureSellsBar.style.width = `${sellsPct}%`;
-    }
-  } else {
-    if (elements.pressureRatio) elements.pressureRatio.textContent = '50% Compras · 50% Vendas';
-    if (elements.pressureBuysBar) elements.pressureBuysBar.style.width = '50%';
-    if (elements.pressureSellsBar) elements.pressureSellsBar.style.width = '50%';
-  }
-}
-
+// ── Renderização ────────────────────────────────────────────────────────────────
 function renderTrades(trades) {
   elements.trades.replaceChildren();
   if (!trades.length) {
@@ -261,18 +237,17 @@ function renderMarket(market) {
   elements.volumeBuys.textContent = money(market.volume.buys);
   elements.volumeSells.textContent = money(market.volume.sells);
 
-  // Pressão de Compras x Vendas
-  updateVolumePressure(market.volume);
+  // Indicadores pré-processados no servidor
+  renderServerIndicators(market.indicators);
 
   const events = Array.isArray(market.events)
     ? market.events
     : (market.latestEvent ? [market.latestEvent] : []);
   renderEvents(events, market.nextEventAt);
 
-  // Atualiza gráfico e estatísticas
+  // Atualiza gráfico visual (o canvas usa os dados crus para renderização interativa)
   if (chartInstance) {
     chartInstance.setHistory(market.history);
-    updateMarketStats();
   }
 
   renderTrades(market.recentTrades);

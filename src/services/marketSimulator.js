@@ -56,6 +56,7 @@ import {
 import { rotateAccountApiKey, restoreAccountApiKey } from "./apiKeyService.js";
 
 import { createAccountRecord } from "./accountCreationService.js";
+import { computeMarketIndicators } from "../utils/marketIndicators.js";
 
 import {
   normalizeMarketHistory,
@@ -1147,9 +1148,33 @@ class MarketSimulator {
    *   nextEventAt: string | null
    * }}
    */
+  /**
+   * Retorna os indicadores e métricas técnicas pré-processadas do mercado.
+   *
+   * @param {number} [windowTicks=30]
+   * @returns {object}
+   */
+  getIndicators(windowTicks = 30) {
+    return computeMarketIndicators(
+      this.history,
+      {
+        total: this.totalVolume,
+        buys: this.buyVolume,
+        sells: this.sellVolume,
+      },
+      windowTicks
+    );
+  }
+
   getStatus() {
     // O último elemento representa o preço vigente do simulador.
     const current = this.history[this.history.length - 1];
+
+    const volume = {
+      total: this.totalVolume,
+      buys: this.buyVolume,
+      sells: this.sellVolume,
+    };
 
     return {
       currentPrice: current.price,
@@ -1161,11 +1186,10 @@ class MarketSimulator {
       recentTrades: this.recentTrades.map((trade) => ({ ...trade })),
 
       // Agrupa os volumes para facilitar o consumo pela interface.
-      volume: {
-        total: this.totalVolume,
-        buys: this.buyVolume,
-        sells: this.sellVolume,
-      },
+      volume,
+
+      // Indicadores técnicos pré-processados no servidor (para IA e cliente web)
+      indicators: this.getIndicators(30),
 
       // Retorna uma cópia do último evento e de todos os eventos decorridos.
       latestEvent: this.latestEvent ? { ...this.latestEvent } : null,

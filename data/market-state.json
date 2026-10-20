@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 100.83,
-  "sequence": 1348,
+  "currentPrice": 101.47,
+  "sequence": 1358,
   "totalVolume": 77859.59,
   "buyVolume": 40293.97,
   "sellVolume": 37565.62,
   "latestMarketEvent": {
-    "eventId": "e2e1b46f-04ef-4716-8f48-9fa11a1ad01d",
+    "eventId": "d60e1118-9f78-473f-b1d9-515c6c2a629f",
     "assetId": "SIM",
-    "category": "Política",
-    "title": "Acordo político",
-    "description": "Avanço em negociações reduz a incerteza.",
-    "impactPercent": 0.2711,
-    "occurredAt": "2026-10-20T20:47:53.240Z"
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.4138,
+    "occurredAt": "2026-10-20T21:13:38.324Z"
   },
-  "nextMarketEventAt": "2026-10-20T20:49:26.956Z",
-  "syncRevision": 274,
-  "updatedAt": "2026-10-20T20:47:53.240Z"
+  "nextMarketEventAt": "2026-10-20T21:15:33.056Z",
+  "syncRevision": 285,
+  "updatedAt": "2026-10-20T21:13:38.324Z"
 }
