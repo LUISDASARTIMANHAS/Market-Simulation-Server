@@ -80,41 +80,739 @@
   {
     "accountId": "e8f67bc9-0913-4c42-aa60-8d5c2c52d3cb",
     "assetId": "SIM",
-    "quantity": 0,
-    "averagePrice": 0,
-    "positions": [],
+    "quantity": 1404.90394169,
+    "averagePrice": 110.78,
+    "positions": [
+      {
+        "positionId": "1c21e3ea-4b83-4453-a5fa-c9ad5cab79a9",
+        "orderId": "d41545ef-824f-4316-98eb-66d02c14e973",
+        "buyPrice": 117.17,
+        "quantity": 32.97893606,
+        "initialQuantity": 42.67303917,
+        "totalCost": 3864.14,
+        "createdAt": "2026-11-20T10:53:56.400Z"
+      },
+      {
+        "positionId": "3afefd57-0868-4c11-b449-688674a75e3d",
+        "orderId": "71802984-9c7d-4783-aebc-701f3c5ab80c",
+        "buyPrice": 111.74,
+        "quantity": 44.74673349,
+        "initialQuantity": 44.74673349,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T10:59:36.153Z"
+      },
+      {
+        "positionId": "94906f74-0041-42ff-9c49-86981c09dd33",
+        "orderId": "5a66fb8c-2df9-4c2f-8d6f-1ef3219a9e01",
+        "buyPrice": 113.97,
+        "quantity": 43.87119417,
+        "initialQuantity": 43.87119417,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T10:59:37.797Z"
+      },
+      {
+        "positionId": "0fa76094-83b4-4e58-b9d9-3a0a433dd0ea",
+        "orderId": "9e0ae3b0-f134-4bca-bb71-d1f84d766070",
+        "buyPrice": 120.95,
+        "quantity": 41.33939644,
+        "initialQuantity": 41.33939644,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T10:59:40.956Z"
+      },
+      {
+        "positionId": "1d9f8b8e-2ce1-44d4-9cf2-3139e0f6e2f8",
+        "orderId": "6881d5c6-b8d1-4002-9f76-fe991281a11f",
+        "buyPrice": 121.11,
+        "quantity": 41.28478243,
+        "initialQuantity": 41.28478243,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:01:06.619Z"
+      },
+      {
+        "positionId": "fe30e7fb-e6b8-4501-8c42-1fa47a9288b6",
+        "orderId": "00f1564a-4006-4ec9-a052-d3052ff2b770",
+        "buyPrice": 120.53,
+        "quantity": 41.4834481,
+        "initialQuantity": 41.4834481,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:02:36.963Z"
+      },
+      {
+        "positionId": "61f3579d-cd8c-4c97-8e28-232a45027491",
+        "orderId": "ae0455b3-7a67-4910-84da-afd3db1dea9a",
+        "buyPrice": 103.34,
+        "quantity": 48.38397523,
+        "initialQuantity": 48.38397523,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:14:35.865Z"
+      },
+      {
+        "positionId": "2a3bd75a-db76-4516-ae7c-5db0251e1465",
+        "orderId": "ca5238b6-47d6-406d-8662-928c77fd4e5d",
+        "buyPrice": 107.52,
+        "quantity": 46.50297619,
+        "initialQuantity": 46.50297619,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:14:37.336Z"
+      },
+      {
+        "positionId": "62526fb7-e795-4d86-8f43-65e54ee56184",
+        "orderId": "5d1ddb70-19c2-4bc8-9e70-994a5552c0f2",
+        "buyPrice": 111.86,
+        "quantity": 44.69873056,
+        "initialQuantity": 44.69873056,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:14:39.222Z"
+      },
+      {
+        "positionId": "9351c1fa-f1fa-4f0e-a8a0-61e980e2ba8d",
+        "orderId": "9120aa98-78ae-4e17-b85f-c99161020956",
+        "buyPrice": 116.38,
+        "quantity": 42.96270837,
+        "initialQuantity": 42.96270837,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:14:41.173Z"
+      },
+      {
+        "positionId": "73af1064-d0cf-4e5e-97c9-9cf67a53341c",
+        "orderId": "249be0fd-a42f-44b1-bf96-7720fd7226b4",
+        "buyPrice": 117.09,
+        "quantity": 42.70219489,
+        "initialQuantity": 42.70219489,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:16:13.529Z"
+      },
+      {
+        "positionId": "56612e07-f572-44f5-8dba-7af9d32e20a1",
+        "orderId": "4fde5ecc-6e9d-41c1-9749-121653f478e1",
+        "buyPrice": 119.43,
+        "quantity": 41.86552792,
+        "initialQuantity": 41.86552792,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:16:15.499Z"
+      },
+      {
+        "positionId": "c2a71613-a60b-41bc-9390-ad11a143b0df",
+        "orderId": "b80980aa-57c4-4931-9558-1723d9ba6459",
+        "buyPrice": 120.01,
+        "quantity": 41.66319473,
+        "initialQuantity": 41.66319473,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:18:13.897Z"
+      },
+      {
+        "positionId": "bc84f39a-1c9c-4b45-a238-82fabd7b884f",
+        "orderId": "a2ffcfa9-48b6-422c-bf0c-58a377f93d97",
+        "buyPrice": 122.41,
+        "quantity": 40.84633608,
+        "initialQuantity": 40.84633608,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:18:15.938Z"
+      },
+      {
+        "positionId": "5549a9ba-09ff-49b4-8feb-7229ecef3d44",
+        "orderId": "8aecc939-4fb5-43e5-aaeb-28faeec9c262",
+        "buyPrice": 126.77,
+        "quantity": 39.44150824,
+        "initialQuantity": 39.44150824,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:19:20.550Z"
+      },
+      {
+        "positionId": "04044230-6778-4ba4-9307-39acb247d55c",
+        "orderId": "524bbc83-b27e-411e-9ac4-0cff616422fa",
+        "buyPrice": 126.76,
+        "quantity": 27.99171663,
+        "initialQuantity": 27.99171663,
+        "totalCost": 3548.23,
+        "createdAt": "2026-11-20T11:21:08.554Z"
+      },
+      {
+        "positionId": "042603c6-0f96-4cc5-9765-2362093f63bc",
+        "orderId": "87adcff4-e15b-43e0-b10b-1a0b627074b0",
+        "buyPrice": 102.02,
+        "quantity": 49.00999804,
+        "initialQuantity": 49.00999804,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:43:22.456Z"
+      },
+      {
+        "positionId": "66b1e328-2416-4334-a859-4f78ff803d27",
+        "orderId": "1440ca52-886b-4211-9cc9-d412f454b575",
+        "buyPrice": 108.26,
+        "quantity": 46.18510992,
+        "initialQuantity": 46.18510992,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:43:25.674Z"
+      },
+      {
+        "positionId": "5b7b7e60-d4c5-444f-9855-1b87adba384b",
+        "orderId": "4aec0f30-db46-4029-abf8-c6843bcaec46",
+        "buyPrice": 112.64,
+        "quantity": 43.50133168,
+        "initialQuantity": 43.50133168,
+        "totalCost": 4899.99,
+        "createdAt": "2026-11-20T11:43:27.150Z"
+      },
+      {
+        "positionId": "8b1a76ee-6dc4-4863-923d-ce4d2715a49d",
+        "orderId": "ef206a55-f781-4766-a0e0-d801f6ee447a",
+        "buyPrice": 97.05,
+        "quantity": 51.51983514,
+        "initialQuantity": 51.51983514,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:51:19.376Z"
+      },
+      {
+        "positionId": "60f5bb48-7813-4c92-a3d0-4bf69a4023a6",
+        "orderId": "2c35a0d9-d20b-44f0-a138-21f080b0e035",
+        "buyPrice": 107.15,
+        "quantity": 42.96966869,
+        "initialQuantity": 42.96966869,
+        "totalCost": 4604.2,
+        "createdAt": "2026-11-20T11:51:22.753Z"
+      },
+      {
+        "positionId": "ea8161fd-90b5-4ca8-81aa-d3f14dc215d5",
+        "orderId": "ed478485-ea01-48a2-b01c-b116949dd2b0",
+        "buyPrice": 96.41,
+        "quantity": 51.86184006,
+        "initialQuantity": 51.86184006,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:00:51.936Z"
+      },
+      {
+        "positionId": "79dd1f1f-ddd4-41b9-8a72-a9872c6d0816",
+        "orderId": "800f4ed8-418e-4345-ac49-1410b4e12992",
+        "buyPrice": 104.37,
+        "quantity": 47.90648654,
+        "initialQuantity": 47.90648654,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:00:55.543Z"
+      },
+      {
+        "positionId": "0687cb71-6914-4d6e-a1b6-935aa12b49c8",
+        "orderId": "73f708bd-3603-4887-86e8-c1cd7d4089b9",
+        "buyPrice": 110.76,
+        "quantity": 45.14265078,
+        "initialQuantity": 45.14265078,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:00:58.043Z"
+      },
+      {
+        "positionId": "49636a91-2c6e-45e8-aa26-b780bb9e0b66",
+        "orderId": "818ada3c-c031-41e5-94c2-3c812fd846cd",
+        "buyPrice": 117.54,
+        "quantity": 36.66020078,
+        "initialQuantity": 36.66020078,
+        "totalCost": 4309.04,
+        "createdAt": "2026-11-20T12:01:00.046Z"
+      },
+      {
+        "positionId": "c20e8f14-e58c-4439-abf9-2b55976cd96a",
+        "orderId": "b73912b9-7081-477d-8fb2-5d8bf41dde52",
+        "buyPrice": 102.05,
+        "quantity": 48.9955904,
+        "initialQuantity": 48.9955904,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:10:08.355Z"
+      },
+      {
+        "positionId": "f405bdd2-7348-4f21-9208-775b11a93d97",
+        "orderId": "433ba73f-0699-4ced-8e22-5fbb57d52b82",
+        "buyPrice": 110.46,
+        "quantity": 43.46921963,
+        "initialQuantity": 43.46921963,
+        "totalCost": 4801.61,
+        "createdAt": "2026-11-20T12:10:11.953Z"
+      },
+      {
+        "positionId": "efd43231-997f-4150-8a12-043eef951c28",
+        "orderId": "21d24939-87e0-4cc5-a9c2-be19c0991881",
+        "buyPrice": 97.33,
+        "quantity": 51.37162232,
+        "initialQuantity": 51.37162232,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:22:17.457Z"
+      },
+      {
+        "positionId": "971349fb-b0d9-4b3d-bec8-7d9c67dc8341",
+        "orderId": "71ae914c-3406-4d21-a5c1-dae81031c057",
+        "buyPrice": 105.37,
+        "quantity": 47.45183639,
+        "initialQuantity": 47.45183639,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:22:21.143Z"
+      },
+      {
+        "positionId": "8ca80818-816a-4a85-a105-875c6cb50b2e",
+        "orderId": "d0e7cdfe-4d6c-419b-96b1-5b630550f6a5",
+        "buyPrice": 109.63,
+        "quantity": 42.92720971,
+        "initialQuantity": 42.92720971,
+        "totalCost": 4706.11,
+        "createdAt": "2026-11-20T12:22:22.738Z"
+      },
+      {
+        "positionId": "e8fe3fe8-e5c6-49e6-81bd-cf2532e5f6ff",
+        "orderId": "8ebd9450-f0b7-4553-9e30-79c5ae37fb1c",
+        "buyPrice": 102.25,
+        "quantity": 48.8997555,
+        "initialQuantity": 48.8997555,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:33:28.055Z"
+      },
+      {
+        "positionId": "c2a93c36-b854-4383-883c-b2568369f99f",
+        "orderId": "a34fba85-e43f-4504-9e4e-ad23bc2353bd",
+        "buyPrice": 110.69,
+        "quantity": 44.26822658,
+        "initialQuantity": 44.26822658,
+        "totalCost": 4900.05,
+        "createdAt": "2026-11-20T12:33:30.132Z"
+      }
+    ],
     "updatedAt": "2026-11-20T01:57:11.444Z"
   },
   {
     "accountId": "06be2985-19d4-48cc-8cb7-524c8ec1df51",
     "assetId": "SIM",
-    "quantity": 0,
-    "averagePrice": 0,
-    "positions": [],
+    "quantity": 719.39404926,
+    "averagePrice": 96.88,
+    "positions": [
+      {
+        "positionId": "c46ca8f6-4848-4c65-b3bd-74d967cb5984",
+        "orderId": "3c0d6874-f7e3-4fd1-9776-257bdbda9dfd",
+        "buyPrice": 94.54,
+        "quantity": 0.97964634,
+        "initialQuantity": 51.83107679,
+        "totalCost": 92.62,
+        "createdAt": "2026-11-20T10:40:55.215Z"
+      },
+      {
+        "positionId": "c1c91747-5738-4655-80e3-870dd56b52a2",
+        "orderId": "f8098d01-7eef-4bb0-bd0e-cbd6bcfa0000",
+        "buyPrice": 93.53,
+        "quantity": 53.45878328,
+        "initialQuantity": 53.45878328,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T10:51:01.924Z"
+      },
+      {
+        "positionId": "93ca96ba-0dd5-4e76-bfad-316d5fcab147",
+        "orderId": "b5d40912-ed89-496a-8520-5ccb24927cae",
+        "buyPrice": 101.25,
+        "quantity": 48.39446914,
+        "initialQuantity": 48.39446914,
+        "totalCost": 4899.94,
+        "createdAt": "2026-11-20T10:51:04.754Z"
+      },
+      {
+        "positionId": "2eba5693-5067-4018-bfee-0daefc70f885",
+        "orderId": "8ebf8769-2f9e-448a-aa64-0bd938255a3f",
+        "buyPrice": 95.77,
+        "quantity": 49.13657722,
+        "initialQuantity": 49.13657722,
+        "totalCost": 4705.81,
+        "createdAt": "2026-11-20T10:59:28.658Z"
+      },
+      {
+        "positionId": "314941c3-bebc-4175-a274-f835dc6d866b",
+        "orderId": "69588eb9-275d-4926-a50f-3b551c857987",
+        "buyPrice": 97.37,
+        "quantity": 51.35051864,
+        "initialQuantity": 51.35051864,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:14:33.216Z"
+      },
+      {
+        "positionId": "066e8c90-a4b6-4718-9b27-1b732b19bdfd",
+        "orderId": "4c6742ea-0830-4639-9ff7-fd9bb900b29c",
+        "buyPrice": 100.02,
+        "quantity": 49.990002,
+        "initialQuantity": 49.990002,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:43:22.130Z"
+      },
+      {
+        "positionId": "b3737e94-5350-4b0d-844a-04f8981de07f",
+        "orderId": "c426c66d-faf7-4319-9b34-ba8274a72c18",
+        "buyPrice": 98.99,
+        "quantity": 50.51015254,
+        "initialQuantity": 50.51015254,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T11:51:19.755Z"
+      },
+      {
+        "positionId": "c9a12b24-561d-4ea7-b40a-8c34848d644c",
+        "orderId": "d7b18ea0-e25c-404c-9b4a-4b84f97f3f85",
+        "buyPrice": 90.85,
+        "quantity": 55.03577325,
+        "initialQuantity": 55.03577325,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:00:49.420Z"
+      },
+      {
+        "positionId": "f6153d83-b0cf-4878-aad3-fdfa341f0e2c",
+        "orderId": "f5e43c4f-51ac-4598-99be-d785b7fff800",
+        "buyPrice": 100.31,
+        "quantity": 49.84547902,
+        "initialQuantity": 49.84547902,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:00:53.354Z"
+      },
+      {
+        "positionId": "d2c6c109-c5ec-4c4d-8c8b-3f779f9e66d0",
+        "orderId": "daa30a3b-3f65-4960-8348-51110d4ace5b",
+        "buyPrice": 94.28,
+        "quantity": 53.03351718,
+        "initialQuantity": 53.03351718,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:10:05.290Z"
+      },
+      {
+        "positionId": "4ba42df0-5858-4017-bc16-2c5b9827141c",
+        "orderId": "ddd6858e-c178-4250-b923-b3befc813101",
+        "buyPrice": 100.05,
+        "quantity": 49.97501249,
+        "initialQuantity": 49.97501249,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:10:08.018Z"
+      },
+      {
+        "positionId": "263e3298-77bf-4b9b-b054-f76db19d218e",
+        "orderId": "a39c45ef-1752-4612-ae71-0602ff640b6e",
+        "buyPrice": 91.72,
+        "quantity": 54.51373746,
+        "initialQuantity": 54.51373746,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:22:14.019Z"
+      },
+      {
+        "positionId": "a62ea978-3c4d-48cc-9658-a0cc65d9c795",
+        "orderId": "ab55341f-a477-4aba-999d-4ea1036997d6",
+        "buyPrice": 99.28,
+        "quantity": 50.3626108,
+        "initialQuantity": 50.3626108,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:22:18.753Z"
+      },
+      {
+        "positionId": "24382ce8-1a4d-404e-b8a0-d43a2f3b2224",
+        "orderId": "184e3918-ea53-4e36-8b4c-cb362a5583ee",
+        "buyPrice": 94.46,
+        "quantity": 52.93245818,
+        "initialQuantity": 52.93245818,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:33:24.317Z"
+      },
+      {
+        "positionId": "66498ae2-f519-4c97-b9b4-34b3137ba6fd",
+        "orderId": "c90893bc-454b-40de-8cda-c88e2c1e9c6c",
+        "buyPrice": 100.25,
+        "quantity": 49.87531172,
+        "initialQuantity": 49.87531172,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:33:27.155Z"
+      }
+    ],
     "updatedAt": "2026-11-20T01:57:11.444Z"
   },
   {
     "accountId": "2a863698-c68c-4ec4-b615-b90be89628a2",
     "assetId": "SIM",
-    "quantity": 0,
-    "averagePrice": 0,
-    "positions": [],
+    "quantity": 692.19431644,
+    "averagePrice": 98.32,
+    "positions": [
+      {
+        "positionId": "825162ec-f6f5-4593-8164-a9ed230ff47b",
+        "orderId": "85208bd0-0d3d-419b-878a-62ea49043552",
+        "buyPrice": 94.35,
+        "quantity": 51.35185718,
+        "initialQuantity": 51.93683095,
+        "totalCost": 4845.05,
+        "createdAt": "2026-11-20T09:38:19.759Z"
+      },
+      {
+        "positionId": "9332aea7-55ac-4f20-b8f7-27fc1014860d",
+        "orderId": "e972b624-3602-4888-94a1-45cdb39dde47",
+        "buyPrice": 99.3,
+        "quantity": 47.39164149,
+        "initialQuantity": 47.39164149,
+        "totalCost": 4705.99,
+        "createdAt": "2026-11-20T09:54:26.276Z"
+      },
+      {
+        "positionId": "330e0b56-4294-4b3f-9aa1-9eb50bf46517",
+        "orderId": "8b2aa89b-d767-402d-bc64-dd8cac05d7fe",
+        "buyPrice": 95.63,
+        "quantity": 51.23779149,
+        "initialQuantity": 51.23779149,
+        "totalCost": 4899.87,
+        "createdAt": "2026-11-20T10:21:08.598Z"
+      },
+      {
+        "positionId": "56ad38da-220f-4c41-8d45-d887db44f981",
+        "orderId": "1b0495fe-118d-4357-b4dc-9e0c5482f7c1",
+        "buyPrice": 99.67,
+        "quantity": 49.16303803,
+        "initialQuantity": 49.16303803,
+        "totalCost": 4900.08,
+        "createdAt": "2026-11-20T10:27:00.853Z"
+      },
+      {
+        "positionId": "c7c7f4b4-1cac-4806-848c-c70b1d50342a",
+        "orderId": "48c3dddb-51c8-472a-a077-9424523ab4a3",
+        "buyPrice": 95.4,
+        "quantity": 51.36320755,
+        "initialQuantity": 51.36320755,
+        "totalCost": 4900.05,
+        "createdAt": "2026-11-20T10:51:02.853Z"
+      },
+      {
+        "positionId": "4948554f-3255-4037-8aaf-38cf74448922",
+        "orderId": "7e8c5f50-2aa0-4874-a2a4-34f646a78c49",
+        "buyPrice": 97.69,
+        "quantity": 50.15825571,
+        "initialQuantity": 50.15825571,
+        "totalCost": 4899.96,
+        "createdAt": "2026-11-20T10:59:29.453Z"
+      },
+      {
+        "positionId": "d9d5633b-9faf-4498-8d5c-56424afeafc0",
+        "orderId": "4aad3d19-4e52-4068-bae9-c75aaa1fad1c",
+        "buyPrice": 99.32,
+        "quantity": 49.3149416,
+        "initialQuantity": 49.3149416,
+        "totalCost": 4897.96,
+        "createdAt": "2026-11-20T11:14:34.153Z"
+      },
+      {
+        "positionId": "7e9a174b-8a9b-4a5d-b299-8548a056f645",
+        "orderId": "0ff5afd5-3dab-4288-81a8-a65cd5033d03",
+        "buyPrice": 106.14,
+        "quantity": 46.16515922,
+        "initialQuantity": 46.16515922,
+        "totalCost": 4899.97,
+        "createdAt": "2026-11-20T11:43:24.458Z"
+      },
+      {
+        "positionId": "3fa1c7a0-10e8-476f-974c-aca5dd67b243",
+        "orderId": "c14de007-1207-429b-8847-c55bc1a844a5",
+        "buyPrice": 102.99,
+        "quantity": 47.57617244,
+        "initialQuantity": 47.57617244,
+        "totalCost": 4899.87,
+        "createdAt": "2026-11-20T11:51:21.455Z"
+      },
+      {
+        "positionId": "97165bf1-7478-487c-9496-03434c98ab5d",
+        "orderId": "504f7be0-0003-472a-9ce1-5c68daff254b",
+        "buyPrice": 94.52,
+        "quantity": 50.80353364,
+        "initialQuantity": 50.80353364,
+        "totalCost": 4801.95,
+        "createdAt": "2026-11-20T12:00:50.754Z"
+      },
+      {
+        "positionId": "2f02d633-5900-430e-9215-96b10acec62f",
+        "orderId": "55eea702-90db-4eda-961c-046b8be73836",
+        "buyPrice": 96.17,
+        "quantity": 50.95071228,
+        "initialQuantity": 50.95071228,
+        "totalCost": 4899.93,
+        "createdAt": "2026-11-20T12:10:06.053Z"
+      },
+      {
+        "positionId": "79d389eb-d652-422e-8587-7a64153cab96",
+        "orderId": "e927109a-b537-4c93-9153-f6f6b67ae60a",
+        "buyPrice": 93.55,
+        "quantity": 52.37851416,
+        "initialQuantity": 52.37851416,
+        "totalCost": 4900.01,
+        "createdAt": "2026-11-20T12:22:14.756Z"
+      },
+      {
+        "positionId": "80c028df-245b-4de9-928d-a134e95d383c",
+        "orderId": "5e431312-e4a6-46d7-ad08-bdbef8584007",
+        "buyPrice": 96.35,
+        "quantity": 51.89413596,
+        "initialQuantity": 51.89413596,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:33:25.261Z"
+      },
+      {
+        "positionId": "14b10109-b25d-485f-a9d9-3bee269e50f8",
+        "orderId": "6f28a3eb-f7a3-4396-a39a-9b72fbd05e53",
+        "buyPrice": 108.52,
+        "quantity": 42.44535569,
+        "initialQuantity": 42.44535569,
+        "totalCost": 4606.17,
+        "createdAt": "2026-11-20T12:33:29.652Z"
+      }
+    ],
     "updatedAt": "2026-11-20T01:57:11.444Z"
   },
   {
     "accountId": "b1847fa0-1361-4737-95ad-e165aade13b0",
     "assetId": "SIM",
-    "quantity": 0,
-    "averagePrice": 0,
-    "positions": [],
+    "quantity": 291.02277879,
+    "averagePrice": 106.94,
+    "positions": [
+      {
+        "positionId": "4df95d29-b62b-4909-bc45-50a4d489e668",
+        "orderId": "fe9ff068-a314-4026-975c-796958af77b5",
+        "buyPrice": 112.98,
+        "quantity": 21.1892548,
+        "initialQuantity": 36.4755709,
+        "totalCost": 2393.96,
+        "createdAt": "2026-11-20T12:00:58.452Z"
+      },
+      {
+        "positionId": "b40faa24-d758-4426-bdf2-980c4b8679be",
+        "orderId": "c58893bd-c3a5-4b93-9e7b-d021d0cd3b7a",
+        "buyPrice": 106.17,
+        "quantity": 47.09428275,
+        "initialQuantity": 47.09428275,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:10:10.150Z"
+      },
+      {
+        "positionId": "fad12b27-be8b-4a21-96df-422b6f2e3a20",
+        "orderId": "ab82be45-f414-4f1a-a492-18dbaddbedc9",
+        "buyPrice": 108.29,
+        "quantity": 42.52830363,
+        "initialQuantity": 42.52830363,
+        "totalCost": 4605.39,
+        "createdAt": "2026-11-20T12:10:11.542Z"
+      },
+      {
+        "positionId": "b92c4c05-7180-4bcc-ad12-3aa47d139576",
+        "orderId": "6b17332b-262a-4ac6-9a9a-8f26d03d4112",
+        "buyPrice": 101.27,
+        "quantity": 49.37296337,
+        "initialQuantity": 49.37296337,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:22:19.556Z"
+      },
+      {
+        "positionId": "9c86eff9-e59d-4018-8ac7-e800a3f4fb9b",
+        "orderId": "3a5e55c1-3042-4c7c-804f-c8009c6dc046",
+        "buyPrice": 107.48,
+        "quantity": 43.75,
+        "initialQuantity": 43.75,
+        "totalCost": 4702.25,
+        "createdAt": "2026-11-20T12:22:22.052Z"
+      },
+      {
+        "positionId": "1a79f0e5-4e9c-4510-bbe4-43305da734cb",
+        "orderId": "dc2cf062-778e-4a9c-824b-903b340b38be",
+        "buyPrice": 104.3,
+        "quantity": 47.93863854,
+        "initialQuantity": 47.93863854,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:33:28.762Z"
+      },
+      {
+        "positionId": "bfb695cc-a4d3-46ac-8189-197cb4e9e6bd",
+        "orderId": "70b91e4d-5d49-42a8-b07f-e58894e53f93",
+        "buyPrice": 112.9,
+        "quantity": 39.1493357,
+        "initialQuantity": 39.1493357,
+        "totalCost": 4419.96,
+        "createdAt": "2026-11-20T12:33:30.357Z"
+      }
+    ],
     "updatedAt": "2026-11-20T01:57:11.444Z"
   },
   {
     "accountId": "c68555a8-030c-4b1b-8a27-2afb5a6b4543",
     "assetId": "SIM",
-    "quantity": 0,
-    "averagePrice": 0,
-    "positions": [],
+    "quantity": 396.70451114,
+    "averagePrice": 102.95,
+    "positions": [
+      {
+        "positionId": "2ded551d-35e6-4c10-a8ea-22852d88daa9",
+        "orderId": "a50c30d9-f740-40fc-b045-9e748813358a",
+        "buyPrice": 102.32,
+        "quantity": 37.5662677,
+        "initialQuantity": 48.8663018,
+        "totalCost": 3843.78,
+        "createdAt": "2026-11-20T12:00:54.276Z"
+      },
+      {
+        "positionId": "445df2fb-f6c4-445a-b92a-93e6803f9fe1",
+        "orderId": "ed7ffe65-b447-4b32-adc2-60c1883169ad",
+        "buyPrice": 108.59,
+        "quantity": 46.0447555,
+        "initialQuantity": 46.0447555,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:00:56.858Z"
+      },
+      {
+        "positionId": "2d40c797-7bc9-4849-b25f-77c1549b08cd",
+        "orderId": "b96c1ae1-6d2d-4a29-a49d-b947531bc981",
+        "buyPrice": 115.24,
+        "quantity": 35.80570982,
+        "initialQuantity": 35.80570982,
+        "totalCost": 4126.25,
+        "createdAt": "2026-11-20T12:00:59.261Z"
+      },
+      {
+        "positionId": "d067f4e7-17d9-4425-b5a1-285fb30337aa",
+        "orderId": "b08a8079-e7b5-46a3-bc4d-36ee463b92b9",
+        "buyPrice": 98.09,
+        "quantity": 50.97359568,
+        "initialQuantity": 50.97359568,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:10:06.852Z"
+      },
+      {
+        "positionId": "300a2dd9-044e-4ed7-bbdb-d15f21a267de",
+        "orderId": "3dd20011-09d7-4a35-b847-dbaf9ab767be",
+        "buyPrice": 104.09,
+        "quantity": 40.64473052,
+        "initialQuantity": 40.64473052,
+        "totalCost": 4230.71,
+        "createdAt": "2026-11-20T12:10:09.252Z"
+      },
+      {
+        "positionId": "7c9b485e-fa39-41d3-84e5-4ca858eafa33",
+        "orderId": "80ef675e-0994-4a6a-9aa5-9ba00a9a7ff7",
+        "buyPrice": 95.42,
+        "quantity": 52.39991616,
+        "initialQuantity": 52.39991616,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:22:15.860Z"
+      },
+      {
+        "positionId": "b568fe85-1d2d-4dce-8e8e-fd6efda92002",
+        "orderId": "a470ba30-808e-4bfd-a465-128e1fafcf61",
+        "buyPrice": 103.3,
+        "quantity": 40.90590513,
+        "initialQuantity": 40.90590513,
+        "totalCost": 4225.58,
+        "createdAt": "2026-11-20T12:22:20.055Z"
+      },
+      {
+        "positionId": "bd410284-8c21-4c06-941f-ce89f2f95675",
+        "orderId": "75213ace-fb71-4f0a-9879-c0a1f1fd3cbe",
+        "buyPrice": 98.28,
+        "quantity": 50.87505088,
+        "initialQuantity": 50.87505088,
+        "totalCost": 5000,
+        "createdAt": "2026-11-20T12:33:25.855Z"
+      },
+      {
+        "positionId": "2f2405e0-6d4b-4c7b-a4f6-f9ab90fd4c2e",
+        "orderId": "9a274edf-8765-429f-b318-bb9d93765ca1",
+        "buyPrice": 106.39,
+        "quantity": 41.48857975,
+        "initialQuantity": 41.48857975,
+        "totalCost": 4413.97,
+        "createdAt": "2026-11-20T12:33:29.254Z"
+      }
+    ],
     "updatedAt": "2026-11-20T01:57:11.444Z"
   },
   {
@@ -152,9 +850,19 @@
   {
     "accountId": "fda6c595-e471-4412-ad68-8f89a11ee6a4",
     "assetId": "SIM",
-    "quantity": 0,
-    "averagePrice": 0,
-    "positions": [],
+    "quantity": 1.60359061,
+    "averagePrice": 124.77,
+    "positions": [
+      {
+        "positionId": "83ffe3e8-3fc3-41c9-a470-88eca4e34356",
+        "orderId": "9fc49a9b-cb19-404c-85f0-09990ce04f28",
+        "buyPrice": 124.77,
+        "quantity": 1.60359061,
+        "initialQuantity": 1.60359061,
+        "totalCost": 200.08,
+        "createdAt": "2026-11-20T11:19:20.163Z"
+      }
+    ],
     "updatedAt": "2026-11-20T01:57:11.444Z"
   }
 ]
