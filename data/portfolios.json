@@ -4,6 +4,17 @@
     "assetId": "SIM",
     "quantity": 7.51629174,
     "averagePrice": 55.62,
+    "positions": [
+      {
+        "positionId": "pos-ab74ab24-d6e3-467f-8b3e-94a57f7e3e7d-init",
+        "orderId": "init-ab74ab24-d6e3-467f-8b3e-94a57f7e3e7d",
+        "buyPrice": 55.62,
+        "quantity": 7.51629174,
+        "initialQuantity": 7.51629174,
+        "totalCost": 418.06,
+        "createdAt": "2026-10-08T12:32:57.987Z"
+      }
+    ],
     "updatedAt": "2026-10-08T12:32:57.987Z"
   },
   {
@@ -11,6 +22,17 @@
     "assetId": "SIM",
     "quantity": 17.71764253,
     "averagePrice": 51.92,
+    "positions": [
+      {
+        "positionId": "pos-3ddb7b99-64e7-40c3-b6bd-2c68eccc8c31-init",
+        "orderId": "init-3ddb7b99-64e7-40c3-b6bd-2c68eccc8c31",
+        "buyPrice": 51.92,
+        "quantity": 17.71764253,
+        "initialQuantity": 17.71764253,
+        "totalCost": 919.9,
+        "createdAt": "2026-10-08T12:42:24.315Z"
+      }
+    ],
     "updatedAt": "2026-10-08T12:42:24.315Z"
   },
   {
@@ -18,6 +40,17 @@
     "assetId": "SIM",
     "quantity": 1.7232466,
     "averagePrice": 58.03,
+    "positions": [
+      {
+        "positionId": "pos-b7fb415a-6524-446b-b0de-7deeb03149b6-init",
+        "orderId": "init-b7fb415a-6524-446b-b0de-7deeb03149b6",
+        "buyPrice": 58.03,
+        "quantity": 1.7232466,
+        "initialQuantity": 1.7232466,
+        "totalCost": 100,
+        "createdAt": "2026-10-08T12:45:17.983Z"
+      }
+    ],
     "updatedAt": "2026-10-08T12:45:17.983Z"
   },
   {
@@ -25,6 +58,7 @@
     "assetId": "SIM",
     "quantity": 0,
     "averagePrice": 0,
+    "positions": [],
     "updatedAt": "2026-10-09T02:16:01.776Z"
   },
   {
@@ -32,6 +66,7 @@
     "assetId": "SIM",
     "quantity": 0,
     "averagePrice": 0,
+    "positions": [],
     "updatedAt": "2026-10-15T16:54:00.585Z"
   },
   {
@@ -39,6 +74,87 @@
     "assetId": "SIM",
     "quantity": 0,
     "averagePrice": 0,
+    "positions": [],
     "updatedAt": "2026-10-20T19:15:49.374Z"
+  },
+  {
+    "accountId": "e8f67bc9-0913-4c42-aa60-8d5c2c52d3cb",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "06be2985-19d4-48cc-8cb7-524c8ec1df51",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "2a863698-c68c-4ec4-b615-b90be89628a2",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "b1847fa0-1361-4737-95ad-e165aade13b0",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "c68555a8-030c-4b1b-8a27-2afb5a6b4543",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "b2831901-2d78-4772-89fe-0a1e932609a1",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "c1ff0cd6-85a1-4fbb-a503-9a990f028e1d",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "cad37905-2a2c-4ee3-98e2-419fb4dd7a40",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "69b798e0-fab4-42a6-bb13-d67871c5ecf0",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "fda6c595-e471-4412-ad68-8f89a11ee6a4",
+    "assetId": "SIM",
+    "quantity": 0,
+    "averagePrice": 0,
+    "positions": [],
+    "updatedAt": "2026-11-20T01:57:11.444Z"
   }
 ]

@@ -32,7 +32,7 @@
   {
     "accountId": "e0c2bd18-9e98-41ee-8513-a263a491f41e",
     "username": "system_admin",
-    "keyHash": "b42a1fc717ebdedbdfa040dc522b0308557d4dfea37786a5f4ca0a767915b8b3",
+    "keyHash": "338ee9920cdd84276fe15bfebd19c5da8f77d97f29de4605ae6e83ea56bf176e",
     "isAdmin": true,
     "isSystemAdmin": true,
     "balance": 1000,
@@ -58,5 +58,105 @@
     "balance": 1000,
     "createdAt": "2026-10-20T19:15:14.450Z",
     "updatedAt": "2026-10-20T19:15:49.374Z"
+  },
+  {
+    "accountId": "e8f67bc9-0913-4c42-aa60-8d5c2c52d3cb",
+    "username": "LDASKYNETIA_1",
+    "keyHash": "70202016d1ed1ac191dd7dfa83b43b0db5e1a52582e01902dedde4d4df824771",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:55:48.578Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "06be2985-19d4-48cc-8cb7-524c8ec1df51",
+    "username": "LDASKYNETIA_2",
+    "keyHash": "b44fecd228f734e34e2a4251ad8468645fae2146cc7f008f491937e1cfa84897",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:55:57.738Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "2a863698-c68c-4ec4-b615-b90be89628a2",
+    "username": "LDASKYNETIA_3",
+    "keyHash": "83f018ac69afb0c2291e10dccd259b9fe5a78c86dd5eceb59db35b1de63dd64d",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:56:06.944Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "b1847fa0-1361-4737-95ad-e165aade13b0",
+    "username": "LDASKYNETIA_4",
+    "keyHash": "4c008c589aab0301431bf1dcaa2a61759d5a729b6f7ad5e3677288feee4d6e12",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:56:16.098Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "c68555a8-030c-4b1b-8a27-2afb5a6b4543",
+    "username": "LDASKYNETIA_5",
+    "keyHash": "2befe224f394622732d7542ccb4881cca877f61c1ff0e703a8182082d5eaa016",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:56:25.351Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "b2831901-2d78-4772-89fe-0a1e932609a1",
+    "username": "LDASKYNETIA_6",
+    "keyHash": "cad3dd91f1cfb64a512715d83e4d4a4887cad4c68a75e1b9640f690b1b0fe549",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:56:34.765Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "c1ff0cd6-85a1-4fbb-a503-9a990f028e1d",
+    "username": "LDASKYNETIA_7",
+    "keyHash": "3edd412cdf9d1e087694c2f53ec84ecc06cdfb1751695a4852e8cd43ef274f8b",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:56:43.920Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "cad37905-2a2c-4ee3-98e2-419fb4dd7a40",
+    "username": "LDASKYNETIA_8",
+    "keyHash": "0a7748acf15738f942b343d32453e3d745c6e525f241c123644961ba19d62ca7",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:56:53.085Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "69b798e0-fab4-42a6-bb13-d67871c5ecf0",
+    "username": "LDASKYNETIA_9",
+    "keyHash": "cb2c354ecc5318341b84c78edcf6a24ee60ef8aa7fabc89295507f28e4436218",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:57:02.244Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
+  },
+  {
+    "accountId": "fda6c595-e471-4412-ad68-8f89a11ee6a4",
+    "username": "LDASKYNETIA_10",
+    "keyHash": "5e3ee0fb8c51eed1da6f99b0d5714d5e02e6721a76a9fb7d37aaa7a400d23a75",
+    "isAdmin": false,
+    "isSystemAdmin": false,
+    "balance": 1000,
+    "createdAt": "2026-11-20T01:57:11.444Z",
+    "updatedAt": "2026-11-20T01:57:11.444Z"
   }
 ]

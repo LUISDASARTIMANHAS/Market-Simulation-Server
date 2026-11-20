@@ -1,5 +1,482 @@
 [
   {
+    "eventId": "e500d0b3-b4b1-4077-a033-3bcd8f5544e9",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.3735,
+    "occurredAt": "2026-11-20T02:03:56.397Z"
+  },
+  {
+    "eventId": "768ba3cc-a32f-40b6-83f2-4923424df250",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.274,
+    "occurredAt": "2026-11-20T02:02:34.837Z"
+  },
+  {
+    "eventId": "a92010e2-8c55-4621-b895-8b3c0be2e4a0",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.3022,
+    "occurredAt": "2026-11-20T02:01:02.354Z"
+  },
+  {
+    "eventId": "951c4c04-a2cb-4027-aee2-fa8e64d0e899",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.7278,
+    "occurredAt": "2026-11-20T01:59:06.737Z"
+  },
+  {
+    "eventId": "d42c434f-42ed-4c58-9b38-dabd28390dd1",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.2119,
+    "occurredAt": "2026-11-20T01:57:42.680Z"
+  },
+  {
+    "eventId": "2dd635fa-a41c-4894-8c5c-a025120753a6",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.7221,
+    "occurredAt": "2026-11-20T01:56:04.296Z"
+  },
+  {
+    "eventId": "65da24ad-937a-4e6b-a32f-3cdfdb857d6c",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.362,
+    "occurredAt": "2026-11-20T01:54:56.272Z"
+  },
+  {
+    "eventId": "4c79886c-dd3e-441b-8e1d-73070b61c66d",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.3884,
+    "occurredAt": "2026-11-20T01:53:38.262Z"
+  },
+  {
+    "eventId": "5b49d29a-98fe-413a-aa44-35c694d4850d",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.5628,
+    "occurredAt": "2026-11-20T01:52:24.231Z"
+  },
+  {
+    "eventId": "09668b0f-8dc9-4d5c-aa62-706328ba2b31",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Recuo tecnológico",
+    "description": "Um atraso relevante reduz as perspectivas do mercado.",
+    "impactPercent": -1.0223,
+    "occurredAt": "2026-11-20T01:51:14.215Z"
+  },
+  {
+    "eventId": "9952e45a-77a1-42df-9aad-80b06432f3b1",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.8024,
+    "occurredAt": "2026-11-20T01:49:22.198Z"
+  },
+  {
+    "eventId": "bfe95fa1-f78c-4ad4-989d-f80102f93e22",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Instabilidade política",
+    "description": "Incerteza política aumenta a aversão ao risco.",
+    "impactPercent": -1.0234,
+    "occurredAt": "2026-11-20T01:47:44.183Z"
+  },
+  {
+    "eventId": "b3e91c28-aaa5-44b8-b61c-4c5f46395a6c",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.3257,
+    "occurredAt": "2026-11-20T01:46:24.176Z"
+  },
+  {
+    "eventId": "c6a9dd71-adf8-4a85-8b3e-becc7470677c",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.006,
+    "occurredAt": "2026-11-20T01:44:26.136Z"
+  },
+  {
+    "eventId": "ebc42984-0987-4904-9552-5a8f4fe5c2f4",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -1.1005,
+    "occurredAt": "2026-11-20T01:43:02.099Z"
+  },
+  {
+    "eventId": "fb9a56bb-808c-4556-87bb-5d8966404d64",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.1091,
+    "occurredAt": "2026-11-20T01:41:22.054Z"
+  },
+  {
+    "eventId": "9fc530e5-d708-47ab-aa9d-b0ffb025b9f3",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.5864,
+    "occurredAt": "2026-11-20T01:39:24.001Z"
+  },
+  {
+    "eventId": "09e0f304-f212-4049-bb46-9d5908c6f6f6",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.6366,
+    "occurredAt": "2026-11-20T01:37:29.947Z"
+  },
+  {
+    "eventId": "a3c4d1bd-02fb-4c2f-992e-5441b7979326",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.7085,
+    "occurredAt": "2026-11-20T01:35:47.905Z"
+  },
+  {
+    "eventId": "1eb34806-c0a4-4a05-90a1-7442e8d32e6c",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.2945,
+    "occurredAt": "2026-11-20T01:33:57.854Z"
+  },
+  {
+    "eventId": "78bc97fd-54a7-4037-b18b-bc4dcb9d61ad",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.2363,
+    "occurredAt": "2026-11-20T01:32:37.828Z"
+  },
+  {
+    "eventId": "1c1f755b-1986-4c1c-9b59-2788adbd9787",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.4842,
+    "occurredAt": "2026-11-20T01:30:51.783Z"
+  },
+  {
+    "eventId": "dab0bd72-e6ec-4894-a386-47fa079d4b74",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Recuo tecnológico",
+    "description": "Um atraso relevante reduz as perspectivas do mercado.",
+    "impactPercent": -0.6981,
+    "occurredAt": "2026-11-20T01:29:35.762Z"
+  },
+  {
+    "eventId": "2c0fab73-ad14-4d99-a3f0-78478b162061",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.5032,
+    "occurredAt": "2026-11-20T01:28:15.738Z"
+  },
+  {
+    "eventId": "169a2b9d-82fc-414f-a02d-94184b254b73",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.5506,
+    "occurredAt": "2026-11-20T01:26:57.713Z"
+  },
+  {
+    "eventId": "81794372-8176-4bf3-81e6-5e3d71325cb3",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.6998,
+    "occurredAt": "2026-11-20T01:25:51.693Z"
+  },
+  {
+    "eventId": "1078bf5f-536d-425d-a534-d0a490f63bab",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.2192,
+    "occurredAt": "2026-11-20T01:24:11.664Z"
+  },
+  {
+    "eventId": "d45ebe80-d200-4038-bb91-0c096105c9da",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -1.1342,
+    "occurredAt": "2026-11-20T01:22:43.635Z"
+  },
+  {
+    "eventId": "2a750943-c7cf-46b9-b7dd-2e619efe78e0",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.2189,
+    "occurredAt": "2026-11-20T01:21:15.621Z"
+  },
+  {
+    "eventId": "4b62fc08-19fc-4730-9d73-387a652b4d6b",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.4825,
+    "occurredAt": "2026-11-20T01:19:47.463Z"
+  },
+  {
+    "eventId": "f3120d8a-4851-4203-b001-92d28fefc1ba",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.5562,
+    "occurredAt": "2026-11-20T01:18:15.571Z"
+  },
+  {
+    "eventId": "9860393f-ba1d-4ac0-ba96-d275669a599f",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.3516,
+    "occurredAt": "2026-11-20T01:16:31.542Z"
+  },
+  {
+    "eventId": "5bb3d80d-eef3-491c-9144-9aaf55bc204d",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.0656,
+    "occurredAt": "2026-11-20T01:14:31.510Z"
+  },
+  {
+    "eventId": "7a82e8b1-8646-4d2e-8f53-9f91ccb50d4b",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.2904,
+    "occurredAt": "2026-11-20T01:12:33.476Z"
+  },
+  {
+    "eventId": "ab0120e6-4ff9-4234-9788-a6f3bb1a7b84",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Recuo tecnológico",
+    "description": "Um atraso relevante reduz as perspectivas do mercado.",
+    "impactPercent": -0.8326,
+    "occurredAt": "2026-11-20T01:11:29.209Z"
+  },
+  {
+    "eventId": "797e94f9-17f8-4ee1-adae-588e6da27624",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.5909,
+    "occurredAt": "2026-11-20T01:09:43.156Z"
+  },
+  {
+    "eventId": "0c56e946-9679-4493-9a51-18abd55dcf95",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.4855,
+    "occurredAt": "2026-11-20T01:08:31.121Z"
+  },
+  {
+    "eventId": "3f70e7a4-18eb-4653-81b2-a080123b761e",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.1103,
+    "occurredAt": "2026-11-20T01:07:09.078Z"
+  },
+  {
+    "eventId": "a70c84d0-19f1-4967-91c5-8e0d10a33273",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.5137,
+    "occurredAt": "2026-11-20T01:05:31.288Z"
+  },
+  {
+    "eventId": "83ba11f1-7f7a-45e9-b5f5-837bcbd8f977",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.8207,
+    "occurredAt": "2026-11-20T01:03:57.270Z"
+  },
+  {
+    "eventId": "50a7ddde-536b-407f-a8a7-1fb63903bbc1",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.112,
+    "occurredAt": "2026-11-20T01:02:54.966Z"
+  },
+  {
+    "eventId": "1f1556d5-bea7-4a8f-afd2-60c22dae64e5",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.5265,
+    "occurredAt": "2026-11-20T01:01:45.248Z"
+  },
+  {
+    "eventId": "95f4f96f-61e3-4db9-b9a7-079d3a543fba",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.3903,
+    "occurredAt": "2026-11-20T01:00:14.908Z"
+  },
+  {
+    "eventId": "3c95bb4d-5328-49b7-8aed-f1cc5797464a",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.6584,
+    "occurredAt": "2026-11-20T00:58:57.213Z"
+  },
+  {
+    "eventId": "ef2a590d-24c8-4dfb-a187-e108fd299df7",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.3544,
+    "occurredAt": "2026-11-20T00:57:51.202Z"
+  },
+  {
+    "eventId": "a61cfffc-a3d5-450a-aef3-6262f976687a",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.6621,
+    "occurredAt": "2026-11-20T00:56:22.833Z"
+  },
+  {
+    "eventId": "d6469b9c-c872-4605-a63b-7192318ffc93",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.5345,
+    "occurredAt": "2026-11-20T00:54:28.793Z"
+  },
+  {
+    "eventId": "71474aae-9f3e-4214-8493-aea1d5e24d51",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Corte de juros",
+    "description": "Juros menores favorecem ativos de risco.",
+    "impactPercent": 0.1802,
+    "occurredAt": "2026-11-20T00:52:36.757Z"
+  },
+  {
+    "eventId": "3b773247-9b41-4076-87ee-df5d8f60d2b5",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Recuo tecnológico",
+    "description": "Um atraso relevante reduz as perspectivas do mercado.",
+    "impactPercent": -1.0839,
+    "occurredAt": "2026-11-20T00:51:22.734Z"
+  },
+  {
+    "eventId": "c755b92f-8380-4528-81b6-63e189c2eee9",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.0619,
+    "occurredAt": "2026-11-20T00:49:50.686Z"
+  },
+  {
+    "eventId": "1a4b1a5b-eabf-45c7-b1da-bcb3922530d2",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.9114,
+    "occurredAt": "2026-11-20T00:48:33.061Z"
+  },
+  {
+    "eventId": "5bff7def-9aa0-441f-aebf-9e7f2ba17019",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.4928,
+    "occurredAt": "2026-11-20T00:47:02.611Z"
+  },
+  {
+    "eventId": "22c0cb9f-29eb-4752-bd56-b828478121fe",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.5636,
+    "occurredAt": "2026-11-20T00:45:23.002Z"
+  },
+  {
     "eventId": "eedf330c-e7b7-43ac-b6a5-8716b12c2bae",
     "assetId": "SIM",
     "category": "Política",
