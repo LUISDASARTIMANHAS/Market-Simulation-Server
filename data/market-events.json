@@ -1,5 +1,68 @@
 [
   {
+    "eventId": "e79340fd-276c-4ddc-86d8-c1d41e56101b",
+    "assetId": "SIM",
+    "category": "Tecnologia",
+    "title": "Avanço tecnológico",
+    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
+    "impactPercent": 0.6889,
+    "occurredAt": "2026-11-20T00:34:00.920Z"
+  },
+  {
+    "eventId": "d8e51725-16b9-4377-87d3-eeb41fe329ee",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Escalada de conflito",
+    "description": "Aumento da tensão geopolítica pressiona os ativos.",
+    "impactPercent": -0.9596,
+    "occurredAt": "2026-11-20T00:32:15.784Z"
+  },
+  {
+    "eventId": "a540bc52-5110-4f45-b106-5c5920e89c19",
+    "assetId": "SIM",
+    "category": "Juros",
+    "title": "Alta inesperada de juros",
+    "description": "Juros maiores pressionam os ativos de risco.",
+    "impactPercent": -0.7779,
+    "occurredAt": "2026-11-20T00:30:58.807Z"
+  },
+  {
+    "eventId": "c3a2db7d-44c1-40c0-be44-0a2ee16e6fc6",
+    "assetId": "SIM",
+    "category": "Guerra",
+    "title": "Acordo de cessar-fogo",
+    "description": "Redução da tensão geopolítica favorece os ativos.",
+    "impactPercent": 0.5641,
+    "occurredAt": "2026-11-20T00:29:36.760Z"
+  },
+  {
+    "eventId": "e97dce74-4bc6-467c-95f4-d5d864c552f6",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Mercado de trabalho enfraquece",
+    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
+    "impactPercent": -0.6904,
+    "occurredAt": "2026-11-20T00:27:44.699Z"
+  },
+  {
+    "eventId": "d499097a-5c1c-4be6-a6d4-61032e643844",
+    "assetId": "SIM",
+    "category": "Emprego",
+    "title": "Emprego cresce acima do esperado",
+    "description": "A criação de empregos reforça a confiança dos investidores.",
+    "impactPercent": 0.4581,
+    "occurredAt": "2026-11-20T00:26:16.658Z"
+  },
+  {
+    "eventId": "fdce283c-a935-4ceb-bafb-bcd846a91d68",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação desacelera",
+    "description": "Alívio inflacionário melhora o apetite por risco.",
+    "impactPercent": 0.3644,
+    "occurredAt": "2026-11-20T00:24:38.615Z"
+  },
+  {
     "eventId": "321fe809-a962-47c5-a8bb-2d57dabc9641",
     "assetId": "SIM",
     "category": "Tecnologia",

@@ -570,6 +570,30 @@ class MarketSimulator {
     if (!account) return null;
     const currentPrice = this.history[this.history.length - 1].price;
 
+    const positions = (account.positions || []).map((pos) => {
+      const currentValue = roundMoney(pos.quantity * currentPrice);
+      const totalCost = roundMoney(pos.quantity * pos.buyPrice);
+      const profit = roundMoney(currentValue - totalCost);
+      const profitPercent = totalCost > 0
+        ? Number((((currentValue - totalCost) / totalCost) * 100).toFixed(2))
+        : 0;
+      const status = profit > 0 ? "PROFIT" : profit < 0 ? "LOSS" : "EVEN";
+
+      return {
+        positionId: pos.positionId,
+        orderId: pos.orderId,
+        buyPrice: pos.buyPrice,
+        quantity: pos.quantity,
+        initialQuantity: pos.initialQuantity,
+        totalCost,
+        currentValue,
+        profit,
+        profitPercent,
+        status,
+        createdAt: pos.createdAt,
+      };
+    });
+
     return {
       accountId: account.accountId,
       username:
@@ -579,9 +603,22 @@ class MarketSimulator {
       isAdmin: account.isAdmin === true,
       balance: account.balance,
       assetBalance: account.assetBalance,
+      averagePrice: account.averagePrice || 0,
       currentPrice,
       estimatedSaleValue: roundMoney(account.assetBalance * currentPrice),
+      positions,
     };
+  }
+
+  /**
+   * Retorna os lotes e posições individuais de ativos mantidos por uma conta.
+   *
+   * @param {string} accountId - ID da conta.
+   * @returns {object[]}
+   */
+  getPositions(accountId) {
+    const account = this.getAccount(accountId);
+    return account ? account.positions : [];
   }
 
   /**
@@ -719,7 +756,7 @@ class MarketSimulator {
       const current = this.history[this.history.length - 1];
 
       // Valida a ordem e calcula a quantidade e o valor total.
-      const { amount, total } = validateAndCalculateOrder(
+      const { amount, total, selectedPosition } = validateAndCalculateOrder(
         account,
         input,
         current.price,
@@ -760,36 +797,109 @@ class MarketSimulator {
       };
 
       // Guarda o estado anterior para permitir rollback em caso de falha.
-      const accountBefore = { ...account, history: account.history };
+      const accountBefore = {
+        ...account,
+        positions: Array.isArray(account.positions)
+          ? account.positions.map((p) => ({ ...p }))
+          : [],
+        history: account.history,
+      };
       const historyBefore = this.history;
       const tradesBefore = this.recentTrades;
       const volumesBefore = [this.totalVolume, this.buyVolume, this.sellVolume];
 
       if (input.side === "BUY") {
-        // Calcula o custo histórico da posição antes da nova compra.
-        const currentCost = (account.averagePrice || 0) * account.assetBalance;
-
         account.balance = subtractMoney(account.balance, total);
         account.assetBalance = addAsset(account.assetBalance, amount);
 
-        // Recalcula o preço médio ponderado da posição.
+        const newPosition = {
+          positionId: randomUUID(),
+          orderId: order.id,
+          buyPrice: current.price,
+          quantity: amount,
+          initialQuantity: amount,
+          totalCost: total,
+          createdAt: timestamp,
+        };
+
+        if (!Array.isArray(account.positions)) {
+          account.positions = [];
+        }
+        account.positions.push(newPosition);
+
+        // Recalcula o preço médio ponderado da posição total.
+        const totalCost = account.positions.reduce((sum, p) => sum + p.totalCost, 0);
         account.averagePrice =
           account.assetBalance > 0
-            ? roundMoney((currentCost + total) / account.assetBalance)
+            ? roundMoney(totalCost / account.assetBalance)
             : 0;
 
         this.buyVolume = addMoney(this.buyVolume, total);
+        order.positionId = newPosition.positionId;
+        order.buyPrice = newPosition.buyPrice;
       } else {
         // Na venda, o valor recebido volta ao saldo monetário.
         account.balance = addMoney(account.balance, total);
-        account.assetBalance = subtractAsset(account.assetBalance, amount);
+        this.sellVolume = addMoney(this.sellVolume, total);
 
-        // Zera o preço médio quando toda a posição é liquidada.
-        if (account.assetBalance === 0) {
-          account.averagePrice = 0;
+        let realizedProfit = 0;
+        let soldPositionId = null;
+        let soldBuyPrice = null;
+
+        if (selectedPosition) {
+          soldPositionId = selectedPosition.positionId;
+          soldBuyPrice = selectedPosition.buyPrice;
+          const costOfSold = roundMoney(amount * selectedPosition.buyPrice);
+          realizedProfit = roundMoney(total - costOfSold);
+
+          selectedPosition.quantity = subtractAsset(selectedPosition.quantity, amount);
+          selectedPosition.totalCost = roundMoney(selectedPosition.quantity * selectedPosition.buyPrice);
+
+          account.positions = (account.positions || []).filter((p) => p.quantity > 0);
+        } else {
+          let remainingToSell = amount;
+          let totalCostOfSold = 0;
+
+          if (Array.isArray(account.positions) && account.positions.length > 0) {
+            for (const pos of account.positions) {
+              if (remainingToSell <= 0) break;
+              const sellFromPos = Math.min(pos.quantity, remainingToSell);
+              totalCostOfSold = addMoney(totalCostOfSold, roundMoney(sellFromPos * pos.buyPrice));
+              pos.quantity = subtractAsset(pos.quantity, sellFromPos);
+              pos.totalCost = roundMoney(pos.quantity * pos.buyPrice);
+              remainingToSell = subtractAsset(remainingToSell, sellFromPos);
+            }
+            account.positions = account.positions.filter((p) => p.quantity > 0);
+          } else {
+            totalCostOfSold = roundMoney(amount * (account.averagePrice || current.price));
+          }
+
+          realizedProfit = roundMoney(total - totalCostOfSold);
         }
 
-        this.sellVolume = addMoney(this.sellVolume, total);
+        account.assetBalance = subtractAsset(account.assetBalance, amount);
+
+        // Zera ou recalcula o preço médio quando posições forem liquidadas
+        if (
+          account.assetBalance <= 0 ||
+          !Array.isArray(account.positions) ||
+          account.positions.length === 0
+        ) {
+          account.assetBalance = 0;
+          account.averagePrice = 0;
+          account.positions = [];
+        } else {
+          const totalCost = account.positions.reduce((sum, p) => sum + p.totalCost, 0);
+          account.averagePrice = roundMoney(totalCost / account.assetBalance);
+        }
+
+        order.positionId = soldPositionId;
+        order.buyPrice = soldBuyPrice;
+        order.realizedProfit = realizedProfit;
+        order.realizedProfitPercent =
+          total > 0 && total - realizedProfit > 0
+            ? Number(((realizedProfit / (total - realizedProfit)) * 100).toFixed(2))
+            : 0;
       }
 
       // Atualiza o histórico individual da conta.
@@ -833,6 +943,9 @@ class MarketSimulator {
         // Restaura os dados anteriores se a persistência falhar.
         if (!error.syncConflict) {
           Object.assign(account, accountBefore);
+          account.positions = Array.isArray(accountBefore.positions)
+            ? accountBefore.positions.map((p) => ({ ...p }))
+            : [];
           this.history = historyBefore;
           this.recentTrades = tradesBefore;
           [this.totalVolume, this.buyVolume, this.sellVolume] = volumesBefore;

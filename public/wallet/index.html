@@ -101,7 +101,42 @@
           </div>
         </section>
 
-        <!-- 2. Operações de Compra e Venda Separadas -->
+        <!-- 2. Painel de Posições e Lotes Individuais em Custódia -->
+        <section class="panel positions-card" id="positions-card" aria-label="Lotes de Ativos em Custódia">
+          <div class="positions-header">
+            <div>
+              <p class="eyebrow">GESTÃO INDIVIDUAL DE ATIVOS</p>
+              <h2>Lotes Comprados & Rendimento por Lote</h2>
+            </div>
+            <div class="positions-badge-summary">
+              <span>Lotes Ativos: <strong id="positions-count">0</strong></span>
+            </div>
+          </div>
+          <p class="positions-description">
+            Venda cada ativo individualmente com base no preço pago na compra. Se você comprou a preços diferentes, pode optar por vender apenas os lotes com lucro e manter os demais.
+          </p>
+
+          <div class="table-scroll">
+            <table class="positions-table">
+              <thead>
+                <tr>
+                  <th scope="col">Data da Compra</th>
+                  <th scope="col">Preço Pago</th>
+                  <th scope="col">Cotação Atual</th>
+                  <th scope="col">Quantidade</th>
+                  <th scope="col">Valor Atual</th>
+                  <th scope="col">Rendimento (L/P)</th>
+                  <th scope="col">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="positions-list">
+                <tr><td colspan="7" class="empty-cell">Nenhum lote de ativo em custódia.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Operações de Compra e Venda Separadas -->
         <section class="panel trade-card" aria-label="Negociação">
           <div class="trade-header">
             <div>
@@ -167,6 +202,23 @@
             </div>
 
             <form id="form-sell" class="trade-panel">
+              <label for="sell-lot-select">
+                <span>Vender Lote Específico (opcional)</span>
+                <select id="sell-lot-select" class="sell-lot-select">
+                  <option value="">Todos os lotes / Padrão (FIFO)</option>
+                </select>
+              </label>
+
+              <div id="sell-lot-alert" class="sell-lot-alert" hidden>
+                <div class="sell-lot-alert-header">
+                  <strong id="sell-lot-alert-title">Lote selecionado</strong>
+                  <span id="sell-lot-alert-badge" class="lot-badge">—</span>
+                </div>
+                <div class="sell-lot-alert-body" id="sell-lot-alert-body">
+                  <!-- Detalhes do lote selecionado -->
+                </div>
+              </div>
+
               <label for="sell-amount">
                 <span>Quantidade de ativos a vender</span>
                 <input id="sell-amount" name="amount" type="number" min="0.000001" step="any" placeholder="Ex.: 1.5" required>

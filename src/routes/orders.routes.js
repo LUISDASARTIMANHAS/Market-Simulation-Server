@@ -17,7 +17,8 @@ const createOrderHandler = (side) => async (req, res) => {
 		!input ||
 		typeof input !== "object" ||
 		Array.isArray(input) ||
-		!("amount" in input)
+		(side === "BUY" && !("amount" in input)) ||
+		(side === "SELL" && !("amount" in input) && !("positionId" in input))
 	) {
 		return httpBadRequest(res, "Parâmetros inválidos para a ordem.", { input });
 	}
@@ -27,7 +28,11 @@ const createOrderHandler = (side) => async (req, res) => {
 			req.marketAccountId,
 			side === "BUY"
 				? { side, quoteAmount: input.amount }
-				: { side, assetAmount: input.amount },
+				: {
+						side,
+						positionId: input.positionId,
+						assetAmount: input.amount,
+					},
 		);
 		return res.status(201).json({ success: true, data: result });
 	} catch (error) {

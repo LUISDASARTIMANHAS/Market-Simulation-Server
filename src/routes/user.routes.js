@@ -16,4 +16,9 @@ router.get('/history', requireApiAccount, (req, res) => {
   return res.status(200).json({ success: true, data: history });
 });
 
+router.get('/positions', requireApiAccount, (req, res) => {
+  const positions = marketSimulator.getPositions(req.marketAccountId);
+  return res.status(200).json({ success: true, data: positions });
+});
+
 export default router;

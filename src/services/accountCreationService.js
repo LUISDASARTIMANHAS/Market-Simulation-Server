@@ -29,6 +29,7 @@ export const createAccountRecord = (accounts, input = {}, isAdmin = false) => {
 		balance: INITIAL_VIRTUAL_BALANCE,
 		assetBalance: 0,
 		averagePrice: 0,
+		positions: [],
 		history: [],
 		createdAt: new Date().toISOString(),
 	};

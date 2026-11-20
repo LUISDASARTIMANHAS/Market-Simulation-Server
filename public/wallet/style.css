@@ -71,3 +71,29 @@
   .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* Painel de Posições e Lotes Individuais */
+.positions-card { margin-top: 20px; }
+.positions-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+.positions-badge-summary { font-size: .85rem; color: var(--muted); background: var(--surface-raised); border: 1px solid var(--border); padding: 4px 12px; border-radius: 999px; }
+.positions-badge-summary strong { color: var(--accent); }
+.positions-description { color: var(--muted); font-size: .84rem; line-height: 1.5; margin-bottom: 16px; }
+
+.positions-table th, .positions-table td { font-variant-numeric: tabular-nums; }
+.profit-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: .75rem; font-weight: 700; }
+.profit-badge.positive { background: #143c34; color: var(--accent); }
+.profit-badge.negative { background: #3c2028; color: var(--danger); }
+.profit-badge.neutral { background: #263344; color: var(--muted); }
+
+.btn-sell-lot { min-height: 28px; padding: 0 10px; font-size: .75rem; font-weight: 700; border-radius: 6px; border: 1px solid #752830; background: #3c1a20; color: #ff8d93; cursor: pointer; transition: all .15s ease; }
+.btn-sell-lot:hover { background: #5c202a; color: #fff; }
+
+.sell-lot-select { width: 100%; min-height: 42px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-raised); color: #edf2f7; font-size: .9rem; font-weight: 500; }
+.sell-lot-select:focus { border-color: var(--accent); outline: none; }
+
+.sell-lot-alert { padding: 12px 14px; border-radius: 8px; border: 1px solid #5a3c20; background: #291a0e; margin-bottom: 12px; display: grid; gap: 6px; }
+.sell-lot-alert.profit { border-color: #205a38; background: #0e291b; }
+.sell-lot-alert.loss { border-color: #5a2028; background: #290e13; }
+.sell-lot-alert-header { display: flex; align-items: center; justify-content: space-between; font-size: .82rem; }
+.sell-lot-alert-body { font-size: .82rem; color: #cbd5e1; line-height: 1.4; }
+
+

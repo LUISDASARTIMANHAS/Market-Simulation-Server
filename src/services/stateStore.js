@@ -116,6 +116,7 @@ export class JsonStateStore {
           balance: acc.balance,
           assetBalance: portfolio ? portfolio.quantity : 0,
           averagePrice: portfolio ? portfolio.averagePrice : 0,
+          positions: Array.isArray(portfolio?.positions) ? portfolio.positions : [],
           history: accountTrades,
           createdAt: acc.createdAt,
           updatedAt: acc.updatedAt,
@@ -204,6 +205,7 @@ export class JsonStateStore {
       assetId: DEFAULT_ASSET_ID,
       quantity: roundAsset(acc.assetBalance),
       averagePrice: roundMoney(acc.averagePrice || 0),
+      positions: Array.isArray(acc.positions) ? acc.positions : [],
       updatedAt: acc.updatedAt || new Date().toISOString(),
     }));
 

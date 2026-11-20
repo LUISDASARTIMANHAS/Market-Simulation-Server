@@ -24,6 +24,7 @@ const createOrderError = (message, statusCode = 400) =>
 export const validateAndCalculateOrder = (account, input, currentPrice) => {
 	let amount;
 	let total;
+	let selectedPosition = null;
 
 	if (input?.side === "BUY") {
 		const quoteAmount = Number(input.quoteAmount);
@@ -46,16 +47,44 @@ export const validateAndCalculateOrder = (account, input, currentPrice) => {
 
 		amount = roundAsset(total / currentPrice);
 	} else if (input?.side === "SELL") {
-		amount = Number(input.assetAmount);
+		// Venda de lote/posição individual específica
+		if (typeof input?.positionId === "string" && input.positionId.trim()) {
+			const posId = input.positionId.trim();
+			const positions = Array.isArray(account.positions) ? account.positions : [];
+			selectedPosition = positions.find((p) => p.positionId === posId);
 
-		if (!Number.isFinite(amount) || amount <= 0) {
-			throw createOrderError("Informe assetAmount maior que zero para venda.");
-		}
+			if (!selectedPosition || selectedPosition.quantity <= 0) {
+				throw createOrderError("Posição/lote de ativo não encontrado ou já liquidado.", 404);
+			}
 
-		amount = roundAsset(amount);
+			if (input.assetAmount !== undefined && input.assetAmount !== null && input.assetAmount !== "") {
+				amount = Number(input.assetAmount);
+				if (!Number.isFinite(amount) || amount <= 0) {
+					throw createOrderError("Informe quantidade válida maior que zero para venda deste lote.");
+				}
+				amount = roundAsset(amount);
+				if (amount > selectedPosition.quantity) {
+					throw createOrderError(
+						`Quantidade solicitada (${amount}) excede o disponível no lote selecionado (${selectedPosition.quantity}).`,
+					);
+				}
+			} else {
+				// Vende o lote completo por padrão
+				amount = roundAsset(selectedPosition.quantity);
+			}
+		} else {
+			// Venda global por quantidade agregada
+			amount = Number(input.assetAmount);
 
-		if (amount > account.assetBalance) {
-			throw createOrderError("Saldo de ativo insuficiente.");
+			if (!Number.isFinite(amount) || amount <= 0) {
+				throw createOrderError("Informe assetAmount maior que zero para venda.");
+			}
+
+			amount = roundAsset(amount);
+
+			if (amount > account.assetBalance) {
+				throw createOrderError("Saldo de ativo insuficiente.");
+			}
 		}
 
 		total = roundMoney(amount * currentPrice);
@@ -73,5 +102,5 @@ export const validateAndCalculateOrder = (account, input, currentPrice) => {
 		throw createOrderError("A ordem é menor que a precisão mínima permitida.");
 	}
 
-	return { amount, total };
+	return { amount, total, selectedPosition };
 };

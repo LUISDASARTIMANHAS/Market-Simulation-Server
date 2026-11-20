@@ -46,6 +46,14 @@ const elements = {
   sellPreviewUsd: document.querySelector('#sell-preview-usd'),
   btnSubmitSell: document.querySelector('#btn-submit-sell'),
   accountHistory: document.querySelector('#account-history'),
+  positionsCard: document.querySelector('#positions-card'),
+  positionsCount: document.querySelector('#positions-count'),
+  positionsList: document.querySelector('#positions-list'),
+  sellLotSelect: document.querySelector('#sell-lot-select'),
+  sellLotAlert: document.querySelector('#sell-lot-alert'),
+  sellLotAlertTitle: document.querySelector('#sell-lot-alert-title'),
+  sellLotAlertBadge: document.querySelector('#sell-lot-alert-badge'),
+  sellLotAlertBody: document.querySelector('#sell-lot-alert-body'),
   filterAll: document.querySelector('#filter-all'),
   filterBuy: document.querySelector('#filter-buy'),
   filterSell: document.querySelector('#filter-sell'),
@@ -136,8 +144,13 @@ document.querySelectorAll('[data-sell-pct]').forEach((btn) => {
   btn.addEventListener('click', () => {
     if (!currentAccount) return;
     const pct = Number(btn.dataset.sellPct) || 0;
-    const maxAssets = currentAccount.assetBalance * pct;
-    elements.sellAmount.value = maxAssets > 0 ? maxAssets.toFixed(6) : '';
+    const selectedLotId = elements.sellLotSelect?.value;
+    const selectedLot = selectedLotId
+      ? (currentAccount.positions || []).find((p) => p.positionId === selectedLotId)
+      : null;
+    const available = selectedLot ? selectedLot.quantity : currentAccount.assetBalance;
+    const amount = available * pct;
+    elements.sellAmount.value = amount > 0 ? amount.toFixed(6) : '';
     updateSellPreview();
   });
 });
@@ -178,8 +191,148 @@ function renderAccount(account) {
   elements.buyAvailableCash.textContent = money(account.balance);
   elements.sellAvailableAssets.textContent = `${number(account.assetBalance)} ativos`;
 
+  renderPositions(account.positions);
+  renderLotSelect(account.positions);
+
   updateBuyPreview();
   updateSellPreview();
+}
+
+function renderPositions(positions) {
+  if (!elements.positionsList) return;
+  const list = Array.isArray(positions) ? positions : [];
+  if (elements.positionsCount) elements.positionsCount.textContent = list.length;
+
+  elements.positionsList.replaceChildren();
+
+  if (!list.length) {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 7;
+    cell.className = 'empty-cell';
+    cell.textContent = 'Nenhum lote de ativo em custódia. Suas compras aparecerão aqui separadas por preço.';
+    row.append(cell);
+    elements.positionsList.append(row);
+    return;
+  }
+
+  for (const pos of list) {
+    const row = document.createElement('tr');
+
+    const tdTime = document.createElement('td');
+    tdTime.textContent = formatTime(pos.createdAt);
+
+    const tdBuyPrice = document.createElement('td');
+    tdBuyPrice.textContent = money(pos.buyPrice);
+
+    const tdCurrentPrice = document.createElement('td');
+    tdCurrentPrice.textContent = money(currentPrice || (pos.quantity > 0 ? pos.currentValue / pos.quantity : pos.buyPrice));
+
+    const tdQty = document.createElement('td');
+    tdQty.textContent = number(pos.quantity);
+
+    const tdVal = document.createElement('td');
+    tdVal.textContent = money(pos.currentValue);
+
+    const tdProfit = document.createElement('td');
+    const badge = document.createElement('span');
+    const isProfit = pos.profit > 0;
+    const isLoss = pos.profit < 0;
+    badge.className = `profit-badge ${isProfit ? 'positive' : isLoss ? 'negative' : 'neutral'}`;
+    const sign = isProfit ? '+ ' : isLoss ? '- ' : '';
+    const pctSign = isProfit ? '+' : '';
+    badge.textContent = `${sign}${money(Math.abs(pos.profit))} (${pctSign}${pos.profitPercent}%)`;
+    tdProfit.append(badge);
+
+    const tdAction = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn-sell-lot';
+    btn.textContent = 'Vender este lote';
+    btn.title = `Vender este lote de ${number(pos.quantity)} ativos comprados a ${money(pos.buyPrice)}`;
+    btn.addEventListener('click', () => {
+      selectLotForSale(pos.positionId);
+    });
+    tdAction.append(btn);
+
+    row.append(tdTime, tdBuyPrice, tdCurrentPrice, tdQty, tdVal, tdProfit, tdAction);
+    elements.positionsList.append(row);
+  }
+}
+
+function selectLotForSale(positionId) {
+  switchTradeTab('SELL');
+  if (elements.sellLotSelect) {
+    elements.sellLotSelect.value = positionId;
+    handleLotSelectChange();
+  }
+  elements.sellPanel?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderLotSelect(positions) {
+  if (!elements.sellLotSelect) return;
+  const currentSelected = elements.sellLotSelect.value;
+  elements.sellLotSelect.replaceChildren();
+
+  const defaultOpt = document.createElement('option');
+  defaultOpt.value = '';
+  defaultOpt.textContent = 'Todos os lotes / Padrão (FIFO)';
+  elements.sellLotSelect.append(defaultOpt);
+
+  const list = Array.isArray(positions) ? positions : [];
+  for (const pos of list) {
+    const opt = document.createElement('option');
+    opt.value = pos.positionId;
+    const isUp = pos.profit >= 0;
+    opt.textContent = `Lote #${pos.positionId.slice(-6)} · ${number(pos.quantity)} un. @ ${money(pos.buyPrice)} (${isUp ? '+' : ''}${money(pos.profit)})`;
+    elements.sellLotSelect.append(opt);
+  }
+
+  if (list.some((p) => p.positionId === currentSelected)) {
+    elements.sellLotSelect.value = currentSelected;
+  } else {
+    elements.sellLotSelect.value = '';
+  }
+
+  handleLotSelectChange();
+}
+
+function handleLotSelectChange() {
+  if (!elements.sellLotSelect) return;
+  const posId = elements.sellLotSelect.value;
+  const positions = currentAccount?.positions || [];
+  const selected = positions.find((p) => p.positionId === posId);
+
+  if (!selected) {
+    if (elements.sellLotAlert) elements.sellLotAlert.hidden = true;
+    updateSellPreview();
+    return;
+  }
+
+  if (elements.sellLotAlert) {
+    elements.sellLotAlert.hidden = false;
+    const isProfit = selected.profit >= 0;
+    elements.sellLotAlert.className = `sell-lot-alert ${isProfit ? 'profit' : 'loss'}`;
+    if (elements.sellLotAlertTitle) {
+      elements.sellLotAlertTitle.textContent = `Lote #${selected.positionId.slice(-6)} Selecionado`;
+    }
+    if (elements.sellLotAlertBadge) {
+      elements.sellLotAlertBadge.textContent = isProfit
+        ? `LUCRO: +${money(selected.profit)} (+${selected.profitPercent}%)`
+        : `PREJUÍZO: ${money(selected.profit)} (${selected.profitPercent}%)`;
+      elements.sellLotAlertBadge.className = `profit-badge ${isProfit ? 'positive' : 'negative'}`;
+    }
+    if (elements.sellLotAlertBody) {
+      elements.sellLotAlertBody.textContent = `Comprado a ${money(selected.buyPrice)} · Saldo do lote: ${number(selected.quantity)} ativos · Cotação vigente: ${money(currentPrice)}.`;
+    }
+  }
+
+  elements.sellAmount.value = selected.quantity.toFixed(6);
+  updateSellPreview();
+}
+
+if (elements.sellLotSelect) {
+  elements.sellLotSelect.addEventListener('change', handleLotSelectChange);
 }
 
 function renderHistoryRows() {
@@ -288,6 +441,11 @@ async function loadMarketPrice() {
 
       updateBuyPreview();
       updateSellPreview();
+
+      if (currentAccount?.positions) {
+        renderPositions(currentAccount.positions);
+        renderLotSelect(currentAccount.positions);
+      }
     }
   } catch {
     // Falha silenciosa no mercado
@@ -354,17 +512,28 @@ elements.formSell.addEventListener('submit', async (event) => {
     return;
   }
 
+  const positionId = elements.sellLotSelect?.value || undefined;
+
   elements.btnSubmitSell.disabled = true;
   try {
+    const payload = positionId ? { positionId, amount } : { amount };
     const data = await request('/orders/sell', {
       method: 'POST',
-      body: JSON.stringify({ amount }),
+      body: JSON.stringify(payload),
     });
     renderAccount(data.account);
     await loadHistory();
     elements.sellAmount.value = '';
+    if (elements.sellLotSelect) {
+      elements.sellLotSelect.value = '';
+      handleLotSelectChange();
+    }
     updateSellPreview();
-    showFeedback(`Venda concluída com sucesso! ${number(data.order.amount)} ativo(s) por ${money(data.order.total)}.`);
+
+    const profitMsg = data.order?.realizedProfit !== undefined
+      ? ` (Resultado da operação: ${data.order.realizedProfit >= 0 ? '+' : ''}${money(data.order.realizedProfit)})`
+      : '';
+    showFeedback(`Venda concluída com sucesso! ${number(data.order.amount)} ativo(s) por ${money(data.order.total)}.${profitMsg}`);
   } catch (error) {
     showFeedback(error.message, true);
   } finally {
