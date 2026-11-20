@@ -121,6 +121,9 @@ Crie um arquivo `.env` na raiz do projeto (use `env.example` como modelo) para p
 | `MARKET_NODE_PUBLIC_URL` | URL | `""` | URL pública acessível deste nó para atalho de navegação no master. |
 | `MARKET_NODE_SYNC_MODE` | String | `bidirectional` | Modo de sincronização do nó: `bidirectional` (envia e recebe) ou `receive-only` (apenas recebe). |
 | `MARKET_SYNC_INTERVAL_SECONDS` | Inteiro | `5` | Intervalo em segundos para reconciliação periódica com o master. |
+| `MARKET_SYNC_TIMEOUT_MS` | Inteiro | `30000` (30s) | Tempo limite (em milissegundos) para requisições HTTP de sincronização entre nodes e master. |
+| `MARKET_SYNC_RETRY_INTERVAL_MS` | Inteiro | `5000` (5s) | Intervalo (em milissegundos) entre tentativas contínuas de conexão/pull inicial do node. |
+| `MARKET_START_RETRY_INTERVAL_MS` | Inteiro | `5000` (5s) | Intervalo (em milissegundos) entre tentativas de inicialização do servidor caso ocorra falha no boot. |
 
 ---
 

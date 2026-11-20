@@ -3,7 +3,9 @@ import { createRequire } from 'node:module';
 import { logger } from '../utils/logger.js';
 import { sanitizeNodeId } from './clusterRegistry.js';
 
-const SYNC_TIMEOUT_MS = 10000;
+const DEFAULT_SYNC_TIMEOUT_MS = Number(process.env.MARKET_SYNC_TIMEOUT_MS || 30000);
+const DEFAULT_RETRY_INTERVAL_MS = Number(process.env.MARKET_SYNC_RETRY_INTERVAL_MS || 5000);
+const DEFAULT_INITIAL_RETRIES = Number(process.env.MARKET_SYNC_INITIAL_RETRIES || 0);
 const require = createRequire(import.meta.url);
 const packageInfo = require('../../package.json');
 
@@ -28,6 +30,9 @@ export class MarketSyncService {
     store,
     simulator,
     intervalMs = Number(process.env.MARKET_SYNC_INTERVAL_SECONDS || 5) * 1000,
+    timeoutMs = DEFAULT_SYNC_TIMEOUT_MS,
+    initialPullRetryIntervalMs = DEFAULT_RETRY_INTERVAL_MS,
+    initialPullMaxRetries = DEFAULT_INITIAL_RETRIES,
     fetchImpl = fetch,
   }) {
     this.role = role;
@@ -41,10 +46,14 @@ export class MarketSyncService {
     this.store = store;
     this.simulator = simulator;
     this.intervalMs = intervalMs;
+    this.timeoutMs = timeoutMs;
+    this.initialPullRetryIntervalMs = initialPullRetryIntervalMs;
+    this.initialPullMaxRetries = initialPullMaxRetries;
     this.fetchImpl = fetchImpl;
     this.interval = null;
     this.dirty = false;
     this.pushQueue = Promise.resolve();
+    this.stopped = false;
 
     this.masterRevision = null;
     this.lastPullAt = null;
@@ -58,13 +67,15 @@ export class MarketSyncService {
   }
 
   async start() {
+    this.stopped = false;
     logger.info('market_sync.starting', {
       role: this.role,
       syncMode: this.role === 'node' ? this.syncMode : null,
       nodeId: this.nodeId,
       masterUrl: this.getMasterOrigin(),
       intervalMs: this.intervalMs,
-      timeoutMs: SYNC_TIMEOUT_MS,
+      timeoutMs: this.timeoutMs,
+      initialPullRetryIntervalMs: this.initialPullRetryIntervalMs,
     });
     if (!['standalone', 'master', 'node'].includes(this.role)) {
       logger.error('market_sync.invalid_role', { role: this.role, nodeId: this.nodeId });
@@ -91,21 +102,40 @@ export class MarketSyncService {
       throw new Error('MARKET_SYNC_MASTER_URL é obrigatório no node.');
     }
 
-    logger.info('market_sync.node_initial_pull_started', {
-      nodeId: this.nodeId,
-      masterUrl: this.getMasterOrigin(),
-      localRevision: this.localRevision,
-    });
-    try {
-      await this.pullSnapshot();
-    } catch (error) {
-      logger.error('market_sync.node_initial_pull_failed', {
+    let attempt = 0;
+    while (!this.stopped) {
+      attempt += 1;
+      logger.info('market_sync.node_initial_pull_started', {
         nodeId: this.nodeId,
         masterUrl: this.getMasterOrigin(),
-        ...getErrorDetails(error),
+        localRevision: this.localRevision,
+        attempt,
       });
-      throw error;
+      try {
+        await this.pullSnapshot();
+        break;
+      } catch (error) {
+        logger.error('market_sync.node_initial_pull_failed', {
+          nodeId: this.nodeId,
+          masterUrl: this.getMasterOrigin(),
+          attempt,
+          ...getErrorDetails(error),
+        });
+        if (this.stopped) break;
+        if (this.initialPullMaxRetries > 0 && attempt >= this.initialPullMaxRetries) {
+          throw error;
+        }
+        const retryDelay = this.initialPullRetryIntervalMs;
+        logger.warn('market_sync.node_initial_pull_retrying', {
+          nodeId: this.nodeId,
+          attempt,
+          nextAttemptInMs: retryDelay,
+        });
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      }
     }
+    if (this.stopped) return;
+
     this.simulator.setSynchronizationHandler(
       this.canPush ? () => this.pushSnapshot() : null,
     );
@@ -129,6 +159,7 @@ export class MarketSyncService {
   }
 
   stop() {
+    this.stopped = true;
     if (this.interval) clearInterval(this.interval);
     this.interval = null;
     this.simulator.setSynchronizationHandler(null);
@@ -153,13 +184,13 @@ export class MarketSyncService {
       method,
       endpoint: `${url.origin}${url.pathname}`,
       localRevision: this.localRevision,
-      timeoutMs: SYNC_TIMEOUT_MS,
+      timeoutMs: this.timeoutMs,
     });
 
     try {
       const response = await this.fetchImpl(url, {
         ...options,
-        signal: AbortSignal.timeout(SYNC_TIMEOUT_MS),
+        signal: AbortSignal.timeout(this.timeoutMs),
         headers: {
           'Content-Type': 'application/json',
           'X-Market-Sync-Token': this.token,

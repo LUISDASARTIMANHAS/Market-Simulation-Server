@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 102.58,
-  "sequence": 1383,
+  "currentPrice": 101.86,
+  "sequence": 1385,
   "totalVolume": 77859.59,
   "buyVolume": 40293.97,
   "sellVolume": 37565.62,
   "latestMarketEvent": {
-    "eventId": "e79340fd-276c-4ddc-86d8-c1d41e56101b",
+    "eventId": "eedf330c-e7b7-43ac-b6a5-8716b12c2bae",
     "assetId": "SIM",
-    "category": "Tecnologia",
-    "title": "Avanço tecnológico",
-    "description": "Uma inovação relevante melhora as perspectivas do mercado.",
-    "impactPercent": 0.6889,
-    "occurredAt": "2026-11-20T00:34:00.920Z"
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.2041,
+    "occurredAt": "2026-11-20T00:37:02.999Z"
   },
-  "nextMarketEventAt": "2026-11-20T00:35:57.956Z",
-  "syncRevision": 311,
-  "updatedAt": "2026-11-20T00:34:00.920Z"
+  "nextMarketEventAt": "2026-11-20T00:38:21.726Z",
+  "syncRevision": 313,
+  "updatedAt": "2026-11-20T00:37:02.999Z"
 }

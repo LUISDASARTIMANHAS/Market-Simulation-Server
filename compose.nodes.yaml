@@ -19,6 +19,9 @@ services:
       MARKET_NODE_PUBLIC_URL: ${MARKET_NODE_PUBLIC_URL_NODE_1:-}
       MARKET_NODE_SYNC_MODE: ${MARKET_NODE_SYNC_MODE_NODE_1:-bidirectional}
       MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-5}
+      MARKET_SYNC_TIMEOUT_MS: ${MARKET_SYNC_INTERVAL_SECONDS:-3000}
+      MARKET_SYNC_RETRY_INTERVAL_MS: ${MARKET_SYNC_INTERVAL_SECONDS:-5000}
+      MARKET_START_RETRY_INTERVAL_MS: ${MARKET_SYNC_INTERVAL_SECONDS:-5000}
     volumes:
       - node-1-data:/app/data
     deploy:
@@ -51,6 +54,9 @@ services:
       MARKET_NODE_SYNC_MODE: ${MARKET_NODE_SYNC_MODE_NODE_2:-receive-only}
       # a cada 60 segundos ele puxa o banco, pode ser usado para testes ou backup local de 60s, mantendo assim a consistencia do mercado master, sem enviar dados de teste.
       MARKET_SYNC_INTERVAL_SECONDS: ${MARKET_SYNC_INTERVAL_SECONDS:-60}
+      MARKET_SYNC_TIMEOUT_MS: ${MARKET_SYNC_INTERVAL_SECONDS:-3000}
+      MARKET_SYNC_RETRY_INTERVAL_MS: ${MARKET_SYNC_INTERVAL_SECONDS:-5000}
+      MARKET_START_RETRY_INTERVAL_MS: ${MARKET_SYNC_INTERVAL_SECONDS:-5000}
     volumes:
       - node-2-data:/app/data
     deploy:

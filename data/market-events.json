@@ -1,5 +1,23 @@
 [
   {
+    "eventId": "eedf330c-e7b7-43ac-b6a5-8716b12c2bae",
+    "assetId": "SIM",
+    "category": "Política",
+    "title": "Acordo político",
+    "description": "Avanço em negociações reduz a incerteza.",
+    "impactPercent": 0.2041,
+    "occurredAt": "2026-11-20T00:37:02.999Z"
+  },
+  {
+    "eventId": "9be2ba4a-0974-4db2-a3d9-8c935e738878",
+    "assetId": "SIM",
+    "category": "Inflação",
+    "title": "Inflação acima do esperado",
+    "description": "Pressão inflacionária reduz o apetite por risco.",
+    "impactPercent": -0.9025,
+    "occurredAt": "2026-11-20T00:35:58.449Z"
+  },
+  {
     "eventId": "e79340fd-276c-4ddc-86d8-c1d41e56101b",
     "assetId": "SIM",
     "category": "Tecnologia",

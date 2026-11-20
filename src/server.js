@@ -64,26 +64,42 @@ async function startMarketServer() {
     accounts: Array.isArray(savedState.accounts) ? savedState.accounts.length : 0,
   });
 
-  app.listen(PORT, () => {
-    if (adminSetup) {
-      console.log(`ADMIN API TOKEN (guarde em local seguro): ${adminSetup.apiKey}`);
-      if (false) {
-        console.log(`ADMIN API TOKEN (guarde em local seguro; será exibido apenas nesta criação): ${adminSetup.apiKey}`);
-      } else {
+  return new Promise((resolve, reject) => {
+    const server = app.listen(PORT, () => {
+      if (adminSetup) {
+        console.log(`ADMIN API TOKEN (guarde em local seguro): ${adminSetup.apiKey}`);
         console.log(`Administrador pronto: ${adminSetup.accountId}. O token não é armazenado em texto puro.`);
+      } else {
+        logger.info('server.node_mode', { masterUrl: syncService.masterUrl });
       }
-    } else {
-      logger.info('server.node_mode', { masterUrl: syncService.masterUrl });
-    }
-    logger.info('server.started', {
-      port: PORT,
-      marketStatusUrl: `http://localhost:${PORT}/api/market/status`,
-      stateFile: process.env.MARKET_STATE_FILE || 'data/market-state.json',
+      logger.info('server.started', {
+        port: PORT,
+        marketStatusUrl: `http://localhost:${PORT}/api/market/status`,
+        stateFile: process.env.MARKET_STATE_FILE || 'data/market-state.json',
+      });
+      resolve(server);
     });
+    server.once('error', reject);
   });
 }
 
-startMarketServer().catch((error) => {
-  logger.error('server.start_failed', { message: error.message });
-  process.exitCode = 1;
-});
+async function startServerWithRetry() {
+  let attempt = 0;
+  const retryIntervalMs = Number(process.env.MARKET_START_RETRY_INTERVAL_MS || 5000);
+  while (true) {
+    attempt += 1;
+    try {
+      await startMarketServer();
+      break;
+    } catch (error) {
+      logger.error('server.start_failed', {
+        attempt,
+        retryInMs: retryIntervalMs,
+        message: error.message,
+      });
+      await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));
+    }
+  }
+}
+
+startServerWithRetry();
