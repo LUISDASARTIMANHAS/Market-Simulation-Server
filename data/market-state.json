@@ -1,20 +1,20 @@
 {
   "assetId": "SIM",
-  "currentPrice": 101.47,
-  "sequence": 1358,
+  "currentPrice": 102.97,
+  "sequence": 1376,
   "totalVolume": 77859.59,
   "buyVolume": 40293.97,
   "sellVolume": 37565.62,
   "latestMarketEvent": {
-    "eventId": "d60e1118-9f78-473f-b1d9-515c6c2a629f",
+    "eventId": "321fe809-a962-47c5-a8bb-2d57dabc9641",
     "assetId": "SIM",
-    "category": "Emprego",
-    "title": "Mercado de trabalho enfraquece",
-    "description": "Sinais de desaceleração aumentam a cautela dos investidores.",
-    "impactPercent": -0.4138,
-    "occurredAt": "2026-10-20T21:13:38.324Z"
+    "category": "Tecnologia",
+    "title": "Recuo tecnológico",
+    "description": "Um atraso relevante reduz as perspectivas do mercado.",
+    "impactPercent": -0.6803,
+    "occurredAt": "2026-11-20T00:19:22.496Z"
   },
-  "nextMarketEventAt": "2026-10-20T21:15:33.056Z",
-  "syncRevision": 285,
-  "updatedAt": "2026-10-20T21:13:38.324Z"
+  "nextMarketEventAt": "2026-11-20T00:20:47.513Z",
+  "syncRevision": 303,
+  "updatedAt": "2026-11-20T00:19:22.496Z"
 }

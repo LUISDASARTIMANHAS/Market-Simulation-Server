@@ -104,3 +104,17 @@ Para evitar erros comuns de arredondamento inerentes ao ponto flutuante binário
 - Antes da execução de qualquer ordem, a carteira do usuário é verificada contra saldo negativo ou insuficiência de custódia, retornando `HTTP 400 Bad Request` caso não haja fundos.
 - Operações de leitura e escrita nos dados financeiros são enfileiradas e executadas de forma atômica, prevenindo condições de corrida (*race conditions*).
 
+---
+
+## 6. Pré-processamento e Indicadores Técnicos
+
+Para poupar processamento computacional nos clientes web, dashboards e sistemas de inteligência artificial ou trading algorítmico, o servidor realiza o pré-processamento de indicadores em memória e disponibiliza os resultados pré-calculados nas rotas `GET /api/market/status` e `GET /api/market/indicators`:
+
+- **Estatísticas da Janela**: Mínima (`low`), Máxima (`high`), Amplitude/Spread (`spread`), Variação Nominal (`change`), Variação Percentual (`changePercent`) e Volatilidade (`volatility`).
+- **Médias Móveis Simples (SMA)**: Períodos 9 (`sma9` - rápida) e 21 (`sma21` - lenta).
+- **Bandas de Bollinger**: Banda superior (`upper`), média (`middle`) e inferior (`lower`) com 2 desvios-padrão.
+- **RSI (14 períodos)**: Valor do Índice de Força Relativa de 0 a 100 com classificação de status (`Sobrecomprado`, `Sobrevendido` ou `Neutro`).
+- **Detecção de Tendência & Sentimento**: Análise combinada de preço, SMA e RSI com classificação semântica (`up`/`down`/`neutral`, sentimento `bullish`/`bearish`/`neutral` e rótulo visual).
+- **Pressão de Ordens (Order Flow Pressure)**: Percentuais de compras vs vendas, volumes acumulados e texto formatado (`ratioText`).
+
+

@@ -143,6 +143,42 @@ Retorna o estado operacional atual do mercado, incluindo cotação do ativo, seq
       "buys": 8000.0,
       "sells": 4500.0
     },
+    "indicators": {
+      "currentPrice": 101.89,
+      "startPrice": 99.57,
+      "low": 99.22,
+      "high": 102.61,
+      "spread": 3.39,
+      "change": 2.32,
+      "changePercent": 2.33,
+      "volatility": 3.42,
+      "rsi": {
+        "period": 14,
+        "value": 53.75,
+        "status": "Neutro"
+      },
+      "trend": {
+        "direction": "up",
+        "sentiment": "bullish",
+        "label": "Tendência de Alta 📈"
+      },
+      "orderPressure": {
+        "buyPercent": 52,
+        "sellPercent": 48,
+        "buysVolume": 40293.97,
+        "sellsVolume": 37565.62,
+        "ratioText": "52% Compras · 48% Vendas"
+      },
+      "movingAverages": {
+        "sma9": 101.71,
+        "sma21": 101.39
+      },
+      "bollinger": {
+        "upper": 102.62,
+        "middle": 101.42,
+        "lower": 100.22
+      }
+    },
     "recentTrades": [
       {
         "tradeId": "t1-trade-uuid",
@@ -178,7 +214,73 @@ Retorna o estado operacional atual do mercado, incluindo cotação do ativo, seq
 
 ---
 
-### 4.2 Listar Eventos Macroeconômicos
+### 4.2 Obter Indicadores Técnicos Pré-Processados
+Retorna o conjunto de indicadores técnicos calculados pelo servidor sobre uma janela de ticks do histórico de preços e pressão do livro de ordens, poupando processamento de clientes web, dashboards e agentes de trading.
+
+- **Método**: `GET`
+- **Rota**: `/api/market/indicators`
+- **Autenticação**: Nenhuma (Público)
+- **Parâmetros de Query**:
+  - `window` *(opcional, número, padrão: 30, máx: 200)*: Quantidade de ticks recentes a considerar no cálculo dos limites e médias.
+
+#### Exemplo de Requisição
+```bash
+curl http://localhost:3001/api/market/indicators?window=30
+```
+
+#### Resposta de Sucesso (`200 OK`)
+```json
+{
+  "success": true,
+  "data": {
+    "currentPrice": 101.89,
+    "startPrice": 99.57,
+    "low": 99.22,
+    "high": 102.61,
+    "spread": 3.39,
+    "change": 2.32,
+    "changePercent": 2.33,
+    "volatility": 3.42,
+    "rsi": {
+      "period": 14,
+      "value": 53.75,
+      "status": "Neutro"
+    },
+    "trend": {
+      "direction": "up",
+      "sentiment": "bullish",
+      "label": "Tendência de Alta 📈"
+    },
+    "orderPressure": {
+      "buyPercent": 52,
+      "sellPercent": 48,
+      "buysVolume": 40293.97,
+      "sellsVolume": 37565.62,
+      "ratioText": "52% Compras · 48% Vendas"
+    },
+    "movingAverages": {
+      "sma9": 101.71,
+      "sma21": 101.39
+    },
+    "bollinger": {
+      "upper": 102.62,
+      "middle": 101.42,
+      "lower": 100.22
+    }
+  },
+  "meta": {
+    "server": {
+      "name": "market-standalone",
+      "version": "1.5.5",
+      "role": "standalone"
+    }
+  }
+}
+```
+
+---
+
+### 4.3 Listar Eventos Macroeconômicos
 Retorna a lista completa de todos os eventos simulados ocorridos no mercado, ordenados do mais recente para o mais antigo.
 
 - **Método**: `GET`

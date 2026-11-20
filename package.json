@@ -1,6 +1,6 @@
 {
   "name": "market-simulation-server",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "private": true,
   "type": "module",
   "description": "Servidor independente de simulação e publicação de preços de mercado.",
@@ -11,7 +11,7 @@
     "start": "npm run autoUpdate && nodemon src/server.js",
     "autoUpdate": "npm install && npm update",
     "dev": "node --watch src/server.js",
-    "test": "node --test --test-force-exit test/*.test.js",
+    "test": "node --test --test-concurrency=1 --test-force-exit test/*.test.js",
     "migrate": "node src/scripts/migrateDatabase.js"
   },
   "dependencies": {

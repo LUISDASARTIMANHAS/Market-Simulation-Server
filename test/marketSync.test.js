@@ -38,7 +38,7 @@ test('master aceita a primeira Sincronizações e node atrasado aplica o snapsho
       const simulator = new MarketSimulator(store);
       simulator.initialize(await store.load());
       const syncService = new MarketSyncService({
-        role: 'node', nodeId: name, masterUrl, token: 'test-sync-token', store, simulator, intervalMs,
+        role: 'node', syncMode: 'bidirectional', nodeId: name, masterUrl, token: 'test-sync-token', store, simulator, intervalMs,
       });
       syncServices.push(syncService);
       await syncService.start();
@@ -111,7 +111,7 @@ test('duas ordens no mesmo tempo em nodes diferentes: o node mais rápido vence 
       const simulator = new MarketSimulator(store);
       simulator.initialize(await store.load());
       const syncService = new MarketSyncService({
-        role: 'node', masterUrl, token: 'test-sync-token', store, simulator, intervalMs: 60000,
+        role: 'node', syncMode: 'bidirectional', masterUrl, token: 'test-sync-token', store, simulator, intervalMs: 60000,
       });
       syncServices.push(syncService);
       await syncService.start();

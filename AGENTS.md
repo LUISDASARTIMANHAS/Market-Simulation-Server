@@ -2,75 +2,134 @@
 
 ## Project overview
 
-This repository is a standalone Node.js + Express market simulator for paper trading. It exposes a public market status endpoint and authenticated account/order endpoints, while persisting market state locally to JSON.
+This is a standalone Node.js 20+ and Express ES-module server for paper trading. It exposes REST APIs below `/api`, serves a static trader/admin web client from `public/`, and persists state locally in modular JSON files. It does not connect to real exchanges or brokers.
 
-Key code paths:
+Use `README.md` and `docs/` for detailed public contracts:
 
-- HTTP bootstrap: [src/server.js](src/server.js)
-- API routing and auth/rate-limit enforcement: [src/routes/marketRoutes.js](src/routes/marketRoutes.js)
-- Central data access layer (MongoDB ready): [src/data/marketRepository.js](src/data/marketRepository.js)
-- Atomic JSON persistence and concurrency control: [src/data/atomicJsonStore.js](src/data/atomicJsonStore.js)
-- Money & asset precision helpers: [src/utils/money.js](src/utils/money.js)
-- Business logic for market events, order matching, balances, and accounts: [src/services/marketSimulator.js](src/services/marketSimulator.js)
-- State coordinator and legacy adapter: [src/services/stateStore.js](src/services/stateStore.js)
-- Database migration script: [src/scripts/migrateDatabase.js](src/scripts/migrateDatabase.js)
-- Modular data files: [data/](data/) (`accounts.json`, `assets.json`, `portfolios.json`, `orders.json`, `trades.json`, `market-history.json`, `market-events.json`, `market-state.json`)
-- User-facing API and operational details: [README.md](README.md)
+- API endpoints and payloads: `docs/api-docs.md`
+- Installation and environment variables: `docs/instalacao-e-configuracao.md`
+- Market simulation mechanics: `docs/mecanica-do-mercado.md`
+- Modular JSON persistence: `docs/arquivos-de-dados.md`
+- Master/node synchronization: `docs/cluster-e-sincronizacao.md`
 
-## Workflow and verification
+## Commands
 
 - Install dependencies: `npm install`
-- Run test suite: `npm test`
-- Run/verify database migration: `npm run migrate`
-- Start locally with auto-reload: `npm run dev`
-- Start the standard app script: `npm start`
+- Standard startup: `npm start`
+- Development with watch/reload: `npm run dev`
+- Full test suite: `npm test`
+- One test file: `node --test --test-force-exit test/<file>.test.js`
+- Migration: `npm run migrate`
+- Standalone Docker stack: `docker compose up -d --build`
+- Cluster Docker stack: `docker compose -f compose.cluster.yaml up -d --build`
 - Windows shortcut: `start.cmd`
 
-Useful smoke checks:
+There is no configured lint script.
 
-- `curl http://localhost:3001/api/market/status`
-- `curl -H "Authorization: Bearer <API_KEY>" http://localhost:3001/api/account`
-- Confirm the server still restores and saves state in [data/market-state.json](data/market-state.json)
+Useful smoke check after startup:
 
-## Architecture and conventions
+```bash
+curl http://localhost:3001/api/market/status
+```
 
-- The service uses Node.js 20+ and ES modules (`"type": "module"`).
-- [src/server.js](src/server.js) initializes Express, attaches request logging, applies JSON parsing, and mounts `/api` routes.
-- [src/routes/marketRoutes.js](src/routes/marketRoutes.js) owns route validation, Bearer-token auth, and in-memory rate limits. Preserve existing response shapes, status codes, and error messages unless a change is intentionally breaking.
-- [src/services/marketSimulator.js](src/services/marketSimulator.js) is the business-logic source of truth for price movement, orders, account balances, and market history.
-- [src/services/stateStore.js](src/services/stateStore.js) writes state via atomic rename-based JSON writes and migrates legacy state automatically when applicable.
-- Default port: `3001`. Override with `MARKET_PORT`, `MARKET_STATE_FILE`, and `TRUST_PROXY`.
+## Architecture
 
-## Safety and compatibility rules
+- `src/server.js` boots Express, applies logging and JSON parsing, mounts the `/api` route tree, restores state, starts market synchronization, starts the ticker, and serves `public/`.
+- `src/routes/marketRoutes.js` composes feature route modules. Feature handlers live in `src/routes/*.routes.js`.
+- `src/routes/routeMiddleware.js` owns Bearer API-key authentication, administrator checks, and Express rate-limit middleware.
+- `src/services/marketSimulator.js` is the central in-memory authority for market ticks, events, accounts, order matching, balances, portfolios, and trade history.
+- Focused `src/services/*Service.js` modules implement account, authentication, API-key, order, event, state, cluster, and administration behavior used by the simulator and routes.
+- `src/data/marketRepository.js` is the central repository abstraction over the modular JSON collections.
+- `src/services/stateStore.js` adapts the simulator's aggregated state to and from `MarketRepository` and runs legacy monolithic-to-modular migration when needed.
+- `src/data/atomicJsonStore.js` validates payloads, serializes writes per file, writes temporary JSON files, and atomically renames them into place with Windows retry/copy fallback.
+- `src/services/marketSyncService.js` implements standalone/master/node reconciliation with optimistic `syncRevision` concurrency control.
+- `src/middleware/apiResponse.js` adds server metadata to JSON responses and owns API-wide 404/error handling.
 
-- Keep the public market status payload and authenticated account/order APIs backward compatible unless the change is explicitly breaking.
-- Do not bypass the existing auth flow or rate-limit flow in [src/routes/marketRoutes.js](src/routes/marketRoutes.js).
-- Do not introduce a new database, framework, or storage model without a clear reason and matching documentation updates.
-- Preserve the paper-trading focus: this is not connected to a real exchange or broker.
-- If changing order matching, price simulation, or account state, read the simulator and README examples before altering API contracts.
-- If persistence changes, keep compatibility with legacy JSON state files and the existing migration behavior.
-- If auth, rate-limit, or response formatting changes, keep them aligned with the existing public docs and client expectations.
+## Persistence
 
-## Key project-specific pitfalls
+The active modular state is stored in `data/`:
 
-- The app persists only local JSON state; it does not share balances or market data across multiple independent instances.
-- API keys are never stored in plaintext; only hashes are kept, and the value is returned to the creator only once during account creation or rotation.
-- The public market status route is intentionally unauthenticated and should remain safe for clients that only need price/volume data.
-- Request logging intentionally omits Authorization headers and request bodies; do not log secrets in new code.
-- The app includes random market events that change price; do not treat those as real-world financial data.
+- `accounts.json`
+- `assets.json`
+- `portfolios.json`
+- `orders.json`
+- `trades.json`
+- `market-history.json`
+- `market-events.json`
+- `market-state.json`
 
-## Preferred edit strategy
+Conventions and constraints:
 
-- Prefer small, localized changes around the request handler or simulator function being modified.
-- Preserve current JSON schema fields unless a documented migration is part of the change.
-- Update [README.md](README.md) when behavior, limits, or configuration changes are user-visible.
-- Keep changes aligned with the existing single-authority market model described in the project docs.
+- `MARKET_DATA_DIR` selects the modular data directory.
+- `MARKET_STATE_FILE` selects the state-file entry point used for legacy compatibility and migration.
+- Preserve migration compatibility for monolithic state files.
+- JSON writes are atomic per file, not one cross-file transaction. Do not assume that updating multiple collections is globally atomic.
+- Use `roundMoney()` and `roundAsset()` from `src/utils/money.js` for financial and quantity calculations.
+- Keep the market operation queue in `MarketSimulator`; account and order mutations must remain serialized within the in-memory authority.
+- The configured simulated asset is `SIM` unless making an intentional multi-asset change.
+- Backups and logs are separate from active collections; do not treat `data/backups/` or `data/logs/` as primary state.
 
-## Useful files for context
+## API conventions
 
-- [README.md](README.md)
-- [src/server.js](src/server.js)
-- [src/routes/marketRoutes.js](src/routes/marketRoutes.js)
-- [src/services/marketSimulator.js](src/services/marketSimulator.js)
-- [src/services/stateStore.js](src/services/stateStore.js)
-- [data/market-state.json](data/market-state.json)
+- Feature routes are mounted below `/api` by `src/routes/marketRoutes.js`.
+- Route modules should remain thin; put domain behavior in services and persistence in the repository/state layer.
+- Protected account, order, and administrative endpoints must use the existing middleware instead of duplicating authentication or authorization.
+- Preserve public routes and existing success/error payload shapes, status codes, and rate-limit middleware unless behavior is intentionally changed.
+- API JSON responses commonly use `{ success, data }`. The response middleware adds `meta.server`.
+- Public account payloads must not include `keyHash`.
+- API keys are returned once during account creation or rotation. Persist only the SHA-256 key hash.
+- Never log request bodies, Authorization headers, API keys, or plaintext credentials. The existing logger and request middleware omit these values.
+
+## Cluster and synchronization
+
+- Supported roles are `standalone`, `master`, and `node`.
+- Node synchronization modes are `bidirectional` and `receive-only`.
+- `MARKET_SYNC_TOKEN` is mandatory for master/node cluster operations.
+- `MARKET_SYNC_MASTER_URL` is mandatory for node instances.
+- In master mode, state saves increment `syncRevision`; in node mode, authoritative snapshots restore it.
+- Preserve stale-snapshot conflict and reconciliation behavior. A stale node push must not overwrite a newer master state.
+- Cluster metadata headers and reconciliation behavior are implemented in `src/services/marketSyncService.js` and `src/routes/sync.routes.js`.
+
+## Configuration
+
+Use `env.example` and `docs/instalacao-e-configuracao.md` as the sources for environment variables.
+
+Important defaults and overrides include:
+
+- `MARKET_PORT` defaults to `3001`
+- `MARKET_STATE_FILE`
+- `MARKET_DATA_DIR`
+- `MARKET_LOG_DIRECTORY`
+- `MARKET_ADMIN_TOKEN`
+- `TRUST_PROXY`
+- `MARKET_SYNC_ROLE`
+- `MARKET_SYNC_MASTER_URL`
+- `MARKET_SYNC_TOKEN`
+- `MARKET_NODE_ID`
+- `MARKET_NODE_PUBLIC_URL`
+- `MARKET_NODE_SYNC_MODE`
+- `MARKET_SYNC_INTERVAL_SECONDS`
+- `MARKET_EVENT_MIN_INTERVAL_MS`
+- `MARKET_EVENT_MAX_INTERVAL_MS`
+
+Do not introduce a new environment variable without documenting it in `env.example` and the installation guide.
+
+## Testing
+
+Tests use Node's built-in `node:test` runner and ES modules.
+
+- Run one file while iterating: `node --test --test-force-exit test/<file>.test.js`
+- Run the complete suite: `npm test`
+- Run migration validation: `npm run migrate`
+- HTTP tests start temporary Express apps with `src/routes/marketRoutes.js`.
+- Persistence tests may migrate, restore, or modify files under `data/`; inspect setup/cleanup before running them.
+- Run the smallest relevant test first, then `npm test` for cross-cutting route, persistence, market, or synchronization changes.
+
+## Safety and compatibility
+
+- Preserve the paper-trading and educational purpose.
+- Preserve existing JSON schemas unless migration is explicitly part of the change.
+- Inspect `src/services/marketSimulator.js` and `docs/mecanica-do-mercado.md` before changing price simulation or order matching.
+- Inspect the existing route and service implementation before inventing an endpoint or response contract.
+- Keep authentication, authorization, rate limiting, and secret handling aligned with existing behavior.
+- Preserve unrelated uncommitted changes, especially in `data/*.json`.
