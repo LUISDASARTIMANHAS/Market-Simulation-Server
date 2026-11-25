@@ -9,6 +9,7 @@ function getContentLength(value) {
 export function createHttpRequestLogger() {
   return (req, res, next) => {
     const startedAt = process.hrtime.bigint();
+    const isSyncRoute = /^\/(?:api\/)?sync(?:\/|$)/i.test(req.path);
     const logRequest = (event, level = 'info') => {
       const durationMs = Number((Number(process.hrtime.bigint() - startedAt) / 1e6).toFixed(2));
       const details = {
@@ -26,7 +27,7 @@ export function createHttpRequestLogger() {
         logger.error('http.request_failed', details);
         return;
       }
-      logger[level](event, details);
+      logger[level](event, details, { terminal: isSyncRoute });
     };
 
     res.once('finish', () => logRequest('http.request'));

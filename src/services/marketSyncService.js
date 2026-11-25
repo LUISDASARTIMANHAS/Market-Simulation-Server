@@ -252,7 +252,7 @@ export class MarketSyncService {
       requestBytes,
       localRevision: this.localRevision,
       timeoutMs: this.timeoutMs,
-    });
+    }, { terminal: true });
 
     try {
       const response = await this.fetchImpl(url, {
@@ -281,7 +281,7 @@ export class MarketSyncService {
         responseContentType: response.headers.get('content-type'),
         statusCode: response.status,
         durationMs: Date.now() - startedAt,
-      });
+      }, { terminal: true });
       return { response, body };
     } catch (error) {
       logger.error('market_sync.request_failed', {

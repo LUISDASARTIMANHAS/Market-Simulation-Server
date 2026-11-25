@@ -26,7 +26,7 @@ function formatConsoleEntry(entry) {
   return `${[`[${entry.level}] ${entry.event}`, ...rows].join('\n')}\n`;
 }
 
-function writeLog(level, event, details = {}) {
+function writeLog(level, event, details = {}, options = {}) {
   const entry = {
     timestamp: new Date().toISOString(),
     level,
@@ -35,7 +35,14 @@ function writeLog(level, event, details = {}) {
   };
   const output = JSON.stringify(entry);
 
-  if (level === 'ERROR') console.error(formatConsoleEntry(entry));
+  if (level === 'ERROR' || options.terminal === true) {
+    const writeToConsole = level === 'ERROR'
+      ? console.error
+      : level === 'WARN'
+        ? console.warn
+        : console.log;
+    writeToConsole(formatConsoleEntry(entry));
+  }
 
   writeQueue = writeQueue.then(async () => {
     const logFile = path.join(
@@ -57,7 +64,7 @@ function writeLog(level, event, details = {}) {
 }
 
 export const logger = {
-  info: (event, details) => writeLog('INFO', event, details),
-  warn: (event, details) => writeLog('WARN', event, details),
-  error: (event, details) => writeLog('ERROR', event, details),
+  info: (event, details, options) => writeLog('INFO', event, details, options),
+  warn: (event, details, options) => writeLog('WARN', event, details, options),
+  error: (event, details, options) => writeLog('ERROR', event, details, options),
 };
