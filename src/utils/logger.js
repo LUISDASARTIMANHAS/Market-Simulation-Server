@@ -23,7 +23,7 @@ function formatConsoleEntry(entry) {
       : JSON.stringify(value);
     return `${key.padEnd(keyWidth)} | ${formattedValue}`;
   });
-  return [`[${entry.level}] ${entry.event}`, ...rows].join('\n');
+  return `${[`[${entry.level}] ${entry.event}`, ...rows].join('\n')}\n`;
 }
 
 function writeLog(level, event, details = {}) {

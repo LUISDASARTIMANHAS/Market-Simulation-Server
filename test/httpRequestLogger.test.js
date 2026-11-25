@@ -38,6 +38,7 @@ test('requisições HTTP com erro aparecem no terminal e no arquivo', async () =
 
     assert.equal(terminalErrors.length, 1);
     assert.match(terminalErrors[0], /^\[ERROR\] http\.request_failed/);
+    assert.ok(terminalErrors[0].endsWith('\n'));
     assert.match(terminalErrors[0], /method\s+\|\s+PUT/);
     assert.match(terminalErrors[0], /path\s+\|\s+\/api\/sync\/snapshot/);
     assert.equal(entries.length, 1);
