@@ -9,6 +9,7 @@ Esta documentação descreve todos os endpoints disponibilizados pelo **Market S
 - **Protocolo**: HTTP / HTTPS
 - **Formato de Dados**: JSON (`application/json`)
 - **Codificação**: UTF-8
+- **Limite de transferência**: corpos de requisição JSON e respostas JSON têm limite máximo de 10 MB. Conteúdos maiores recebem `413 Payload Too Large`.
 - **Porta Padrão**: `3001` (configurável via variável de ambiente `MARKET_PORT`)
 - **Prefixo Base**: Todas as rotas de API residem sob `/api`
 
@@ -63,6 +64,7 @@ Em caso de falha, o status code HTTP correspondente é retornado junto ao payloa
 | `401 Unauthorized` | Chave de API ausente, malformada ou inválida. |
 | `403 Forbidden` | Permissão insuficiente (ex: rota restrita a administradores). |
 | `404 Not Found` | Rota ou recurso não encontrado. |
+| `413 Payload Too Large` | Corpo JSON enviado ou resposta JSON acima do limite de 10 MB. |
 | `409 Conflict` | Conflito de concorrência ou revisão desatualizada de node. |
 | `429 Too Many Requests` | Limite de taxa de requisições excedido. |
 | `500 Internal Server Error` | Erro inesperado interno do servidor. |

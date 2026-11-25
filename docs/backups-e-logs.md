@@ -15,14 +15,15 @@ O servidor utiliza um mecanismo de log nativo e resiliente implementado em `src/
 
 #### Exemplo de Entrada de Log:
 ```json
-{"timestamp":"2026-10-07T21:00:15.123Z","level":"info","event":"http.request","method":"POST","path":"/api/orders/buy","statusCode":201,"durationMs":14.28}
+{"timestamp":"2026-10-07T21:00:15.123Z","level":"info","event":"http.request","method":"POST","path":"/api/orders/buy","ip":"127.0.0.1","requestBytes":18,"requestContentType":"application/json","responseBytes":214,"responseContentType":"application/json; charset=utf-8","statusCode":201,"durationMs":14.28}
 ```
 
 ### 1.2 Eventos Monitorados
-- **Requisições HTTP**: Método, path, código de status retornado e tempo total de resposta (`durationMs`).
+- **Requisições HTTP**: Método, rota solicitada, IP, tamanho/tipo do corpo enviado e tamanho/tipo da resposta, código de status e tempo total (`durationMs`). Os logs identificam o recurso transferido sem registrar o conteúdo do corpo.
+- **Limite de transferência**: Corpos de requisição JSON e respostas JSON da API são limitados a 10 MB; exceder o limite resulta em `413 Payload Too Large`.
 - **Eventos de Mercado**: Notícias e choques econômicos disparados, categoria e impacto percentual.
 - **Ordens de Negociação**: Identificador de ordem, conta envolvida, volume e resultado.
-- **Sincronização de Cluster**: PUSH, PULL, revisões trocadas e ocorrências de conflitos (`409 Conflict`).
+- **Sincronização de Cluster**: PUSH, PULL, rota, direção e tamanhos enviados/recebidos, revisões trocadas e conflitos (`409 Conflict`).
 - **Persistência**: Gravações atômicas e migrações executadas no banco de dados JSON.
 
 ### 1.3 Privacidade e Sanitização de Dados
@@ -31,6 +32,7 @@ Para garantir estrita conformidade com boas práticas de segurança:
 - **Parâmetros de Query**: Parâmetros sensíveis não são logados.
 - **Cabeçalhos de Autenticação**: O conteúdo de `Authorization` e `X-Market-Sync-Token` é expressamente omitido.
 - **Chaves de API**: Apenas identificadores públicos (`accountId` e `username`) aparecem em registros de auditoria. As chaves em texto puro e seus respectivos hashes nunca são impressos em log.
+- **IP e transferência**: O IP do cliente e metadados de tamanho/tipo são registrados para identificar tráfego e downloads; o conteúdo enviado/recebido não é persistido nos logs.
 
 ---
 

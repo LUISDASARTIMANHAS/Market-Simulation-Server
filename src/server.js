@@ -7,6 +7,8 @@ import { marketSimulator } from './services/marketSimulator.js';
 import { marketStateStore } from './services/stateStore.js';
 import { MarketSyncService } from './services/marketSyncService.js';
 import { logger } from './utils/logger.js';
+import { MAX_HTTP_TRANSFER_BYTES } from './utils/httpLimits.js';
+import { rejectOversizedJsonRequest } from './middleware/requestSizeLimit.js';
 import { registerSyncService } from './services/clusterRegistry.js';
 import { apiErrorHandler, apiNotFound, createApiResponseMiddleware } from './middleware/apiResponse.js';
 
@@ -16,6 +18,8 @@ const PUBLIC_DIRECTORY = path.resolve(path.dirname(fileURLToPath(import.meta.url
 const syncService = new MarketSyncService({ store: marketStateStore, simulator: marketSimulator });
 registerSyncService(syncService);
 
+if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY);
+
 app.use((req, res, next) => {
   const startedAt = process.hrtime.bigint();
   const logRequest = (event, level = 'info') => {
@@ -23,6 +27,11 @@ app.use((req, res, next) => {
     logger[level](event, {
       method: req.method,
       path: req.path,
+      ip: req.ip,
+      requestBytes: getContentLength(req.get('content-length')),
+      requestContentType: req.get('content-type') || null,
+      responseBytes: getContentLength(res.getHeader('content-length')),
+      responseContentType: res.getHeader('content-type') || null,
       statusCode: res.statusCode,
       durationMs,
     });
@@ -35,10 +44,16 @@ app.use((req, res, next) => {
   next();
 });
 
+function getContentLength(value) {
+  if (value === null || value === undefined || value === '') return null;
+  const length = Number(value);
+  return Number.isSafeInteger(length) && length >= 0 ? length : null;
+}
+
 app.use(cors());
 app.use('/api', createApiResponseMiddleware({ getRole: () => syncService.role }));
-app.use(express.json({ limit: '25mb' }));
-if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY);
+app.use('/api', rejectOversizedJsonRequest);
+app.use(express.json({ limit: MAX_HTTP_TRANSFER_BYTES }));
 app.use('/api', marketRoutes);
 app.use('/api', apiNotFound);
 app.use('/api', apiErrorHandler);

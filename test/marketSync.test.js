@@ -9,6 +9,7 @@ import { MarketSimulator } from '../src/services/marketSimulator.js';
 import { MarketSyncService } from '../src/services/marketSyncService.js';
 import { createMarketSyncRouter } from '../src/routes/sync.routes.js';
 import { listNodes } from '../src/services/clusterRegistry.js';
+import { MAX_HTTP_TRANSFER_BYTES } from '../src/utils/httpLimits.js';
 
 test('master aceita a primeira Sincronizações e node atrasado aplica o snapshot vencedor', async () => {
   const dataDir = await mkdtemp(path.join(tmpdir(), 'market-sync-flow-'));
@@ -24,7 +25,7 @@ test('master aceita a primeira Sincronizações e node atrasado aplica o snapsho
     masterSimulator.initialize(await masterStore.load());
 
     const app = express();
-    app.use(express.json({ limit: '25mb' }));
+    app.use(express.json({ limit: MAX_HTTP_TRANSFER_BYTES }));
     app.use('/api/sync', createMarketSyncRouter({
       role: 'master', token: 'test-sync-token', simulator: masterSimulator, store: masterStore,
     }));
@@ -97,7 +98,7 @@ test('duas ordens no mesmo tempo em nodes diferentes: o node mais rápido vence 
     const joaozinho = await masterSimulator.createAccount({ username: 'joaozinho', initialBalance: 1000 });
 
     const app = express();
-    app.use(express.json({ limit: '25mb' }));
+    app.use(express.json({ limit: MAX_HTTP_TRANSFER_BYTES }));
     app.use('/api/sync', createMarketSyncRouter({
       role: 'master', token: 'test-sync-token', simulator: masterSimulator, store: masterStore,
     }));

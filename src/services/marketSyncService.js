@@ -1,6 +1,7 @@
 import { hostname } from 'node:os';
 import { createRequire } from 'node:module';
 import { logger } from '../utils/logger.js';
+import { MAX_HTTP_TRANSFER_BYTES } from '../utils/httpLimits.js';
 import { sanitizeNodeId } from './clusterRegistry.js';
 
 const DEFAULT_SYNC_TIMEOUT_MS = Number(process.env.MARKET_SYNC_TIMEOUT_MS || 30000);
@@ -15,6 +16,46 @@ function getErrorDetails(error) {
     name: error.name,
     code: error.code,
   };
+}
+
+function getContentLength(value) {
+  if (value === null || value === undefined || value === '') return null;
+  const length = Number(value);
+  return Number.isSafeInteger(length) && length >= 0 ? length : null;
+}
+
+async function readJsonResponse(response) {
+  const declaredLength = getContentLength(response.headers.get('content-length'));
+  if (declaredLength > MAX_HTTP_TRANSFER_BYTES) {
+    await response.body?.cancel();
+    throw Object.assign(
+      new Error('A resposta do master excede o limite máximo de 10 MB.'),
+      { statusCode: 413 },
+    );
+  }
+
+  if (!response.body) return { body: {}, responseBytes: 0 };
+
+  const reader = response.body.getReader();
+  const chunks = [];
+  let responseBytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    responseBytes += value.byteLength;
+    if (responseBytes > MAX_HTTP_TRANSFER_BYTES) {
+      await reader.cancel();
+      throw Object.assign(
+        new Error('A resposta do master excede o limite máximo de 10 MB.'),
+        { statusCode: 413 },
+      );
+    }
+    chunks.push(Buffer.from(value));
+  }
+
+  if (responseBytes === 0) return { body: {}, responseBytes };
+  const body = JSON.parse(Buffer.concat(chunks, responseBytes).toString('utf8'));
+  return { body, responseBytes };
 }
 
 export class MarketSyncService {
@@ -178,11 +219,37 @@ export class MarketSyncService {
   async request(path, options = {}) {
     const url = new URL(path, `${this.masterUrl}/`);
     const method = options.method || 'GET';
+    const requestBytes = typeof options.body === 'string'
+      ? Buffer.byteLength(options.body, 'utf8')
+      : Buffer.isBuffer(options.body)
+        ? options.body.length
+        : null;
+    const transferDirection = method === 'GET'
+      ? 'download'
+      : options.body !== undefined
+        ? 'upload'
+        : 'none';
+    if (requestBytes > MAX_HTTP_TRANSFER_BYTES) {
+      logger.warn('market_sync.request_too_large', {
+        nodeId: this.nodeId,
+        method,
+        endpoint: `${url.origin}${url.pathname}`,
+        transferDirection,
+        requestBytes,
+        maxBytes: MAX_HTTP_TRANSFER_BYTES,
+      });
+      throw Object.assign(
+        new Error('A requisição ao master excede o limite máximo de 10 MB.'),
+        { statusCode: 413 },
+      );
+    }
     const startedAt = Date.now();
     logger.info('market_sync.request_started', {
       nodeId: this.nodeId,
       method,
       endpoint: `${url.origin}${url.pathname}`,
+      transferDirection,
+      requestBytes,
       localRevision: this.localRevision,
       timeoutMs: this.timeoutMs,
     });
@@ -203,11 +270,15 @@ export class MarketSyncService {
           ...options.headers,
         },
       });
-      const body = await response.json().catch(() => ({}));
+      const { body, responseBytes } = await readJsonResponse(response);
       logger.info('market_sync.request_completed', {
         nodeId: this.nodeId,
         method,
         endpoint: `${url.origin}${url.pathname}`,
+        transferDirection,
+        requestBytes,
+        responseBytes,
+        responseContentType: response.headers.get('content-type'),
         statusCode: response.status,
         durationMs: Date.now() - startedAt,
       });
@@ -217,6 +288,8 @@ export class MarketSyncService {
         nodeId: this.nodeId,
         method,
         endpoint: `${url.origin}${url.pathname}`,
+        transferDirection,
+        requestBytes,
         durationMs: Date.now() - startedAt,
         ...getErrorDetails(error),
       });

@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module';
 import { hostname } from 'node:os';
 import { logger } from '../utils/logger.js';
+import { MAX_HTTP_TRANSFER_BYTES } from '../utils/httpLimits.js';
 import { http404NotFound, httpError } from '../utils/httpErrors.js';
 
 const require = createRequire(import.meta.url);
@@ -19,6 +20,22 @@ export function createApiResponseMiddleware({
       const response = body && typeof body === 'object' && !Array.isArray(body)
         ? { ...body, meta: { ...body.meta, server } }
         : { data: body, meta: { server } };
+      const responseBytes = Buffer.byteLength(JSON.stringify(response), 'utf8');
+      if (responseBytes > MAX_HTTP_TRANSFER_BYTES) {
+        logger.warn('api.response_too_large', {
+          method: req.method,
+          path: req.path,
+          ip: req.ip,
+          responseBytes,
+          maxBytes: MAX_HTTP_TRANSFER_BYTES,
+        });
+        res.status(413).removeHeader('Content-Disposition');
+        return sendJson({
+          success: false,
+          message: 'A resposta excede o limite máximo de 10 MB.',
+          meta: { server },
+        });
+      }
       return sendJson(response);
     };
     next();
@@ -34,6 +51,7 @@ export function apiErrorHandler(error, req, res, next) {
 
   const statusCode = Number(error.statusCode || error.status);
   const status = statusCode >= 400 && statusCode <= 599 ? statusCode : 500;
+  const requestBytes = Number(req.get('content-length'));
   const message = status < 500
     ? error.message || 'Requisição inválida.'
     : 'Erro interno do servidor.';
@@ -41,9 +59,21 @@ export function apiErrorHandler(error, req, res, next) {
   logger.error('api.request_failed', {
     method: req.method,
     path: req.path,
+    ip: req.ip,
+    requestBytes: Number.isSafeInteger(requestBytes) && requestBytes >= 0 ? requestBytes : null,
+    requestContentType: req.get('content-type') || null,
     statusCode: status,
-    message: error.message,
+    message: error.type === 'entity.too.large'
+      ? 'O corpo da requisição excede o limite máximo de 10 MB.'
+      : error.message,
   });
 
-  return httpError(res, status, message);
+  if (status === 413) res.set('Connection', 'close');
+  return httpError(
+    res,
+    status,
+    error.type === 'entity.too.large'
+      ? 'O corpo da requisição excede o limite máximo de 10 MB.'
+      : message,
+  );
 }
