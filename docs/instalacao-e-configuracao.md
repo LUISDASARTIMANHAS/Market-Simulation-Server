@@ -61,6 +61,8 @@ Após a inicialização do servidor, acesse no navegador:
 - **Painel Administrativo**: `http://localhost:3001/admin.html`  
   Permite a administradores autenticados visualizar todas as contas cadastradas, criar contas com privilégios específicos, alterar nomes de usuário, promover/rebaixar permissões e excluir contas.
 
+No terminal, a inicialização exibe um resumo em colunas com porta, papel do servidor, sincronização, limites de transferência e caminhos de dados/logs. O mesmo resumo é gravado no arquivo de log; tokens e chaves não são exibidos.
+
 ---
 
 ## 3. Execução com Docker e Docker Compose

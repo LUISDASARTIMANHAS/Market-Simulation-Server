@@ -34,6 +34,50 @@ app.get(['/dashboard.html', '/wallet.html', '/login.html', '/admin.html', '/clus
 });
 app.use(express.static(PUBLIC_DIRECTORY, { index: 'index.html' }));
 
+function formatInitialConfiguration(configuration) {
+  const labels = {
+    port: 'Porta HTTP',
+    role: 'Papel',
+    nodeId: 'ID do node',
+    syncMode: 'Modo de sincronização',
+    masterUrl: 'URL do master',
+    syncIntervalMs: 'Intervalo de sincronização (ms)',
+    syncTimeoutMs: 'Timeout de sincronização (ms)',
+    maxJsonTransferBytes: 'Limite JSON (bytes)',
+    stateFile: 'Arquivo de estado',
+    dataDirectory: 'Diretório de dados',
+    logDirectory: 'Diretório de logs',
+    trustProxyEnabled: 'Proxy confiável ativo',
+  };
+  const entries = Object.entries(configuration)
+    .map(([key, value]) => [labels[key] || key, value]);
+  const labelWidth = Math.max(...entries.map(([label]) => label.length));
+  const rows = entries.map(([label, value]) => {
+    const formattedValue = value === null
+      ? 'não aplicável'
+      : String(value).replace(/[\r\n]/g, '\\n');
+    return `  ${label.padEnd(labelWidth)} | ${formattedValue}`;
+  });
+  return ['=== Configuração inicial do servidor ===', ...rows, '========================================'].join('\n');
+}
+
+function getInitialConfiguration() {
+  return {
+    port: PORT,
+    role: syncService.role,
+    nodeId: syncService.nodeId,
+    syncMode: syncService.role === 'node' ? syncService.syncMode : null,
+    masterUrl: syncService.getMasterOrigin(),
+    syncIntervalMs: syncService.intervalMs,
+    syncTimeoutMs: syncService.timeoutMs,
+    maxJsonTransferBytes: MAX_HTTP_TRANSFER_BYTES,
+    stateFile: process.env.MARKET_STATE_FILE || 'data/market-state.json',
+    dataDirectory: process.env.MARKET_DATA_DIR || 'data',
+    logDirectory: process.env.MARKET_LOG_DIRECTORY || 'data/logs',
+    trustProxyEnabled: Boolean(process.env.TRUST_PROXY),
+  };
+}
+
 /**
  * Restaura o mercado antes de começar a publicar preços.
  * @returns {Promise<void>}
@@ -71,6 +115,10 @@ async function startMarketServer() {
 }
 
 async function startServerWithRetry() {
+  const initialConfiguration = getInitialConfiguration();
+  console.log(formatInitialConfiguration(initialConfiguration));
+  logger.info('server.initial_configuration', initialConfiguration);
+
   let attempt = 0;
   const retryIntervalMs = Number(process.env.MARKET_START_RETRY_INTERVAL_MS || 5000);
   while (true) {
