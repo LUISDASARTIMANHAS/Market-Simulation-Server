@@ -13,7 +13,7 @@ O servidor utiliza um mecanismo de log nativo e resiliente implementado em `src/
 - **Nomenclatura**: `market-AAAA-MM-DD.log` (um arquivo novo para cada dia).
 - **Formato**: JSON estruturado por linha (*JSON Lines / NDJSON*), facilitando a ingestão por plataformas como Datadog, Grafana Loki, ELK Stack ou AWS CloudWatch.
 - **Saídas**: Todos os níveis são gravados no arquivo diário. Todos os erros (`ERROR`), respostas HTTP 4xx/5xx e requisições abortadas são exibidos no terminal. As chamadas HTTP de sincronização (`/api/sync/**`), de entrada e saída, também são exibidas no terminal; `INFO`/`WARN` sem relação com sincronização ficam apenas no arquivo.
-- **Visualização no terminal**: Erros são formatados em linhas de chave/valor alinhadas, com uma linha em branco entre mensagens; o arquivo permanece em JSON Lines.
+- **Visualização no terminal**: Erros e sincronizações são formatados em linhas de chave/valor alinhadas, com uma linha em branco entre mensagens; `responseBytes` aparece em MB. No arquivo JSON Lines, os tamanhos permanecem em bytes.
 
 #### Exemplo de Entrada de Log:
 ```json

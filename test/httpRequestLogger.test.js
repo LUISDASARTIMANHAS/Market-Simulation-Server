@@ -40,7 +40,7 @@ test('todos os erros e todas as requisições sync aparecem no terminal e no arq
     const syncRes = new EventEmitter();
     syncRes.statusCode = 200;
     syncRes.writableFinished = true;
-    syncRes.getHeader = (name) => name === 'content-length' ? '42' : 'application/json';
+    syncRes.getHeader = (name) => name === 'content-length' ? '4395687' : 'application/json';
     middleware(syncReq, syncRes, () => {});
     syncRes.emit('finish');
 
@@ -71,6 +71,7 @@ test('todos os erros e todas as requisições sync aparecem no terminal e no arq
     assert.equal(terminalInfo.length, 1);
     assert.match(terminalInfo[0], /^\[INFO\] http\.request/);
     assert.match(terminalInfo[0], /path\s+\|\s+\/api\/sync\/status/);
+    assert.match(terminalInfo[0], /responseBytes\s+\|\s+4\.19 MB/);
     assert.equal(entries.length, 3);
     assert.equal(entries[0].event, 'http.request_failed');
     assert.equal(entries[0].path, '/api/accounts');
@@ -79,6 +80,7 @@ test('todos os erros e todas as requisições sync aparecem no terminal e no arq
     assert.equal(entries[1].event, 'http.request');
     assert.equal(entries[1].path, '/api/sync/status');
     assert.equal(entries[1].statusCode, 200);
+    assert.equal(entries[1].responseBytes, 4395687);
     assert.equal(entries[2].event, 'http.request');
     assert.equal(entries[2].path, '/api/market/status');
     assert.equal(entries[2].statusCode, 200);

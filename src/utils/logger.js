@@ -18,9 +18,11 @@ function formatConsoleEntry(entry) {
     .filter(([key]) => key !== 'level' && key !== 'event');
   const keyWidth = Math.max(...fields.map(([key]) => key.length));
   const rows = fields.map(([key, value]) => {
-    const formattedValue = typeof value === 'string'
-      ? value.replace(/[\r\n]/g, '\\n')
-      : JSON.stringify(value);
+    const formattedValue = key === 'responseBytes' && Number.isFinite(value)
+      ? `${(value / (1024 * 1024)).toFixed(2)} MB`
+      : typeof value === 'string'
+        ? value.replace(/[\r\n]/g, '\\n')
+        : JSON.stringify(value);
     return `${key.padEnd(keyWidth)} | ${formattedValue}`;
   });
   return `${[`[${entry.level}] ${entry.event}`, ...rows].join('\n')}\n`;
