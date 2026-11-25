@@ -9,6 +9,7 @@ import { MarketSyncService } from './services/marketSyncService.js';
 import { logger } from './utils/logger.js';
 import { MAX_HTTP_TRANSFER_BYTES } from './utils/httpLimits.js';
 import { rejectOversizedJsonRequest } from './middleware/requestSizeLimit.js';
+import { createHttpRequestLogger } from './middleware/httpRequestLogger.js';
 import { registerSyncService } from './services/clusterRegistry.js';
 import { apiErrorHandler, apiNotFound, createApiResponseMiddleware } from './middleware/apiResponse.js';
 
@@ -20,36 +21,7 @@ registerSyncService(syncService);
 
 if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY);
 
-app.use((req, res, next) => {
-  const startedAt = process.hrtime.bigint();
-  const logRequest = (event, level = 'info') => {
-    const durationMs = Number((Number(process.hrtime.bigint() - startedAt) / 1e6).toFixed(2));
-    logger[level](event, {
-      method: req.method,
-      path: req.path,
-      ip: req.ip,
-      requestBytes: getContentLength(req.get('content-length')),
-      requestContentType: req.get('content-type') || null,
-      responseBytes: getContentLength(res.getHeader('content-length')),
-      responseContentType: res.getHeader('content-type') || null,
-      statusCode: res.statusCode,
-      durationMs,
-    });
-  };
-
-  res.once('finish', () => logRequest('http.request'));
-  res.once('close', () => {
-    if (!res.writableFinished) logRequest('http.request_aborted', 'warn');
-  });
-  next();
-});
-
-function getContentLength(value) {
-  if (value === null || value === undefined || value === '') return null;
-  const length = Number(value);
-  return Number.isSafeInteger(length) && length >= 0 ? length : null;
-}
-
+app.use(createHttpRequestLogger());
 app.use(cors());
 app.use('/api', createApiResponseMiddleware({ getRole: () => syncService.role }));
 app.use('/api', rejectOversizedJsonRequest);

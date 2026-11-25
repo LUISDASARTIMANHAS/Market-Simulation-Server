@@ -13,6 +13,19 @@ const LOG_DIRECTORY = path.resolve(
 let writeQueue = Promise.resolve();
 let writeFailureReported = false;
 
+function formatConsoleEntry(entry) {
+  const fields = Object.entries(entry)
+    .filter(([key]) => key !== 'level' && key !== 'event');
+  const keyWidth = Math.max(...fields.map(([key]) => key.length));
+  const rows = fields.map(([key, value]) => {
+    const formattedValue = typeof value === 'string'
+      ? value.replace(/[\r\n]/g, '\\n')
+      : JSON.stringify(value);
+    return `${key.padEnd(keyWidth)} | ${formattedValue}`;
+  });
+  return [`[${entry.level}] ${entry.event}`, ...rows].join('\n');
+}
+
 function writeLog(level, event, details = {}) {
   const entry = {
     timestamp: new Date().toISOString(),
@@ -22,7 +35,7 @@ function writeLog(level, event, details = {}) {
   };
   const output = JSON.stringify(entry);
 
-  if (level === 'ERROR') console.error(output);
+  if (level === 'ERROR') console.error(formatConsoleEntry(entry));
 
   writeQueue = writeQueue.then(async () => {
     const logFile = path.join(
